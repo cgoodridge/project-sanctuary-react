@@ -5,6 +5,7 @@ import App from './App';
 import { Provider } from 'react-redux';
 import { configureStore } from './store';
 import reportWebVitals from './reportWebVitals';
+import './firebase/firebaseConfig';
 
 ReactDOM.render(
   <React.StrictMode>

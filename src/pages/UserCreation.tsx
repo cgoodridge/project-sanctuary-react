@@ -9,8 +9,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { login } from '../firebase/auth';
-import "../css/login.css";
+
 
 interface State {
     email: string;
@@ -18,7 +17,7 @@ interface State {
     showPassword: boolean;
 }
 
-const Login = (props: any) => {
+const UserCreation = () => {
 
     const [values, setValues] = useState<State>({
         email: '',
@@ -26,27 +25,12 @@ const Login = (props: any) => {
         showPassword: false,
     });
 
-    const [isLoading, setLoading] = useState(false);
-
     const { register, handleSubmit, reset } = useForm<State>();
 
-    const onSubmit: SubmitHandler<State> = async data => {
-        console.log("Form submitted with data " + data.email + data.password);
-        let user;
-        setLoading(true);
-        try {
-            user = await login(data);
-            reset();
-        } catch (error) {
-            console.log(error);
-        }
-
-        if (user) {
-            props.history.push("/dashboard");
-        } else {
-            setLoading(true);
-        }
+    const onSubmit: SubmitHandler<State> = data => {
+        console.log(data);
     };
+
 
     const handleClickShowPassword = () => {
         setValues({
@@ -68,9 +52,10 @@ const Login = (props: any) => {
         <Container sx={{ padding: "32px", marginTop: "128px" }}>
             <img src="/images/logo.png" alt="Project Sanctuary Logo" />
             <Box>
-                <form onSubmit={handleSubmit(onSubmit)}>
+
+                <FormControl onSubmit={handleSubmit(onSubmit)}>
                     <Box sx={{ marginTop: "16px" }}>
-                        <TextField fullWidth id="email" label="Email" variant="standard" value={values.email} onChange={handleChange('email')} />
+                        <TextField fullWidth id="email" label="Email" variant="standard" value={values.email} onChange={handleChange('email')} type="email" />
                     </Box>
                     <Box sx={{ marginTop: "16px" }}>
                         <TextField
@@ -95,13 +80,16 @@ const Login = (props: any) => {
                             }}
                         />
                     </Box>
-                    <Box sx={{ margin: "16px" }}>
-                        <Button variant="contained" type="submit">Login </Button>
-                    </Box>
-                </form>
+                </FormControl>
+
             </Box>
+
+            <Box sx={{ margin: "16px" }}>
+                <Button variant="contained">Login</Button>
+            </Box>
+
         </Container>
     )
 }
 
-export default Login;
+export default UserCreation;
