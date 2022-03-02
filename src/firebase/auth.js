@@ -1,6 +1,8 @@
-import firebase from 'firebase/compat/app';
+import firebase from '../firebase/firebaseConfig';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
+import { useDispatch } from 'react-redux';
+import "firebase/firestore";
 
 export const signup = async ({ firstName, lastName, email, password }) => {
     const response = await firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -15,10 +17,12 @@ export const logout = () => {
         .signOut();
 }
 
-export const login = async ({ email, password }) => {
+export const login = async (email, password) => {
     const resp = await firebase
         .auth()
         .signInWithEmailAndPassword(email, password);
 
     return resp.user;
 }
+
+export const database = firebase.firestore();

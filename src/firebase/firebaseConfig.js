@@ -17,3 +17,5 @@ firebase.initializeApp({
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
   appId: "1:553317843027:web:89d438c60e5b2184e446a6"
 });
+
+export default firebase;
