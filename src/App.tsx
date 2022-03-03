@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import UserCreation from './pages/UserCreation';
 import './App.css';
@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import { useDispatch } from 'react-redux';
 import { logout, login } from './slices/userSlice';
 import firebase from 'firebase/compat/app';
+import ProtectedRoute from './router/ProtectedRoute';
 
 const App = () => {
 
@@ -28,19 +29,19 @@ const App = () => {
       .auth()
       .onAuthStateChanged(authUser => {
 
-      if (authUser) {
-        // The user just logged in/was logged in
-        dispatch(
-          login({
-            email: authUser.email,
-            uid: authUser.uid,
-            displayName: authUser.displayName,
-          }))
-      } else {
-        // The user is logged out
-        dispatch(logout());
-      }
-    });
+        if (authUser) {
+          // The user just logged in/was logged in
+          dispatch(
+            login({
+              email: authUser.email,
+              uid: authUser.uid,
+              displayName: authUser.displayName,
+            }))
+        } else {
+          // The user is logged out
+          dispatch(logout());
+        }
+      });
 
     // return () => { // ComponentWillUnmount 
     //   _isMounted.current = false;
@@ -55,9 +56,23 @@ const App = () => {
 
           </nav>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<UserCreation />} />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/login" element={
+              <ProtectedRoute>
+                <Login />
+              </ProtectedRoute>
+            }
+            />
+            <Route path="/register" element={
+              <ProtectedRoute>
+                <UserCreation />
+              </ProtectedRoute>
+            }
+            />
           </Routes>
         </div>
       </Router>
