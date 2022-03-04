@@ -26,7 +26,17 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import Fab from '@mui/material/Fab';
+import LogoutIcon from '@mui/icons-material/Logout';
 import AddIcon from '@mui/icons-material/Add';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+import Avatar from '@mui/material/Avatar';
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import { Input } from '@mui/material';
 
 interface State {
   id: string;
@@ -111,6 +121,8 @@ const Dashboard = ({ }) => {
   const _isMounted = useRef(true);
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [openDialog, setOpenDialog] = React.useState(false);
+
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -118,6 +130,24 @@ const Dashboard = ({ }) => {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+
+  const handleClickOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
+  const handleFileUpload = (e: any) => {
+    // setSelectedFile(e.target.files[0]);
+    console.log("Upload button clicked");
+    // if (e.target.files[0] !== null) {
+    //   console.log('We have a file');
+    // } else {
+    //   console.log('We do not have a file');
+    // }
   };
 
 
@@ -184,26 +214,23 @@ const Dashboard = ({ }) => {
           </List>
           <Divider />
           <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
+            <ListItem button >
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
           </List>
         </Drawer>
         <Box sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader />
           <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 3, sm: 8, md: 12 }}>
-
             {animals.map((animal, key) => (
               <Grid item xs={2} sm={4} md={4} key={key}>
                 <Card sx={{ maxWidth: 345 }}>
                   <CardMedia
                     component="img"
-                    height="140"
+                    height="300"
                     image={animal.data.imgURL}
                     alt={animal.data.commonName}
                   />
@@ -226,9 +253,114 @@ const Dashboard = ({ }) => {
         </Box>
       </Container>
 
+      <Dialog open={openDialog} onClose={handleClose}>
+        <DialogTitle>Add To the Sanctuary</DialogTitle>
+        <DialogContent>
+
+          <DialogContentText>
+            Add more animals to the sanctuary.
+          </DialogContentText>
+
+
+
+          <Avatar sx={{ width: 180, height: 180, margin: "auto", cursor: 'pointer' }} onClick={handleFileUpload}>
+            <InsertPhotoIcon sx={{ fontSize: 140 }} />
+          </Avatar>
+
+
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="kingdom"
+            label="Kingdom"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="phylum"
+            label="Phylum"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="kingdomClass"
+            label="Class"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="order"
+            label="Order"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="family"
+            label="Family"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="genus"
+            label="Genus"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="species"
+            label="Species"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="commonName"
+            label="Common Name"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="description"
+            label="Description"
+            type="text"
+            fullWidth
+            multiline
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>Save</Button>
+        </DialogActions>
+      </Dialog>
+
       <Container>
-        <Box sx={{ '& > :not(style)': { m: 1 } }}>
-          <Fab color="primary" variant="extended">
+        <Box sx={{ '& > :not(style)': { m: 1 }, position: "fixed", right: "10%" }}>
+          <Fab color="primary" variant="extended" onClick={handleClickOpen}>
             <AddIcon sx={{ mr: 1 }} />
             Add Animal
           </Fab>
@@ -236,7 +368,6 @@ const Dashboard = ({ }) => {
       </Container>
 
     </>
-
   )
 }
 
