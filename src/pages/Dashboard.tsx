@@ -23,8 +23,6 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import Fab from '@mui/material/Fab';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AddIcon from '@mui/icons-material/Add';
@@ -37,12 +35,13 @@ import TextField from '@mui/material/TextField';
 import Avatar from '@mui/material/Avatar';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import { Input } from '@mui/material';
-
-interface State {
-  id: string;
-  imgURL: string;
-  commonName: string;
-}
+import PeopleIcon from '@mui/icons-material/People';
+import PetsIcon from '@mui/icons-material/Pets';
+import MapIcon from '@mui/icons-material/Map';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import SettingsIcon from '@mui/icons-material/Settings';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 const drawerWidth = 240;
 
@@ -115,6 +114,32 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
 
 const Dashboard = ({ }) => {
 
@@ -152,6 +177,7 @@ const Dashboard = ({ }) => {
 
 
   const [animals, setAnimals] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
 
   useEffect(() => {
 
@@ -170,7 +196,30 @@ const Dashboard = ({ }) => {
 
   }, []);
 
-  console.log(animals);
+  useEffect(() => {
+
+    database
+      .collection('users')
+      .onSnapshot(snapshot => (
+        setUsers(snapshot.docs.map(doc => ({
+          id: doc.id,
+          data: doc.data()
+        })))
+      ))
+
+    return () => { // ComponentWillUnmount 
+      _isMounted.current = false;
+    }
+
+  }, []);
+
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+
 
   return (
     <>
@@ -202,15 +251,12 @@ const Dashboard = ({ }) => {
             </IconButton>
           </DrawerHeader>
           <Divider />
-          <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
+          <List component={Tabs} value={value} onChange={handleChange} orientation="vertical">
+            <ListItem button component={Tab} icon={<DashboardIcon />} label={open ? "Dashboard" : ""} iconPosition="start"></ListItem>
+            <ListItem button component={Tab} icon={<PetsIcon />} label={open ? "Animals" : ""} iconPosition="start"></ListItem>
+            <ListItem button component={Tab} icon={<MapIcon />} label={open ? "Locations" : ""} iconPosition="start"></ListItem>
+            <ListItem button component={Tab} icon={<PeopleIcon />} label={open ? "Users" : ""} iconPosition="start"></ListItem>
+            <ListItem button component={Tab} icon={<SettingsIcon />} label={open ? "Settings" : ""} iconPosition="start"></ListItem>
           </List>
           <Divider />
           <List>
@@ -224,32 +270,47 @@ const Dashboard = ({ }) => {
         </Drawer>
         <Box sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader />
-          <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 3, sm: 8, md: 12 }}>
-            {animals.map((animal, key) => (
-              <Grid item xs={2} sm={4} md={4} key={key}>
-                <Card sx={{ maxWidth: 345 }}>
-                  <CardMedia
-                    component="img"
-                    height="300"
-                    image={animal.data.imgURL}
-                    alt={animal.data.commonName}
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {animal.data.commonName}
-                    </Typography>
-                    <Typography variant="body2" noWrap color="text.secondary">
-                      {animal.data.description}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small">Share</Button>
-                    <Button size="small">Learn More</Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+          <TabPanel value={value} index={0}>
+            Dashboard
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 3, sm: 8, md: 12 }}>
+              {animals.map((animal, key) => (
+                <Grid item xs={2} sm={4} md={4} key={key}>
+                  <Card sx={{ maxWidth: 345 }}>
+                    <CardMedia
+                      component="img"
+                      height="300"
+                      image={animal.data.imgURL}
+                      alt={animal.data.commonName}
+                    />
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {animal.data.commonName}
+                      </Typography>
+                      <Typography variant="body2" noWrap color="text.secondary">
+                        {animal.data.description}
+                      </Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button size="small">Share</Button>
+                      <Button size="small">Learn More</Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            Locations
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+            Users
+          </TabPanel>
+          <TabPanel value={value} index={4}>
+            Settings
+          </TabPanel>
+
         </Box>
       </Container>
 

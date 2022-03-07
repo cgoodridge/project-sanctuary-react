@@ -7,10 +7,7 @@ import { useSelector } from 'react-redux';
 const ProtectedRoute = ({ children }: any) => {
     const user = useSelector(selectUser);
 
-    console.log(user);
-    //   const [{ user }] = useStateValue();
-
-    return user ? children : <Navigate to="/" />
+    return user ? children : <Navigate to="/login" />
 }
 
 export default ProtectedRoute;

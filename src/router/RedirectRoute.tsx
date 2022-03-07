@@ -7,10 +7,7 @@ import { useSelector } from 'react-redux';
 const RedirectRoute = ({ children }: any) => {
     const user = useSelector(selectUser);
 
-    // console.log(user);
-    //   const [{ user }] = useStateValue();
-
-    return !user ? children : <Navigate to="/login" />
+    return !user ? children : <Navigate to="/" />
 }
 
 export default RedirectRoute
