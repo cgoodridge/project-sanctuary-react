@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Login from './pages/Login';
-import UserCreation from './pages/UserCreation';
+import Login from './pages/login/Login';
+import UserCreation from './pages/userCreation/UserCreation';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/dashboard/Dashboard';
 import { useDispatch } from 'react-redux';
 import { logout, login } from './slices/userSlice';
 import firebase from 'firebase/compat/app';
 import ProtectedRoute from './router/ProtectedRoute';
 import RedirectRoute from './router/RedirectRoute';
+import AnimalDetail from './components/animalDetail/AnimalDetail';
 
 const App = () => {
 
@@ -72,6 +73,11 @@ const App = () => {
               </RedirectRoute>
             }
             />
+            <Route path="/animals/:name" element={
+              <ProtectedRoute>
+                <AnimalDetail />
+              </ProtectedRoute>
+            } />
           </Routes>
         </div>
       </Router>

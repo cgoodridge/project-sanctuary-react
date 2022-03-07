@@ -11,9 +11,9 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import firebase from '../firebase/firebaseConfig';
-import { login } from '../firebase/auth';
-import "../css/login.css";
+import firebase from '../../firebase/firebaseConfig';
+import { login } from '../../firebase/auth';
+import "./login.css";
 
 interface State {
     email: string;

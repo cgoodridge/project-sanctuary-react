@@ -1,0 +1,9 @@
+.userList{
+    height: 60vh;
+    z-index: 99;
+    background-color: black !important;
+    margin-top: 100px;
+    width: 100%;
+    color: white !important;
+}
+
