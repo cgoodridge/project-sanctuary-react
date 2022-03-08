@@ -20,7 +20,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import LogoutIcon from '@mui/icons-material/Logout';
-
+import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import PeopleIcon from '@mui/icons-material/People';
 import PetsIcon from '@mui/icons-material/Pets';
 import MapIcon from '@mui/icons-material/Map';
@@ -31,6 +31,7 @@ import Tab from '@mui/material/Tab';
 import UserListComponent from '../../components/userListComponent/UserListComponent';
 import './dashboard.css';
 import AnimalListComponent from '../../components/animalListComponent/AnimalListComponent';
+import MapComponent from '../../components/mapComponent/MapComponent';
 
 const drawerWidth = 240;
 
@@ -131,6 +132,7 @@ const TabPanel = (props: TabPanelProps) => {
 }
 
 
+
 const Dashboard = ({ }) => {
 
   const _isMounted = useRef(true);
@@ -148,8 +150,8 @@ const Dashboard = ({ }) => {
   };
 
 
-  
- 
+
+
 
   const [value, setValue] = React.useState(0);
 
@@ -215,7 +217,7 @@ const Dashboard = ({ }) => {
             <AnimalListComponent />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            Locations
+            <MapComponent zoomLevel={17}  />
           </TabPanel>
           <TabPanel value={value} index={3}>
             <UserListComponent />
@@ -227,7 +229,7 @@ const Dashboard = ({ }) => {
         </Box>
       </Container>
 
-      
+
 
     </>
   )

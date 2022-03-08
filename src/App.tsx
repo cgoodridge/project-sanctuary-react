@@ -11,7 +11,7 @@ import { logout, login } from './slices/userSlice';
 import firebase from 'firebase/compat/app';
 import ProtectedRoute from './router/ProtectedRoute';
 import RedirectRoute from './router/RedirectRoute';
-import AnimalDetail from './components/animalDetail/AnimalDetail';
+import AnimalDetail from './pages/animalDetail/AnimalDetail';
 
 const App = () => {
 
