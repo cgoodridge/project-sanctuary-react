@@ -21,6 +21,8 @@ import { Input } from '@mui/material';
 import Fab from '@mui/material/Fab';
 import Container from '@mui/material/Container';
 import { Link } from 'react-router-dom';
+import './animalListComponent.css';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 
@@ -30,6 +32,7 @@ const AnimalListComponent = () => {
     const _isMounted = useRef(true);
 
     const [openDialog, setOpenDialog] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const handleClickOpen = () => {
         setOpenDialog(true);
@@ -68,7 +71,8 @@ const AnimalListComponent = () => {
     return (
         <>
             <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 3, sm: 8, md: 12 }}>
-                {animals.map((animal, key) => (
+
+                {animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.map((animal, key) => (
                     <Grid item xs={2} sm={4} md={4} key={key}>
                         <Card sx={{ maxWidth: 345 }}>
                             <CardMedia
@@ -86,7 +90,7 @@ const AnimalListComponent = () => {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Link key={key} to={`/animal/${animal.data.scientificName}`}><Button size="small" >Learn More </Button></Link>
+                                <Link key={animal.id} className="learnMore" to={`/animals/${animal.data.scientificName.replace(/ /g, "_")}`}><Button size="small" >Learn More </Button></Link>
                             </CardActions>
                         </Card>
                     </Grid>

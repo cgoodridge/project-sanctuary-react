@@ -32,6 +32,8 @@ import UserListComponent from '../../components/userListComponent/UserListCompon
 import './dashboard.css';
 import AnimalListComponent from '../../components/animalListComponent/AnimalListComponent';
 import MapComponent from '../../components/mapComponent/MapComponent';
+import AnimalCountComponent from '../../components/dashboardDataComponents/animalCountComponent/AnimalCountComponent';
+import DashboardContainerComponent from '../../components/dashboardDataComponents/dashboardContainerComponent/DashboardContainerComponent';
 
 const drawerWidth = 240;
 
@@ -211,7 +213,7 @@ const Dashboard = ({ }) => {
         <Box sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader />
           <TabPanel value={value} index={0}>
-            Dashboard
+            <DashboardContainerComponent />
           </TabPanel>
           <TabPanel value={value} index={1}>
             <AnimalListComponent />
