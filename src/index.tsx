@@ -4,13 +4,20 @@ import './index.css';
 import App from './App';
 import { Provider } from 'react-redux';
 import { store } from './store';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 import reportWebVitals from './reportWebVitals';
 import './firebase/firebaseConfig';
+
+
+const persistor = persistStore(store);
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+        <App />
+      </PersistGate>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

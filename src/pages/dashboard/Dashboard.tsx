@@ -181,7 +181,7 @@ const Dashboard = ({ }) => {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
+            <Typography variant="h6" noWrap component="p">
               Dashboard
             </Typography>
           </Toolbar>
