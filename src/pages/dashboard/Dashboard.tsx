@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Container from '@mui/material/Container';
 import { database } from '../../firebase/auth';
+import { logout } from '../../firebase/auth';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -202,7 +203,7 @@ const Dashboard = ({ }) => {
           </List>
           <Divider />
           <List>
-            <ListItem button >
+            <ListItem button onClick={logout}>
               <ListItemIcon>
                 <LogoutIcon />
               </ListItemIcon>

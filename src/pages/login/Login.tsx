@@ -47,7 +47,6 @@ const Login = (props: any) => {
             .auth()
             .signInWithEmailAndPassword(email, password)
             .then((userAuth: any) => {
-                console.log("Test Dispatch");
                 dispatch(login({
                     email: userAuth.user.email,
                     uid: userAuth.user.uid,
@@ -116,9 +115,9 @@ const Login = (props: any) => {
         };
 
     return (
-        <Container sx={{ padding: "32px", marginTop: "128px" }}>
-            <img src="/images/logo.png" alt="Project Sanctuary Logo" />
-            <Box>
+        <Container sx={{ marginTop: "128px", display: "flex", justifyContent: "center"}}>
+            <Box> 
+                <img src="./images/logo.png" alt="Project Sanctuary Logo" />
                 <form >
                     <FormControl>
                         <Box sx={{ marginTop: "16px" }}>
