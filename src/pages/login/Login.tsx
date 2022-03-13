@@ -51,7 +51,6 @@ const Login = (props: any) => {
                     email: userAuth.user.email,
                     uid: userAuth.user.uid,
                     displayName: userAuth.user.displayName,
-
                 }))
             })
             .then(() => {
@@ -115,8 +114,8 @@ const Login = (props: any) => {
         };
 
     return (
-        <Container sx={{ marginTop: "128px", display: "flex", justifyContent: "center"}}>
-            <Box> 
+        <Container sx={{ marginTop: "128px", display: "flex", justifyContent: "center" }}>
+            <Box>
                 <img src="./images/logo.png" alt="Project Sanctuary Logo" />
                 <form >
                     <FormControl>

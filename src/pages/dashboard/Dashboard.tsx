@@ -143,6 +143,22 @@ const Dashboard = ({ }) => {
   const [open, setOpen] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
 
+  const [locations, setLocations] = useState<any[]>([]);
+
+  useEffect(() => {
+    database
+      .collection('animals')
+      .onSnapshot(snapshot => (
+        setLocations(snapshot.docs.map(doc => ({
+          id: doc.id,
+          data: doc.data()
+        })))
+      ))
+    return () => { // ComponentWillUnmount 
+      _isMounted.current = false;
+    }
+
+  }, []);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -151,10 +167,6 @@ const Dashboard = ({ }) => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-
-
-
 
   const [value, setValue] = React.useState(0);
 
@@ -220,7 +232,7 @@ const Dashboard = ({ }) => {
             <AnimalListComponent />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            <MapComponent zoomLevel={17}  />
+            <MapComponent locations={locations} zoomLevel={17} detail={false}/>
           </TabPanel>
           <TabPanel value={value} index={3}>
             <UserListComponent />

@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
-
 import Button from '@mui/material/Button';
-import { Input } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
 import StepButton from '@mui/material/StepButton';
 import Typography from '@mui/material/Typography';
 import AnimalDataForm from './AnimalDataForm';
@@ -83,17 +79,17 @@ const AddAnimal = () => {
         setActiveStep(step);
     };
 
-    const handleComplete = () => {
-        const newCompleted = completed;
-        newCompleted[activeStep] = true;
-        setCompleted(newCompleted);
-        handleNext();
-    };
+    // const handleComplete = () => {
+    //     const newCompleted = completed;
+    //     newCompleted[activeStep] = true;
+    //     setCompleted(newCompleted);
+    //     handleNext();
+    // };
 
-    const handleReset = () => {
-        setActiveStep(0);
-        setCompleted({});
-    };
+    // const handleReset = () => {
+    //     setActiveStep(0);
+    //     setCompleted({});
+    // };
 
     // End of stepper code
 
@@ -122,7 +118,7 @@ const AddAnimal = () => {
                     </DialogContentText>
 
 
-                    {activeStep === 0 ? <AnimalDataForm /> : activeStep === 1 ? <ImagesForm /> : activeStep === 2 ? <LocationForm /> : activeStep === 3 ? <ConfirmationForm /> : <AnimalDataForm />}
+                    {activeStep === 0 ? <AnimalDataForm storeFormData={true}/> : activeStep === 1 ? <ImagesForm /> : activeStep === 2 ? <LocationForm /> : activeStep === 3 ? <ConfirmationForm /> : <AnimalDataForm />}
 
 
                 </DialogContent>

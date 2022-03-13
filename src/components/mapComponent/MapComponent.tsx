@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './mapComponent.css';
 import LocationPin from './LocationPin';
 import GoogleMapReact from 'google-map-react';
@@ -6,25 +6,9 @@ import { database } from '../../firebase/auth';
 
 
 
-const MapComponent = ({ zoomLevel }: any) => {
+const MapComponent = ({ locations, zoomLevel, detail, locationDetail }: any) => {
 
-    const [locations, setLocations] = useState<any[]>([]);
-    const _isMounted = useRef(true);
-    useEffect(() => {
-
-        database
-            .collection('animals')
-            .onSnapshot(snapshot => (
-                setLocations(snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    data: doc.data()
-                })))
-            ))
-        return () => { // ComponentWillUnmount 
-            _isMounted.current = false;
-        }
-
-    }, []);
+    let mapkey: string = process.env.REACT_APP_API_KEY || '';
 
     const location =
     {
@@ -32,24 +16,35 @@ const MapComponent = ({ zoomLevel }: any) => {
         lat: 37.42216,
         lng: -122.08427,
     };
+
     return (
+
         <div className="map">
             <h2 className="map-h2">Animal Locations</h2>
 
             <div className="google-map">
                 <GoogleMapReact
-                    bootstrapURLKeys={{ key: "AIzaSyCGS7aJ--tZICb9zBfCqWEy2pwCc-roDc8" }}
+                    bootstrapURLKeys={{ key: mapkey }}
                     defaultCenter={location}
                     defaultZoom={zoomLevel}
                 >
-                    {locations.map((location, key) => (
+                    {!detail ? locations.map((location: { data: { latitude: any; longitude: any; commonName: any; }; }, key: any) => (
                         <LocationPin
                             key={key}
                             lat={location.data.latitude}
                             lng={location.data.longitude}
-                            text={location.data.name}
+                            text={location.data.commonName}
                         />
-                    ))}
+                    )) 
+                    
+                    :
+
+                    <LocationPin
+                            lat={locationDetail.latitude}
+                            lng={locationDetail.longitude}
+                            text={locationDetail.commonName}
+                        />
+                    }
 
                 </GoogleMapReact>
             </div>
