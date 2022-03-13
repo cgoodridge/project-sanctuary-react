@@ -2,8 +2,11 @@ import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import { useDispatch } from 'react-redux';
+import { saveData } from '../../slices/formDataSlice';
 
-const AnimalDataForm = ({ storeFormData }:any) => {
+const AnimalDataForm = ({ saveAnimalData }:any) => {
+
+    const dispatch = useDispatch();
 
     const [kingdom, setKingdom] = useState('');
     const [phylum, setPhylum] = useState('');
@@ -14,8 +17,12 @@ const AnimalDataForm = ({ storeFormData }:any) => {
     const [species, setSpecies] = useState('');
     const [commonName, setCommonName] = useState('');
     const [description, setDescription] = useState('');
-    if (storeFormData) {
-        
+    
+
+    if (saveAnimalData) {
+        dispatch(saveData({
+            kingdom: kingdom
+        }))
     }
 
     return (

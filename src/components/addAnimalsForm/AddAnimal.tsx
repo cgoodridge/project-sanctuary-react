@@ -29,6 +29,11 @@ const AddAnimal = () => {
 
     const [openDialog, setOpenDialog] = useState(false);
 
+    const [saveAnimalData, setSaveAnimalData] = useState(false);
+    const [saveImageData, setSaveImageData] = useState(false);
+    const [saveLocationData, setSaveLocationData] = useState(false);
+    const [saveAllData, setSaveAllData] = useState(false);
+
     const handleClickOpen = () => {
         setOpenDialog(true);
     };
@@ -62,6 +67,11 @@ const AddAnimal = () => {
     };
 
     const handleNext = () => {
+
+        if (activeStep === 0) {
+            setSaveAnimalData(true);
+        }
+
         const newActiveStep =
             isLastStep() && !allStepsCompleted()
                 ? // It's the last step, but not all steps have been completed,
@@ -118,7 +128,7 @@ const AddAnimal = () => {
                     </DialogContentText>
 
 
-                    {activeStep === 0 ? <AnimalDataForm storeFormData={true}/> : activeStep === 1 ? <ImagesForm /> : activeStep === 2 ? <LocationForm /> : activeStep === 3 ? <ConfirmationForm /> : <AnimalDataForm />}
+                    {activeStep === 0 ? <AnimalDataForm saveAnimalData={saveAnimalData}/> : activeStep === 1 ? <ImagesForm /> : activeStep === 2 ? <LocationForm /> : activeStep === 3 ? <ConfirmationForm /> : <AnimalDataForm />}
 
 
                 </DialogContent>
