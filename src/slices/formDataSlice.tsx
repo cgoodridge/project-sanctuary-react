@@ -4,13 +4,22 @@ import { createSlice } from '@reduxjs/toolkit';
 export const formDataSlice = createSlice({
     name: "formData",
     initialState: {
-        formData: {},
+        formData: {
+            kingdom: "",
+            phylum: "",
+            kingdomClass: "",
+            order:"",
+            family: "",
+            genus:"",
+            species: "",
+            description:"",
+        },
     },
     reducers: {
         saveData: (state: any, action: any) => {
             state.formData = action.payload;
+            console.log("THis is a test of the dispatch")
         },
-        
     }
 });
 

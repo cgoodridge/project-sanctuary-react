@@ -6,6 +6,7 @@ import { saveData } from '../../slices/formDataSlice';
 
 const AnimalDataForm = ({ saveAnimalData }:any) => {
 
+    console.log("Save animal value " + saveAnimalData);
     const dispatch = useDispatch();
 
     const [kingdom, setKingdom] = useState('');
@@ -21,7 +22,14 @@ const AnimalDataForm = ({ saveAnimalData }:any) => {
 
     if (saveAnimalData) {
         dispatch(saveData({
-            kingdom: kingdom
+            kingdom: kingdom,
+            phylum: phylum,
+            kingdomClass: kingdomClass,
+            order: order,
+            family: family,
+            genus: genus,
+            species: species,
+            description: description
         }))
     }
 
@@ -114,7 +122,7 @@ const AnimalDataForm = ({ saveAnimalData }:any) => {
                     id="species"
                     label="Species"
                     value={species}
-                    onChange={e => setGenus(e.target.value)}
+                    onChange={e => setSpecies(e.target.value)}
                     type="text"
                     fullWidth
                     variant="standard"
@@ -124,6 +132,8 @@ const AnimalDataForm = ({ saveAnimalData }:any) => {
                     margin="dense"
                     id="commonName"
                     label="Common Name"
+                    value={commonName}
+                    onChange={e => setCommonName(e.target.value)}
                     type="text"
                     fullWidth
                     variant="standard"
@@ -138,6 +148,8 @@ const AnimalDataForm = ({ saveAnimalData }:any) => {
                     margin="dense"
                     id="description"
                     label="Description"
+                    value={description}
+                    onChange={e => setDescription(e.target.value)}
                     type="text"
                     fullWidth
                     multiline
