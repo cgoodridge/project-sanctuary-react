@@ -67,19 +67,51 @@ const AddAnimal = () => {
     };
 
     /// Code for uploading gallery images
+    const Input = styled('input')({
+        display: 'none',
+    });
 
-    const [selectedFile, setSelectedFile] = useState();
+    const [selectedFiles, setSelectedFiles] = useState([]);
     const [isFilePicked, setIsFilePicked] = useState(false);
 
     const handleFileUpload = (e: any) => {
-        setSelectedFile(e.target.files[0]);
-        console.log("Upload button clicked");
-        // if (e.target.files[0] !== null) {
-        //   console.log('We have a file');
-        // } else {
-        //   console.log('We do not have a file');
-        // }
+        setSelectedFiles(e.target.files);
+
+        if (e.target.files.length > 0) {
+            console.log('We have files' + e.target.files);
+        } else {
+            console.log('We do not have a file');
+        }
     };
+
+    // const doUpload = () => {
+    //     setLoading(true);
+    //     storage
+    //         .ref(`users/${user.uid}/${selectedFile?.name}`)
+    //         .put(selectedFile)
+    //         .then(() => {
+    //             storage
+    //                 .ref(`users/${user.uid}/${selectedFile?.name}`)
+    //                 .getDownloadURL()
+    //                 .then((url) => {
+    //                     auth.currentUser.updateProfile({
+    //                         photoURL: url
+    //                     })
+    //                         .then(() => {
+    //                             dispatch(
+    //                                 updateProfile({
+    //                                     photoURL: auth.currentUser.photoURL
+    //                                 }));
+    //                         })
+
+    //                 })
+    //             setLoading(false);
+
+    //         })
+    //         .catch(error => alert(error.message))
+    //     handleClose();
+
+    // };
 
     /// End of code for uploading gallery images
 
@@ -135,10 +167,6 @@ const AddAnimal = () => {
         setActiveStep(newActiveStep);
     };
 
-    const Input = styled('input')({
-        display: 'none',
-    });
-
     const handleFormComponentSubmission = (step: number) => {
 
     };
@@ -167,10 +195,6 @@ const AddAnimal = () => {
 
     return (
         <>
-
-
-
-
             <Dialog open={openDialog} onClose={handleClose} >
 
                 <DialogTitle>Add To the Sanctuary</DialogTitle>
@@ -190,6 +214,7 @@ const AddAnimal = () => {
                     </DialogContentText>
 
                     {/* We'll move all the form components here for now but we're gonna have to figure out how to refactor the components to make the code a bit cleaner */}
+
                     {activeStep === 0 ? <form id="animalInfoForm">
                         <Box sx={{
                             '& > :not(style)': { m: 1, width: '28ch' },
@@ -323,30 +348,59 @@ const AddAnimal = () => {
 
                     </form> : activeStep === 1 ?
 
-                        <label htmlFor="icon-button-file">
+                        <>
+                            {console.log(selectedFiles.length)}
 
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexWrap: 'wrap',
-                                    '& > :not(style)': {
-                                        m: 1,
-                                        width: 128,
-                                        height: 128,
-                                    },
-                                    padding: '16px'
-                                }}
-                            >
-                                <Input multiple accept="image/*" id="icon-button-file" type="file" onChange={handleFileUpload} />
-                                <Paper sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', }} onClick={handleFileUpload} elevation={2}>
-                                    <AddIcon sx={{ fontSize: 70 }} />
-                                </Paper>
+                            {selectedFiles.length > 0 ? selectedFiles.map((file, key) => (
+                                <label htmlFor="icon-button-file">
 
-                            </Box>
-                        </label>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexWrap: 'wrap',
+                                            '& > :not(style)': {
+                                                m: 1,
+                                                width: 128,
+                                                height: 128,
+                                            },
+                                            padding: '16px'
+                                        }}
+                                    >
+                                        <Input multiple accept="image/*" id="icon-button-file" type="file" onChange={handleFileUpload} />
+                                        <Paper sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', }} onClick={handleFileUpload} elevation={2}>
+                                            <AddIcon sx={{ fontSize: 70 }} />
+                                        </Paper>
+
+                                    </Box>
+                                </label>
+
+                            ))
+                                :
+                                <label htmlFor="icon-button-file">
+
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexWrap: 'wrap',
+                                            '& > :not(style)': {
+                                                m: 1,
+                                                width: 128,
+                                                height: 128,
+                                            },
+                                            padding: '16px'
+                                        }}
+                                    >
+                                        <Input multiple accept="image/*" id="icon-button-file" type="file" onChange={handleFileUpload} />
+                                        <Paper sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', }} onClick={handleFileUpload} elevation={2}>
+                                            <AddIcon sx={{ fontSize: 70 }} />
+                                        </Paper>
+
+                                    </Box>
+                                </label>
+                            }
+                        </>
 
                         : activeStep === 2 ? <LocationForm /> : activeStep === 3 ? <ConfirmationForm /> : <AnimalDataForm />}
-
 
                 </DialogContent>
                 <DialogActions>
