@@ -14,23 +14,19 @@ type Props = {
 };
 
 const MapComponent: React.FC<Props> = ({ locations, zoomLevel, detail, locationDetail }: Props) => {
-    console.log(" Location detail is " + locationDetail);
-
 
     const mapkey: string = process.env.REACT_APP_API_KEY || '';
 
     const [locationValue, setLocationValue] = useState({ address: "", lat: 0, lng: 0 });
     const [locationArrayValue, setLocationArrayValues] = useState<any[]>([]);
-    console.log(" Locations are " + locations);
-
-
+    // console.log(" Locations are " + locations?[0]:);
 
     console.log("detail value is " + detail);
 
     let location = {};
 
     if (!detail) {
-        // setLocationValue({ address: " ", lat: locationDetail.latitude, lng: locationDetail.longitude });
+        setLocationValue({ address: locationDetail?.commonName || "", lat: locationDetail?.latitude || 0, lng: locationDetail?.longitude || 0 });
     } else {
         // setLocationArrayValues(locations);
     }
