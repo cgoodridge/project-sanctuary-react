@@ -13,30 +13,11 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
+import { red } from '@mui/material/colors';
+import Avatar from '@mui/material/Avatar';
+import { Link } from 'react-router-dom';
+import Animal from '../../interfaces/animal';
 
-interface Animal {
-  class?: string,
-  commonName?: string,
-  dateAdded?: number,
-  description?: string,
-  diet?: string,
-  family?: string,
-  genus?: string,
-  imgURL?: string,
-  kingdom?: string,
-  latitude?: string,
-  longtitude?: string,
-  lifespan?: string,
-  lifestyle?: string,
-  location?: string,
-  nameOfYoung?: string,
-  order?: string,
-  phylum?: string,
-  redListStatus?: string,
-  scientificName?: string,
-  source?: string
-
-}
 
 const AnimalDetail = ({ data }: any) => {
 
@@ -87,6 +68,7 @@ const AnimalDetail = ({ data }: any) => {
             >
               <ArrowBackIcon sx={{ color: 'whitesmoke' }} />
             </IconButton>
+
             <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'whitesmoke' }}>
               {animalInfo.scientificName}
             </Typography>
@@ -99,124 +81,160 @@ const AnimalDetail = ({ data }: any) => {
         <Box sx={{ height: '100vh', marginTop: "32px" }}>
 
           <Grid container>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <img className='animalImage' src={animalInfo !== "" ? animalInfo.imgURL : ""} alt={animalInfo !== "" ? animalInfo.commonName : ""} height="400" />
             </Grid>
-            <Grid item xs={6}>
-              <Typography variant="h4" gutterBottom component="div">
+            <Grid item xs={8}>
+              <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
                 {animalInfo.scientificName} - {animalInfo.commonName}
               </Typography>
+              <Grid container justifyContent="center">
+                <Grid item>
+                  <Typography variant="h5" gutterBottom sx={{ textAlign: 'center' }}>
+                    <a href="https://www.iucnredlist.org/">IUCN Red List Status</a>  - {animalInfo.redlistStatus}
+                  </Typography>
+                </Grid>
+                <Grid item sx={{ marginLeft: '8px' }}>
+                  <Avatar sx={{ bgcolor: red[500] }}>LC</Avatar>
+                </Grid>
+
+                <Grid container justifyContent="center">
+                  <Grid item xs={6}>
+                    <Grid container justifyContent="center">
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          Kingdom -
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          {" " + " " + animalInfo.kingdom}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+
+                    <Grid container justifyContent="center">
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          Phylum -
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          {" " + " " + animalInfo.phylum}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid container justifyContent="center">
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          Class -
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          {" " + " " + animalInfo.class}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+
+                    <Grid container justifyContent="center">
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          Order -
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          {" " + " " + animalInfo.order}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+
+                    <Grid container justifyContent="center">
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          Family -
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          {" " + " " + animalInfo.family}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+
+                    <Grid container justifyContent="center">
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          Genus -
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          {" " + " " + animalInfo.genus}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+
+                    <Grid container justifyContent="center">
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          Scientific Name -
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" gutterBottom>
+                          {" " + " " + animalInfo.scientificName}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid container justifyContent="center" sx={{ marginTop: "16px" }}>
+                      <Grid item xs={3}>
+                        <Typography variant="h6" gutterBottom>
+                          Young
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          {animalInfo.nameOfYoung}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Typography variant="h6" gutterBottom>
+                          Lifespan
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          {animalInfo.lifespan}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Typography variant="h6" gutterBottom>
+                          Lifestyle
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          {animalInfo.lifestyle}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+
+
+                </Grid>
+
+              </Grid>
+
             </Grid>
           </Grid>
+
           <Box sx={{ marginTop: "16px" }}>
             <Typography variant="body1" gutterBottom>
               {animalInfo.description}
             </Typography>
           </Box>
           <Divider />
-          <Box sx={{ marginTop: "32px" }}>
-            <Typography variant="h5" gutterBottom component="div" sx={{ paddingTop: "32px" }}>
-              Details
-            </Typography>
+          <Box sx={{ marginTop: "32px", paddingBottom: "32px" }}>
 
-            <Grid container>
-              <Grid item xs={6}>
-                <Grid container>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      Kingdom -
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      {" " + " " + animalInfo.kingdom}
-                    </Typography>
-                  </Grid>
-                </Grid>
-
-                <Grid container>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      Phylum -
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      {" " + " " + animalInfo.phylum}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Grid container>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      Class -
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      {" " + " " + animalInfo.class}
-                    </Typography>
-                  </Grid>
-                </Grid>
-
-                <Grid container>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      Order -
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      {" " + " " + animalInfo.order}
-                    </Typography>
-                  </Grid>
-                </Grid>
-
-                <Grid container>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      Family -
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      {" " + " " + animalInfo.family}
-                    </Typography>
-                  </Grid>
-                </Grid>
-
-                <Grid container>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      Genus -
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      {" " + " " + animalInfo.genus}
-                    </Typography>
-                  </Grid>
-                </Grid>
-
-                <Grid container>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      Scientific Name -
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom>
-                      {" " + " " + animalInfo.scientificName}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <Grid item xs={6}>
-                <MapComponent locationDetail={animalInfo} zoomLevel={12} detail={true} />
-              </Grid>
-            </Grid>
-
+            <MapComponent locationDetail={animalInfo} zoomLevel={12} detail={true} />
 
           </Box>
         </Box>
