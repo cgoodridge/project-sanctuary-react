@@ -35,6 +35,8 @@ import AnimalListComponent from '../../components/animalListComponent/AnimalList
 import MapComponent from '../../components/mapComponent/MapComponent';
 import AnimalCountComponent from '../../components/dashboardDataComponents/animalCountComponent/AnimalCountComponent';
 import DashboardContainerComponent from '../../components/dashboardDataComponents/dashboardContainerComponent/DashboardContainerComponent';
+import Animal from '../../interfaces/animal';
+
 
 const drawerWidth = 240;
 
@@ -143,15 +145,33 @@ const Dashboard = ({ }) => {
   const [open, setOpen] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
 
-  const [locations, setLocations] = useState<any[]>([]);
+  const [locations, setLocations] = useState<Animal[]>([]);
 
   useEffect(() => {
     database
       .collection('animals')
       .onSnapshot(snapshot => (
         setLocations(snapshot.docs.map(doc => ({
-          id: doc.id,
-          data: doc.data()
+          class: doc.data().kingdomClass,
+          commonName: doc.data().commonName,
+          dateAdded: doc.data().dateAdded,
+          description: doc.data().description,
+          diet: doc.data().diet,
+          family: doc.data().family,
+          genus: doc.data().genus,
+          imgURL: doc.data().imgURL,
+          kingdom: doc.data().kingdom,
+          latitude: doc.data().latitude,
+          longitude: doc.data().longitude,
+          lifespan: doc.data().lifespan,
+          lifestyle: doc.data().lifestyle,
+          location: doc.data().location,
+          nameOfYoung: doc.data().nameOfYoung,
+          order: doc.data().order,
+          phylum: doc.data().phylum,
+          redlistStatus: doc.data().redListStatus,
+          scientificName: doc.data().scientificName,
+          source: doc.data().source,
         })))
       ))
     return () => { // ComponentWillUnmount 
@@ -207,11 +227,11 @@ const Dashboard = ({ }) => {
           </DrawerHeader>
           <Divider />
           <List component={Tabs} value={value} onChange={handleChange} orientation="vertical">
-            <ListItem button component={Tab} icon={<DashboardIcon />} label={open ? "Dashboard" : ""} iconPosition="start"></ListItem>
-            <ListItem button component={Tab} icon={<PetsIcon />} label={open ? "Animals" : ""} iconPosition="start"></ListItem>
-            <ListItem button component={Tab} icon={<MapIcon />} label={open ? "Locations" : ""} iconPosition="start"></ListItem>
-            <ListItem button component={Tab} icon={<PeopleIcon />} label={open ? "Users" : ""} iconPosition="start"></ListItem>
-            <ListItem button component={Tab} icon={<SettingsIcon />} label={open ? "Settings" : ""} iconPosition="start"></ListItem>
+            <ListItem component={Tab} icon={<DashboardIcon />} label={open ? "Dashboard" : ""} iconPosition="start"></ListItem>
+            <ListItem component={Tab} icon={<PetsIcon />} label={open ? "Animals" : ""} iconPosition="start"></ListItem>
+            <ListItem component={Tab} icon={<MapIcon />} label={open ? "Locations" : ""} iconPosition="start"></ListItem>
+            <ListItem component={Tab} icon={<PeopleIcon />} label={open ? "Users" : ""} iconPosition="start"></ListItem>
+            <ListItem component={Tab} icon={<SettingsIcon />} label={open ? "Settings" : ""} iconPosition="start"></ListItem>
           </List>
           <Divider />
           <List>
@@ -232,7 +252,7 @@ const Dashboard = ({ }) => {
             <AnimalListComponent />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            <MapComponent locations={locations} zoomLevel={17} detail={false}/>
+            <MapComponent locations={locations} zoomLevel={17} detail={false} />
           </TabPanel>
           <TabPanel value={value} index={3}>
             <UserListComponent />
