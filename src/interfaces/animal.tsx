@@ -1,5 +1,5 @@
 export default interface Animal {
-  class?: string,
+  kingdomClass?: string,
   commonName?: string,
   dateAdded?: number,
   description?: string,

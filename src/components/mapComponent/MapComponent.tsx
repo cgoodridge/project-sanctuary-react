@@ -6,17 +6,11 @@ import { database } from '../../firebase/auth';
 import Container from '@mui/material/Container';
 import Animal from '../../interfaces/animal';
 
-type Props = {
-    locations?: [];
-    zoomLevel: number;
-};
-
 const MapComponent = ({ locations, zoomLevel }: any) => {
 
     const mapkey: string = process.env.REACT_APP_API_KEY || '';
 
     let location = {
-        address: "test",
         lat: 21,
         lng: 7
     };
@@ -33,15 +27,12 @@ const MapComponent = ({ locations, zoomLevel }: any) => {
                     defaultZoom={zoomLevel}
                 >
                     {locations?.map((location: any, key: any) => (
-                        <>
-                            <LocationPin
-                                key={key}
-                                lat={location.data.latitude}
-                                lng={location.data.longitude}
-                                text={location.data.commonName}
-                            />
-                        </>
-
+                        <LocationPin
+                            key={key}
+                            lat={location.latitude}
+                            lng={location.longitude}
+                            text={location.commonName}
+                        />
                     ))
 
                     }

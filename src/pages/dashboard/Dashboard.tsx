@@ -35,6 +35,9 @@ import DashboardContainerComponent from '../../components/dashboardDataComponent
 import Animal from '../../interfaces/animal';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../slices/userSlice';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import Paper from '@mui/material/Paper';
 
 
 const drawerWidth = 240;
@@ -127,7 +130,7 @@ const TabPanel = (props: TabPanelProps) => {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 4 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -145,6 +148,8 @@ const Dashboard = ({ }) => {
   const [openDialog, setOpenDialog] = React.useState(false);
   const dispatch = useDispatch();
   const [locations, setLocations] = useState<Animal[]>([]);
+
+  const [bottomNavValue, setBottomNavValue] = React.useState(0);
 
   useEffect(() => {
 
@@ -194,7 +199,6 @@ const Dashboard = ({ }) => {
     setValue(newValue);
   };
 
-
   const logoutAndClear = () => {
     dispatch(logout());
 
@@ -203,7 +207,7 @@ const Dashboard = ({ }) => {
 
   return (
     <>
-      <Container sx={{ display: 'flex' }}>
+      <Container sx={{ display: { xs: 'none', sm: 'none', md: 'flex', lg: 'flex', xl: 'flex' } }}>
         <CssBaseline />
         <AppBar open={open}>
           <Toolbar>
@@ -233,10 +237,10 @@ const Dashboard = ({ }) => {
           <Divider />
           <List component={Tabs} value={value} onChange={handleChange} orientation="vertical">
             <ListItem component={Tab} icon={<DashboardIcon />} label={open ? "Dashboard" : ""} iconPosition="start" />
-            <ListItem component={Tab} icon={<PetsIcon />} label={open ? "Animals" : ""} iconPosition="start"/>
-            <ListItem component={Tab} icon={<MapIcon />} label={open ? "Locations" : ""} iconPosition="start"/>
-            <ListItem component={Tab} icon={<PeopleIcon />} label={open ? "Users" : ""} iconPosition="start"/>
-            <ListItem component={Tab} icon={<SettingsIcon />} label={open ? "Settings" : ""} iconPosition="start"/>
+            <ListItem component={Tab} icon={<PetsIcon />} label={open ? "Animals" : ""} iconPosition="start" />
+            <ListItem component={Tab} icon={<MapIcon />} label={open ? "Locations" : ""} iconPosition="start" />
+            <ListItem component={Tab} icon={<PeopleIcon />} label={open ? "Users" : ""} iconPosition="start" />
+            <ListItem component={Tab} icon={<SettingsIcon />} label={open ? "Settings" : ""} iconPosition="start" />
           </List>
           <Divider />
           <List>
@@ -257,7 +261,7 @@ const Dashboard = ({ }) => {
             <AnimalListComponent />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            <MapComponent locations={locations} zoomLevel={17} />
+            <MapComponent locations={locations} zoomLevel={1} />
           </TabPanel>
           <TabPanel value={value} index={3}>
             <UserListComponent />
@@ -265,12 +269,59 @@ const Dashboard = ({ }) => {
           <TabPanel value={value} index={4}>
             Settings
           </TabPanel>
-
         </Box>
       </Container>
 
+      {/* Mobile View */}
 
+      <Container sx={{ display: { xs: 'flex', sm: 'flex', md: 'none', lg: 'none', xl: 'none' }, padding: '16px' }}>
+        <CssBaseline />
+        <AppBar sx={{ marginBottom: "64px" }}>
+          <Toolbar>
+            <Typography variant="h6" noWrap component="p">
+              Dashboard
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Box sx={{ flexGrow: 1, width: '100%', height: '80vh' }}>
+          <TabPanel value={value} index={0}>
+            <DashboardContainerComponent />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <AnimalListComponent />
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <MapComponent locations={locations} zoomLevel={1} />
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+            <UserListComponent />
+          </TabPanel>
+          <TabPanel value={value} index={4}>
+            Settings
+          </TabPanel>
+        </Box>
 
+        <Box sx={{ width: '80%', height: '100vh' }}>
+          <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+            <BottomNavigation
+              showLabels
+              value={value}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+            >
+
+              <BottomNavigationAction label="Dashboard" icon={<DashboardIcon />} />
+              <BottomNavigationAction label="Animals" icon={<PetsIcon />} />
+              <BottomNavigationAction label="Locations" icon={<MapIcon />} />
+              <BottomNavigationAction label="Users" icon={<PeopleIcon />} />
+              <BottomNavigationAction label="Settings" icon={<SettingsIcon />} />
+
+            </BottomNavigation>
+          </Paper>
+        </Box>
+
+      </Container>
     </>
   )
 }

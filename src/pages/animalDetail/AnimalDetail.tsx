@@ -133,7 +133,7 @@ const AnimalDetail = ({ data }: any) => {
                       </Grid>
                       <Grid item>
                         <Typography variant="body1" gutterBottom>
-                          {" " + " " + animalInfo.class}
+                          {" " + " " + animalInfo.kingdomClass}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -234,7 +234,7 @@ const AnimalDetail = ({ data }: any) => {
           <Divider />
           <Box sx={{ marginTop: "32px", paddingBottom: "32px" }}>
 
-            <DetailMapComponent locationDetail={animalInfo} zoomLevel={12} />
+            <DetailMapComponent locationDetail={animalInfo} zoomLevel={1} />
 
           </Box>
         </Box>

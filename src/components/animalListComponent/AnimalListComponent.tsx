@@ -41,11 +41,10 @@ const AnimalListComponent = () => {
 
     return (
         <>
-            <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 3, sm: 8, md: 12 }}>
-
+            <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 2, sm: 8, md: 12 }} sx={{ marginTop:"64px", marginBottom:"32px" }}>
                 {animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.map((animal, key) => (
                     <Grid item xs={2} sm={4} md={4} key={key}>
-                        <Card sx={{ maxWidth: 345 }}>
+                        <Card sx={{ maxWidth: 300, minWidth: 300 }}>
                             <CardMedia
                                 component="img"
                                 height="300"
