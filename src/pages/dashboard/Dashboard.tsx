@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Container from '@mui/material/Container';
-import { database } from '../../firebase/auth';
-import { logout } from '../../firebase/auth';
+import { database, firebaseLogout } from '../../firebase/auth';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
@@ -36,6 +33,8 @@ import MapComponent from '../../components/mapComponent/MapComponent';
 import AnimalCountComponent from '../../components/dashboardDataComponents/animalCountComponent/AnimalCountComponent';
 import DashboardContainerComponent from '../../components/dashboardDataComponents/dashboardContainerComponent/DashboardContainerComponent';
 import Animal from '../../interfaces/animal';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../slices/userSlice';
 
 
 const drawerWidth = 240;
@@ -144,10 +143,11 @@ const Dashboard = ({ }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
-
+  const dispatch = useDispatch();
   const [locations, setLocations] = useState<Animal[]>([]);
 
   useEffect(() => {
+
     database
       .collection('animals')
       .onSnapshot(snapshot => (
@@ -195,6 +195,11 @@ const Dashboard = ({ }) => {
   };
 
 
+  const logoutAndClear = () => {
+    dispatch(logout());
+
+    // logout();
+  };
 
   return (
     <>
@@ -227,15 +232,15 @@ const Dashboard = ({ }) => {
           </DrawerHeader>
           <Divider />
           <List component={Tabs} value={value} onChange={handleChange} orientation="vertical">
-            <ListItem component={Tab} icon={<DashboardIcon />} label={open ? "Dashboard" : ""} iconPosition="start"></ListItem>
-            <ListItem component={Tab} icon={<PetsIcon />} label={open ? "Animals" : ""} iconPosition="start"></ListItem>
-            <ListItem component={Tab} icon={<MapIcon />} label={open ? "Locations" : ""} iconPosition="start"></ListItem>
-            <ListItem component={Tab} icon={<PeopleIcon />} label={open ? "Users" : ""} iconPosition="start"></ListItem>
-            <ListItem component={Tab} icon={<SettingsIcon />} label={open ? "Settings" : ""} iconPosition="start"></ListItem>
+            <ListItem component={Tab} icon={<DashboardIcon />} label={open ? "Dashboard" : ""} iconPosition="start" />
+            <ListItem component={Tab} icon={<PetsIcon />} label={open ? "Animals" : ""} iconPosition="start"/>
+            <ListItem component={Tab} icon={<MapIcon />} label={open ? "Locations" : ""} iconPosition="start"/>
+            <ListItem component={Tab} icon={<PeopleIcon />} label={open ? "Users" : ""} iconPosition="start"/>
+            <ListItem component={Tab} icon={<SettingsIcon />} label={open ? "Settings" : ""} iconPosition="start"/>
           </List>
           <Divider />
           <List>
-            <ListItem button onClick={logout}>
+            <ListItem button onClick={logoutAndClear}>
               <ListItemIcon>
                 <LogoutIcon />
               </ListItemIcon>
@@ -252,7 +257,7 @@ const Dashboard = ({ }) => {
             <AnimalListComponent />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            <MapComponent locations={locations} zoomLevel={17} detail={false} />
+            <MapComponent locations={locations} zoomLevel={17} />
           </TabPanel>
           <TabPanel value={value} index={3}>
             <UserListComponent />

@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { Divider } from '@mui/material';
-import MapComponent from '../../components/mapComponent/MapComponent';
+import DetailMapComponent from '../../components/detailMapComponent/DetailMapComponent';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -234,7 +234,7 @@ const AnimalDetail = ({ data }: any) => {
           <Divider />
           <Box sx={{ marginTop: "32px", paddingBottom: "32px" }}>
 
-            <MapComponent locationDetail={animalInfo} zoomLevel={12} detail={true} />
+            <DetailMapComponent locationDetail={animalInfo} zoomLevel={12} />
 
           </Box>
         </Box>

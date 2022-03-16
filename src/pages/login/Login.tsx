@@ -54,17 +54,10 @@ const Login = (props: any) => {
                 }))
             })
             .then(() => {
+                navigate('/');
                 setLoading(false);
             })
             .catch(error => alert(error.message));
-
-        if (!props.location.state) {
-            navigate('/');
-        }
-        else {
-            navigate(props.location.state?.prevPath);
-        }
-
     }
 
     const [values, setValues] = useState<State>({

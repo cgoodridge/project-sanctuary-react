@@ -5,6 +5,7 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const UserCountComponent = () => {
 
@@ -32,7 +33,7 @@ const UserCountComponent = () => {
                     Active Users
                 </Typography>
                 <Typography sx={{ fontSize: 42, fontWeight: 'bold', textAlign: 'center' }} color="text.secondary" gutterBottom>
-                    {count}
+                    {count <= 0 ? <CircularProgress /> : count}
                 </Typography>
             </CardContent>
         </Card >

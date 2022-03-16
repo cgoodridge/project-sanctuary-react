@@ -12,6 +12,7 @@ import firebase from 'firebase/compat/app';
 import ProtectedRoute from './router/ProtectedRoute';
 import RedirectRoute from './router/RedirectRoute';
 import AnimalDetail from './pages/animalDetail/AnimalDetail';
+import NotFoundPage from './pages/notFoundPage/NotFound';
 
 const App = () => {
 
@@ -77,6 +78,7 @@ const App = () => {
                 <AnimalDetail />
               </ProtectedRoute>
             } />
+            <Route path="*" element={ <NotFoundPage /> } />
           </Routes>
         </div>
       </Router>

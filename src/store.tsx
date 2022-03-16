@@ -6,6 +6,7 @@ import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
 import { persistReducer } from 'redux-persist';
 import { RootStateOrAny } from 'react-redux';
+import thunk from 'redux-thunk';
 
 
 const rootReducer = combineReducers({
@@ -26,4 +27,5 @@ const persistedReducer = persistReducer<RootStateOrAny>(persistConfig, rootReduc
 export const store = configureStore(
     {
         reducer: persistedReducer,
+        middleware: [thunk],
     });

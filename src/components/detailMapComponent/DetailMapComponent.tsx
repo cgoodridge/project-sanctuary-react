@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './mapComponent.css';
-import LocationPin from './LocationPin';
+// import './mapComponent/mapComponent.css';
+import LocationPin from '../mapComponent/LocationPin';
 import GoogleMapReact from 'google-map-react';
 import { database } from '../../firebase/auth';
 import Container from '@mui/material/Container';
 import Animal from '../../interfaces/animal';
 
 type Props = {
-    locations?: [];
     zoomLevel: number;
+    locationDetail?: Animal;
 };
 
-const MapComponent = ({ locations, zoomLevel }: any) => {
+const DetailMapComponent: React.FC<Props> = ({ zoomLevel, locationDetail }: Props) => {
 
     const mapkey: string = process.env.REACT_APP_API_KEY || '';
 
@@ -23,6 +23,7 @@ const MapComponent = ({ locations, zoomLevel }: any) => {
 
     return (
 
+
         <div className="map">
             <h2 className="map-h2">Animal Locations</h2>
 
@@ -32,26 +33,19 @@ const MapComponent = ({ locations, zoomLevel }: any) => {
                     defaultCenter={location}
                     defaultZoom={zoomLevel}
                 >
-                    {locations?.map((location: any, key: any) => (
-                        <>
-                            <LocationPin
-                                key={key}
-                                lat={location.data.latitude}
-                                lng={location.data.longitude}
-                                text={location.data.commonName}
-                            />
-                        </>
-
-                    ))
-
-                    }
-
+                    <LocationPin
+                        lat={locationDetail?.latitude}
+                        lng={locationDetail?.longitude}
+                        text={locationDetail?.commonName}
+                    />
                 </GoogleMapReact>
 
             </div>
         </div>
 
+
+
     )
 }
 
-export default MapComponent;
+export default DetailMapComponent;

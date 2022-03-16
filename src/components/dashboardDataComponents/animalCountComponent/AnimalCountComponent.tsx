@@ -4,6 +4,7 @@ import './animalCountComponent.css';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const AnimalCountComponent = () => {
 
@@ -31,7 +32,7 @@ const AnimalCountComponent = () => {
                     Active Animals
                 </Typography>
                 <Typography sx={{ fontSize: 42, fontWeight: 'bold', textAlign: 'center' }} color="text.secondary" gutterBottom component="p">
-                    {count}
+                    {count <=0 ? <CircularProgress/> : count}
                 </Typography>
             </CardContent>
         </Card >
