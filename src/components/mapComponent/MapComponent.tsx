@@ -12,6 +12,7 @@ import { styled } from '@mui/material/styles';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 
+
 export interface SimpleDialogProps {
     open: boolean;
     selectedValue: string;
@@ -23,8 +24,8 @@ const SimpleDialog = (props: SimpleDialogProps) => {
 
     const handleClose = () => {
         onClose(selectedValue);
-      };
-        
+    };
+
     const handleListItemClick = (value: string) => {
         onClose(value);
     };
@@ -43,8 +44,8 @@ const MapComponent = ({ locations, zoomLevel }: any) => {
     const mapkey: string = process.env.REACT_APP_API_KEY || '';
 
     const [open, setOpen] = React.useState(false);
-    
-    
+
+
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -73,7 +74,12 @@ const MapComponent = ({ locations, zoomLevel }: any) => {
         handleClickOpen();
     }
 
+    const [clicks, setClicks] = useState<google.maps.LatLng[]>([]);
 
+    const onClick = (e: google.maps.MapMouseEvent) => {
+        // avoid directly mutating state
+        setClicks([...clicks, e.latLng!]);
+    };
 
     return (
 

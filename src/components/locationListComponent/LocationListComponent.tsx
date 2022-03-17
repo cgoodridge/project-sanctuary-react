@@ -21,8 +21,6 @@ const LocationListComponent = () => {
     const _isMounted = useRef(true);
     const [locations, setLocations] = useState<any[]>([]);
 
-    console.log(locations);
-
     useEffect(() => {
 
         database
@@ -47,7 +45,6 @@ const LocationListComponent = () => {
             <Typography variant='h6'>
                 Locations
             </Typography>
-            {console.log(locations)}
 
             {locations.map((location, key) => (
 
@@ -71,7 +68,7 @@ const LocationListComponent = () => {
                                         <ListItemAvatar>
                                             <Avatar alt={animal.name} src={animal.imgURL} />
                                         </ListItemAvatar>
-                                        <ListItemText primary={animal.name} secondary={animal.scientificName}/>
+                                        <ListItemText primary={animal.name} secondary={animal.scientificName} />
                                     </ListItem>
                                     <Divider />
                                 </>

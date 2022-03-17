@@ -24,7 +24,10 @@ import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import './addAnimal.css';
-
+import Grid from '@mui/material/Grid';
+import { ChangeEvent } from 'react';
+import MapComponent from '../mapComponent/MapComponent';
+import MapFormComponent from '../mapFormComponent/MapFormComponent';
 
 
 
@@ -71,12 +74,18 @@ const AddAnimal = () => {
         display: 'none',
     });
 
-    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    console.log(selectedFiles);
     const [isFilePicked, setIsFilePicked] = useState(false);
 
     const handleFileUpload = (e: any) => {
-        setSelectedFiles(e.target.files);
+        /* List of files is "array-like" not an actual array
+        * So we have to convert to file to an array an add it the array 
+        * by destructuring it
+        */
+        setSelectedFiles(selectedFiles => [...selectedFiles, ...e.target.files]);
 
+        // For testing, delete later
         if (e.target.files.length > 0) {
             console.log('We have files' + e.target.files);
         } else {
@@ -348,59 +357,60 @@ const AddAnimal = () => {
 
                     </form> : activeStep === 1 ?
 
-                        <>
-                            {console.log(selectedFiles.length)}
+                        <Box sx={{ width: "100%", overflowX: "scroll" }}>
+                            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                                {selectedFiles.length <= 0 ? <Box></Box>
 
-                            {selectedFiles.length > 0 ? selectedFiles.map((file, key) => (
-                                <label htmlFor="icon-button-file">
+                                    :
 
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexWrap: 'wrap',
-                                            '& > :not(style)': {
-                                                m: 1,
-                                                width: 128,
-                                                height: 128,
-                                            },
-                                            padding: '16px'
-                                        }}
-                                    >
-                                        <Input multiple accept="image/*" id="icon-button-file" type="file" onChange={handleFileUpload} />
-                                        <Paper sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', }} onClick={handleFileUpload} elevation={2}>
-                                            <AddIcon sx={{ fontSize: 70 }} />
-                                        </Paper>
+                                    selectedFiles.map((file, key) => (
+                                        <Grid item xs={4} key={key}>
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    flexWrap: 'wrap',
+                                                    '& > :not(style)': {
+                                                        m: 1,
+                                                        width: 128,
+                                                        height: 128,
+                                                    },
+                                                    padding: '16px'
+                                                }}
+                                            >
+                                                <Paper className="imgTile" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', }} elevation={2}>
+                                                    <img src={URL.createObjectURL(file)} ></img>
+                                                </Paper>
+                                            </Box>
+                                        </Grid>
+                                    ))
 
-                                    </Box>
-                                </label>
+                                }
 
-                            ))
-                                :
-                                <label htmlFor="icon-button-file">
+                                <Grid item xs={4}>
+                                    <label htmlFor="icon-button-file">
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                flexWrap: 'wrap',
+                                                '& > :not(style)': {
+                                                    m: 1,
+                                                    width: 128,
+                                                    height: 128,
+                                                },
+                                                padding: '16px'
+                                            }}
+                                        >
+                                            <Input multiple accept="image/*" id="icon-button-file" type="file" onChange={handleFileUpload} />
+                                            <Paper sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', }} elevation={2}>
+                                                <AddIcon sx={{ fontSize: 70 }} />
+                                            </Paper>
+                                        </Box>
+                                    </label>
+                                </Grid>
+                            </Grid>
+                        </Box>
 
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexWrap: 'wrap',
-                                            '& > :not(style)': {
-                                                m: 1,
-                                                width: 128,
-                                                height: 128,
-                                            },
-                                            padding: '16px'
-                                        }}
-                                    >
-                                        <Input multiple accept="image/*" id="icon-button-file" type="file" onChange={handleFileUpload} />
-                                        <Paper sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', }} onClick={handleFileUpload} elevation={2}>
-                                            <AddIcon sx={{ fontSize: 70 }} />
-                                        </Paper>
-
-                                    </Box>
-                                </label>
-                            }
-                        </>
-
-                        : activeStep === 2 ? <LocationForm /> : activeStep === 3 ? <ConfirmationForm /> : <AnimalDataForm />}
+                        : activeStep === 2 ? <MapFormComponent /> : activeStep === 3 ? <ConfirmationForm /> : <AnimalDataForm />}
 
                 </DialogContent>
                 <DialogActions>

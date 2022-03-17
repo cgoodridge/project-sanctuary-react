@@ -61,6 +61,7 @@
   },
   "devDependencies": {
     "@types/google-map-react": "^2.1.5",
+    "@types/googlemaps": "^3.43.3",
     "@types/redux-persist": "^4.3.1"
   }
 }
