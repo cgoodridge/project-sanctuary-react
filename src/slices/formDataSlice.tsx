@@ -13,12 +13,13 @@ export const formDataSlice = createSlice({
             genus:"",
             species: "",
             description:"",
+            lat: 0,
+            lng: 0
         },
     },
     reducers: {
         saveData: (state: any, action: any) => {
             state.formData = action.payload;
-            console.log("THis is a test of the dispatch")
         },
     }
 });
