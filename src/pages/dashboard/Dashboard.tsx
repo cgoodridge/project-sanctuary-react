@@ -38,6 +38,7 @@ import { logout } from '../../slices/userSlice';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Paper from '@mui/material/Paper';
+import LocationListComponent from '../../components/locationListComponent/LocationListComponent';
 
 
 const drawerWidth = 240;
@@ -137,8 +138,6 @@ const TabPanel = (props: TabPanelProps) => {
     </div>
   );
 }
-
-
 
 const Dashboard = ({ }) => {
 
@@ -262,6 +261,8 @@ const Dashboard = ({ }) => {
           </TabPanel>
           <TabPanel value={value} index={2}>
             <MapComponent locations={locations} zoomLevel={1} />
+            <LocationListComponent />
+
           </TabPanel>
           <TabPanel value={value} index={3}>
             <UserListComponent />
@@ -292,6 +293,7 @@ const Dashboard = ({ }) => {
           </TabPanel>
           <TabPanel value={value} index={2}>
             <MapComponent locations={locations} zoomLevel={1} />
+            <LocationListComponent />
           </TabPanel>
           <TabPanel value={value} index={3}>
             <UserListComponent />
