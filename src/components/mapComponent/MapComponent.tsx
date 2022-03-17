@@ -33,6 +33,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
         <Dialog onClose={handleClose} open={open}>
             <DialogTitle>Set backup account</DialogTitle>
 
+
         </Dialog>
     );
 }
