@@ -164,7 +164,7 @@ const AddAnimal = () => {
 
         if (activeStep === 0) {
             setSaveAnimalData(true);
-            console.log("This is a test of the active step");
+            
         }
 
         const newActiveStep =
@@ -187,6 +187,18 @@ const AddAnimal = () => {
     const handleStep = (step: number) => () => {
         setActiveStep(step);
     };
+
+    const handleAnimalData = () => {
+
+    };
+
+    const handleImageData = () => {
+        
+    }
+
+    const handleLocationData = () => {
+        
+    }
 
     // const handleComplete = () => {
     //     const newCompleted = completed;

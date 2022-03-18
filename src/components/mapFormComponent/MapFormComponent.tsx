@@ -6,7 +6,7 @@ import { createCustomEqual } from "fast-equals";
 import { isLatLngLiteral } from "@googlemaps/typescript-guards";
 import Button from '@mui/material/Button';
 import { useDispatch } from 'react-redux';
-import { saveData } from '../../slices/formDataSlice';
+import { saveLocation } from '../../slices/formDataSlice';
 
 const render = (status: Status) => {
     return <h1>{status}</h1>;
@@ -31,7 +31,7 @@ const MapFormComponent = () => {
     };
 
     const confirmLocations = () => {
-        dispatch(saveData({
+        dispatch(saveLocation({
             locations: clicks
         }));
     }
