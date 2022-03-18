@@ -5,6 +5,8 @@ import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import { createCustomEqual } from "fast-equals";
 import { isLatLngLiteral } from "@googlemaps/typescript-guards";
 import Button from '@mui/material/Button';
+import { useDispatch } from 'react-redux';
+import { saveData } from '../../slices/formDataSlice';
 
 const render = (status: Status) => {
     return <h1>{status}</h1>;
@@ -12,6 +14,7 @@ const render = (status: Status) => {
 
 const MapFormComponent = () => {
     const mapkey: string = process.env.REACT_APP_API_KEY || '';
+    const dispatch = useDispatch();
 
     const [clicks, setClicks] = useState<google.maps.LatLng[]>([]);
     const [center, setCenter] = useState<google.maps.LatLngLiteral>({
@@ -21,8 +24,20 @@ const MapFormComponent = () => {
 
     const onClick = (e: google.maps.MapMouseEvent) => {
         // avoid directly mutating state
+
         setClicks([...clicks, e.latLng!]);
+        console.log(clicks);
+
     };
+
+    const confirmLocations = () => {
+        dispatch(saveData({
+            locations: clicks
+        }));
+    }
+    const clearLocations = () => {
+        setClicks([]);
+    }
 
     return (
         <div className="map">
@@ -44,8 +59,11 @@ const MapFormComponent = () => {
 
             </div>
 
-            <Button sx={{ marginTop: "8px"}}>
+            <Button sx={{ marginTop: "8px" }} onClick={confirmLocations}>
                 Confirm Locations
+            </Button>
+            <Button sx={{ marginTop: "8px" }} onClick={clearLocations}>
+                Clear Locations
             </Button>
         </div>
     )

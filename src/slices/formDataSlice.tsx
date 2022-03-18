@@ -13,8 +13,7 @@ export const formDataSlice = createSlice({
             genus:"",
             species: "",
             description:"",
-            lat: 0,
-            lng: 0
+            locations: []
         },
     },
     reducers: {
