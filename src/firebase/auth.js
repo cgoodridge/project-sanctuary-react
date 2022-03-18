@@ -26,3 +26,4 @@ export const login = async (email, password) => {
 }
 
 export const database = firebase.firestore();
+export const storage = firebase.storage();

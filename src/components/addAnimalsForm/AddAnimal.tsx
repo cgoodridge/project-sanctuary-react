@@ -21,6 +21,7 @@ import TextField from '@mui/material/TextField';
 import { saveData } from '../../slices/formDataSlice';
 import { useDispatch } from 'react-redux';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import { database, storage } from '../../firebase/auth';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import './addAnimal.css';
@@ -48,6 +49,7 @@ const AddAnimal = () => {
     const [saveImageData, setSaveImageData] = useState(false);
     const [saveLocationData, setSaveLocationData] = useState(false);
     const [saveAllData, setSaveAllData] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     /// Form values
     const [kingdom, setKingdom] = useState('');
@@ -164,7 +166,7 @@ const AddAnimal = () => {
 
         if (activeStep === 0) {
             setSaveAnimalData(true);
-            
+
         }
 
         const newActiveStep =
@@ -188,17 +190,32 @@ const AddAnimal = () => {
         setActiveStep(step);
     };
 
-    const handleAnimalData = () => {
+    const handleUpload = () => {
+        // setLoading(true);
+        //     storage
+        //         .ref(`images/${commonName}/${selectedFiles?.name}`)
+        //         .put(selectedFile)
+        //         .then(() => {
+        //             storage
+        //                 .ref(`users/${user.uid}/${selectedFile?.name}`)
+        //                 .getDownloadURL()
+        //                 .then((url) => {
+        //                     auth.currentUser.updateProfile({
+        //                         photoURL: url
+        //                     })
+        //                         .then(() => {
+        //                             dispatch(
+        //                                 updateProfile({
+        //                                     photoURL: auth.currentUser.photoURL
+        //                                 }));
+        //                         })
 
+        //                 })
+        //             setLoading(false);
+
+        //         })
+        //         .catch(error => alert(error.message))
     };
-
-    const handleImageData = () => {
-        
-    }
-
-    const handleLocationData = () => {
-        
-    }
 
     // const handleComplete = () => {
     //     const newCompleted = completed;
@@ -427,7 +444,9 @@ const AddAnimal = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
-                    <Button type='submit' form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>
+                    {activeStep === 3 ? <Button type='submit' form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Upload</Button>
+                        :
+                        <Button type='submit' form="animalInfoForm" onClick={handleUpload} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>
             </Dialog>
             <Container>
