@@ -1,7 +1,6 @@
 import firebase from '../firebase/firebaseConfig';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import 'firebase/compat/storage';
 import { useDispatch } from 'react-redux';
 import "firebase/firestore";
 
