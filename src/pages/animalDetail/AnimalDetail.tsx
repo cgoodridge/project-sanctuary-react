@@ -55,26 +55,16 @@ const AnimalDetail = ({ data }: any) => {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              onClick={() => navigate(-1)}
-              sx={{ mr: 2 }}
-            >
-              <ArrowBackIcon sx={{ color: 'whitesmoke' }} />
-            </IconButton>
 
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'whitesmoke' }}>
-              {animalInfo.scientificName}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </Box>
+      <IconButton
+        size="large"
+        edge="start"
+        aria-label="Back Button"
+        onClick={() => navigate("/animals")}
+        sx={{ mr: 2 }}
+      >
+        <ArrowBackIcon sx={{ color: 'black', fontSize: "32px" }} />
+      </IconButton>
 
       <Container maxWidth="lg">
 

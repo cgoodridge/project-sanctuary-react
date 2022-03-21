@@ -3,6 +3,7 @@ import { RootStateOrAny } from 'react-redux';
 
 
 export const formDataSlice = createSlice({
+
     name: "formData",
     initialState: {
         formData: {
@@ -18,21 +19,30 @@ export const formDataSlice = createSlice({
             imgURLS: []
         },
     },
+
     reducers: {
+
         saveData: (state: any, action: any) => {
             state.formData = action.payload;
 
         },
+
         saveImageURLS: (state: any, action: any) => {
             state.formData.imgURLS = [...state.formData.imgURLS, action.payload];
         },
-        saveLocation: (state: any, action: any) => {
-            state.formData.locations = [...state.formData.locations, action.payload] ;
 
-            console.log(" This is the current redux state " + state.formData.kingdom);
-            console.log(" This is the new redux state " + state.formData.locations[0]);
+        saveLocation: (state: any, action: any) => {
+            console.log("payload is " + action.payload);
+            const newObject = {...state.formData};
+            newObject.kingdom = "Test";
+            state.formData = newObject;
+            console.log(" This is the new redux state " + newObject.kingdom);
+            state.formData.locations = action.payload;
+
         }
+
     }
+
 });
 
 export const { saveData, saveImageURLS, saveLocation } = formDataSlice.actions;

@@ -160,7 +160,9 @@ const AddAnimal = () => {
             family: family,
             genus: genus,
             species: species,
-            description: description
+            description: description,
+            locations: [],
+            imgURLS: []
         }))
 
 
@@ -191,6 +193,7 @@ const AddAnimal = () => {
     };
 
     const handleUpload = () => {
+        console.log("...uploading data");
         // setLoading(true);
         //     storage
         //         .ref(`images/${commonName}/${selectedFiles?.name}`)
@@ -444,9 +447,9 @@ const AddAnimal = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
-                    {activeStep === 3 ? <Button type='submit' form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Upload</Button>
+                    {activeStep === 3 ? <Button type='submit' form="animalInfoForm" onClick={handleUpload} sx={{ mr: 1 }}>Upload</Button>
                         :
-                        <Button type='submit' form="animalInfoForm" onClick={handleUpload} sx={{ mr: 1 }}>Next</Button>}
+                        <Button type='submit' form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>
             </Dialog>
             <Container>

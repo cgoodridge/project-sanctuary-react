@@ -25,15 +25,15 @@ const MapFormComponent = () => {
     const onClick = (e: google.maps.MapMouseEvent) => {
         // avoid directly mutating state
 
-        setClicks([...clicks, e.latLng!]);
+        setClicks(clicks => [...clicks, e.latLng!]);
+        // setSelectedFiles(selectedFiles => [...selectedFiles, ...e.target.files]);
+
         console.log(clicks);
 
     };
 
     const confirmLocations = () => {
-        dispatch(saveLocation({
-            locations: clicks
-        }));
+        dispatch(saveLocation([clicks]));
     }
     const clearLocations = () => {
         setClicks([]);
