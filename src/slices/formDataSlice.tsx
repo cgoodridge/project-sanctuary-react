@@ -15,9 +15,9 @@ export const formDataSlice = createSlice({
             genus: "",
             species: "",
             description: "",
-            locations: [],
-            imgURLS: []
         },
+        locations: null,
+        imgURLS: []
     },
 
     reducers: {
@@ -28,25 +28,22 @@ export const formDataSlice = createSlice({
         },
 
         saveImageURLS: (state: any, action: any) => {
-            state.formData.imgURLS = [...state.formData.imgURLS, action.payload];
+            state.imgURLS = [...state.imgURLS, action.payload];
         },
 
-        saveLocation: (state: any, action: any) => {
-            console.log("payload is " + action.payload);
-            const newObject = {...state.formData};
-            newObject.kingdom = "Test";
-            state.formData = newObject;
-            console.log(" This is the new redux state " + newObject.kingdom);
-            state.formData.locations = action.payload;
-
+        saveLocations: (state: any, action: any) => {
+            state.locations = [...state.locations, action.payload];
+            // console.log(JSON.stringify(state.locations.toJSON()));
         }
 
     }
 
 });
 
-export const { saveData, saveImageURLS, saveLocation } = formDataSlice.actions;
+export const { saveData, saveImageURLS, saveLocations } = formDataSlice.actions;
 
 export const selectForm = (state: RootStateOrAny) => state.form.formData;
+export const selectLocations = (state: RootStateOrAny) => state.form.locations;
+export const selectImages = (state: RootStateOrAny) => state.form.imageURLS;
 
 export default formDataSlice.reducer;

@@ -2,13 +2,18 @@ import { Box } from '@mui/material';
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { useSelector } from 'react-redux';
-import { selectForm } from '../../slices/formDataSlice';
+import { selectForm, selectImages, selectLocations } from '../../slices/formDataSlice';
+import { storage, database } from '../../firebase/auth';
 
 const ConfirmationForm = () => {
 
+  const [loading, setLoading] = useState(false);
 
   const animal = useSelector(selectForm);
+  const locations = useSelector(selectLocations);
+  const images = useSelector(selectImages);
   console.log(animal);
+  console.log("locations are " + locations);
 
   /// Form values
   const [kingdom, setKingdom] = useState('');
@@ -21,6 +26,9 @@ const ConfirmationForm = () => {
   const [commonName, setCommonName] = useState('');
   const [description, setDescription] = useState('');
   /// End form values
+
+
+  
 
   return (
     <Box>

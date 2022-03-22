@@ -6,7 +6,7 @@ import { createCustomEqual } from "fast-equals";
 import { isLatLngLiteral } from "@googlemaps/typescript-guards";
 import Button from '@mui/material/Button';
 import { useDispatch } from 'react-redux';
-import { saveLocation } from '../../slices/formDataSlice';
+import { saveLocations } from '../../slices/formDataSlice';
 
 const render = (status: Status) => {
     return <h1>{status}</h1>;
@@ -17,6 +17,8 @@ const MapFormComponent = () => {
     const dispatch = useDispatch();
 
     const [clicks, setClicks] = useState<google.maps.LatLng[]>([]);
+    const [jsonClicks, setJsonClicks] = useState<google.maps.LatLng[]>([]);
+
     const [center, setCenter] = useState<google.maps.LatLngLiteral>({
         lat: 0,
         lng: 0,
@@ -24,16 +26,18 @@ const MapFormComponent = () => {
 
     const onClick = (e: google.maps.MapMouseEvent) => {
         // avoid directly mutating state
-
         setClicks(clicks => [...clicks, e.latLng!]);
-        // setSelectedFiles(selectedFiles => [...selectedFiles, ...e.target.files]);
-
-        console.log(clicks);
-
     };
 
     const confirmLocations = () => {
-        dispatch(saveLocation([clicks]));
+        // This allows us to access the JSON properties. Continue on this route
+        console.log(JSON.parse(JSON.stringify(clicks)));
+
+        for (var location in clicks) {
+            JSON.stringify(location);
+            console.log(JSON.parse(JSON.stringify(location)));
+        }
+        dispatch(saveLocations([clicks]));
     }
     const clearLocations = () => {
         setClicks([]);
@@ -56,7 +60,6 @@ const MapFormComponent = () => {
                         ))}
                     </Map>
                 </Wrapper>
-
             </div>
 
             <Button sx={{ marginTop: "8px" }} onClick={confirmLocations}>
@@ -68,6 +71,7 @@ const MapFormComponent = () => {
         </div>
     )
 }
+
 interface MapProps extends google.maps.MapOptions {
     style: { [key: string]: string };
     onClick?: (e: google.maps.MapMouseEvent) => void;

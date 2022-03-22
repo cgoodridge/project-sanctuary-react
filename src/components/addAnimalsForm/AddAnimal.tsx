@@ -29,7 +29,10 @@ import Grid from '@mui/material/Grid';
 import { ChangeEvent } from 'react';
 import MapComponent from '../mapComponent/MapComponent';
 import MapFormComponent from '../mapFormComponent/MapFormComponent';
-
+import { useSelector } from 'react-redux';
+import { selectForm, selectLocations, selectImages } from '../../slices/formDataSlice';
+import { selectUser } from '../../slices/userSlice';
+import firebase from '../../firebase/firebaseConfig';
 
 
 const steps = [
@@ -57,10 +60,18 @@ const AddAnimal = () => {
     const [kingdomClass, setKingdomClass] = useState('');
     const [order, setOrder] = useState('');
     const [family, setFamily] = useState('');
+    const [diet, setDiet] = useState('');
     const [genus, setGenus] = useState('');
     const [species, setSpecies] = useState('');
+    const [lifespan, setLifespan] = useState('');
+    const [lifestyle, setLifestyle] = useState('');
+    const [nameOfYoung, setNameOfYoung] = useState('');
     const [commonName, setCommonName] = useState('');
+    const [scientificName, setScientificName] = useState('');
+    const [source, setSource] = useState('');
+    const [redListStatus, setRedListStatus] = useState('');
     const [description, setDescription] = useState('');
+    const [locationName, setLocationName] = useState('');
     /// End form values
 
     const handleClickOpen = () => {
@@ -77,7 +88,7 @@ const AddAnimal = () => {
     });
 
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-    console.log(selectedFiles);
+    const [imageURLS, setImageURLS] = useState<string[]>([]);
     const [isFilePicked, setIsFilePicked] = useState(false);
 
     const handleFileUpload = (e: any) => {
@@ -95,34 +106,71 @@ const AddAnimal = () => {
         }
     };
 
-    // const doUpload = () => {
-    //     setLoading(true);
-    //     storage
-    //         .ref(`users/${user.uid}/${selectedFile?.name}`)
-    //         .put(selectedFile)
-    //         .then(() => {
-    //             storage
-    //                 .ref(`users/${user.uid}/${selectedFile?.name}`)
-    //                 .getDownloadURL()
-    //                 .then((url) => {
-    //                     auth.currentUser.updateProfile({
-    //                         photoURL: url
-    //                     })
-    //                         .then(() => {
-    //                             dispatch(
-    //                                 updateProfile({
-    //                                     photoURL: auth.currentUser.photoURL
-    //                                 }));
-    //                         })
+    const animal = useSelector(selectForm);
+    const locations = useSelector(selectLocations);
+    const images = useSelector(selectImages);
+    const user = useSelector(selectUser);
 
-    //                 })
-    //             setLoading(false);
+    const saveNewAnimal = () => {
+        setLoading(true);
+        for (var file of selectedFiles) {
+            storage
+                .ref(`images/${commonName}/${file?.name}`)
+                .put(file)
+                .then(() => {
+                    storage
+                        .ref(`images/${commonName}/${file?.name}`)
+                        .getDownloadURL()
+                        .then((url) => {
+                            setImageURLS(imageURLS => [...imageURLS, url]);
+                        })
+                    setLoading(false);
 
-    //         })
-    //         .catch(error => alert(error.message))
-    //     handleClose();
+                })
+                .catch(error => alert(error.message))
+        }
 
-    // };
+        database
+            .collection('animals')
+            .doc()
+            .set({
+                addedBy: user.uid,
+                class: kingdomClass,
+                commonName: commonName,
+                dateAdded: firebase.firestore.Timestamp.fromDate(new Date()),
+                description: description,
+                diet: diet,
+                family: family,
+                genus: genus,
+                imgURLS: imageURLS,
+                kingdom: kingdom,
+                locations: JSON.stringify(locations.toJSON()),
+                lifespan: lifespan,
+                lifestyle: lifestyle,
+                nameOfYoung: nameOfYoung,
+                order: order,
+                phylum: phylum,
+                redListStatus: redListStatus,
+                scientificName: scientificName,
+                source: source
+            }).then((data) => {
+                database
+                    .collection('locations')
+                    .doc()
+                    .set({
+                        animals: "",
+                        locationColour: "Blue",
+                        name: locationName,
+                        imgURL: imageURLS[0]
+                    }).then((result) => {
+                        setLoading(false);
+                        //Display pop up confirmation message here
+                        console.log("Finished uploading");
+                    })
+            })
+
+    }
+
 
     /// End of code for uploading gallery images
 
@@ -161,8 +209,6 @@ const AddAnimal = () => {
             genus: genus,
             species: species,
             description: description,
-            locations: [],
-            imgURLS: []
         }))
 
 
@@ -194,30 +240,7 @@ const AddAnimal = () => {
 
     const handleUpload = () => {
         console.log("...uploading data");
-        // setLoading(true);
-        //     storage
-        //         .ref(`images/${commonName}/${selectedFiles?.name}`)
-        //         .put(selectedFile)
-        //         .then(() => {
-        //             storage
-        //                 .ref(`users/${user.uid}/${selectedFile?.name}`)
-        //                 .getDownloadURL()
-        //                 .then((url) => {
-        //                     auth.currentUser.updateProfile({
-        //                         photoURL: url
-        //                     })
-        //                         .then(() => {
-        //                             dispatch(
-        //                                 updateProfile({
-        //                                     photoURL: auth.currentUser.photoURL
-        //                                 }));
-        //                         })
 
-        //                 })
-        //             setLoading(false);
-
-        //         })
-        //         .catch(error => alert(error.message))
     };
 
     // const handleComplete = () => {
@@ -447,7 +470,7 @@ const AddAnimal = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
-                    {activeStep === 3 ? <Button type='submit' form="animalInfoForm" onClick={handleUpload} sx={{ mr: 1 }}>Upload</Button>
+                    {activeStep === 3 ? <Button type='submit' form="animalInfoForm" onClick={saveNewAnimal} sx={{ mr: 1 }}>Upload</Button>
                         :
                         <Button type='submit' form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>
