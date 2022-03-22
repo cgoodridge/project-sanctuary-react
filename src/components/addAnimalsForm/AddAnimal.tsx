@@ -144,7 +144,7 @@ const AddAnimal = () => {
                 genus: genus,
                 imgURLS: imageURLS,
                 kingdom: kingdom,
-                locations: JSON.stringify(locations.toJSON()),
+                locations: locations,
                 lifespan: lifespan,
                 lifestyle: lifestyle,
                 nameOfYoung: nameOfYoung,

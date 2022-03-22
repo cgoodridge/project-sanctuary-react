@@ -33,7 +33,7 @@ export const formDataSlice = createSlice({
 
         saveLocations: (state: any, action: any) => {
             state.locations = [...state.locations, action.payload];
-            // console.log(JSON.stringify(state.locations.toJSON()));
+            console.log(state.locations);
         }
 
     }
