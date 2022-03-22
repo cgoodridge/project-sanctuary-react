@@ -245,7 +245,6 @@ const App = () => {
               <ListItemText primary="Dashboard" />
             </ListItem>
 
-
             <ListItem button component={Link} to="/animals">
               <ListItemIcon>
                 <PetsIcon />
@@ -331,7 +330,6 @@ const App = () => {
         </Box>
       </Router>
     </ThemeProvider>
-
   );
 }
 

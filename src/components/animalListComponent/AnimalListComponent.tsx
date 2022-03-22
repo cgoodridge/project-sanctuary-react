@@ -13,14 +13,16 @@ import './animalListComponent.css';
 import CircularProgress from '@mui/material/CircularProgress';
 import AddAnimal from '../addAnimalsForm/AddAnimal';
 
-
-
 const AnimalListComponent = () => {
 
     const [animals, setAnimals] = useState<any[]>([]);
     const _isMounted = useRef(true);
 
     const [loading, setLoading] = useState(true);
+    
+    const checkWhiteSpace = ( name: string) => {
+        return name.indexOf(' ') >= 0;
+    }
     
 
     useEffect(() => {
@@ -60,7 +62,7 @@ const AnimalListComponent = () => {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Link key={animal.id} className="learnMore" to={`/animals/${animal.data.scientificName.replace(/ /g, "_")}`}><Button size="small" >Learn More </Button></Link>
+                                <Link key={animal.id} className="learnMore" to={checkWhiteSpace(animal.data.commonName) ? `/animals/${animal.data.commonName.replace(/ /g, "_")}` : `/animals/${animal.data.commonName}`}><Button size="small" >Learn More </Button></Link>
                             </CardActions>
                         </Card>
                     </Grid>

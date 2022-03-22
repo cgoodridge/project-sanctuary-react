@@ -37,7 +37,7 @@ const AnimalDetail = ({ data }: any) => {
 
     database
       .collection('animals')
-      .where('scientificName', '==', name?.replace(/_/g, ' '))
+      .where('commonName', '==', name?.replace(/_/g, ' '))
       .get()
       .then(snapshot => {
         snapshot.forEach(doc => {

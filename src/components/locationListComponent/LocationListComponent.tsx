@@ -15,6 +15,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Link } from 'react-router-dom';
 
 const LocationListComponent = () => {
 
@@ -61,7 +62,7 @@ const LocationListComponent = () => {
                             {location.animals.map((animal: any, key: any) => (
                                 <>
                                     <ListItem alignItems="flex-start" key={key} secondaryAction={
-                                        <IconButton edge="end" aria-label="view">
+                                        <IconButton edge="end" aria-label="view" component={Link} to={`/animals/${animal.commonName}`}>
                                             <VisibilityIcon />
                                         </IconButton>
                                     }>
