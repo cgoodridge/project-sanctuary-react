@@ -22,12 +22,6 @@ interface State {
     showPassword: boolean;
 }
 
-interface LocalUserCred {
-    email: string;
-    uid: string;
-    displayName: string;
-}
-
 const Login = (props: any) => {
 
     const navigate = useNavigate();
@@ -42,7 +36,7 @@ const Login = (props: any) => {
 
     const loginUser = (e: any) => {
         setLoading(true);
-        // e.preventDefault();
+        e.preventDefault();
 
         if (email === '' || password === '') {
             alert("Email or password field cannot be empty");
@@ -72,30 +66,6 @@ const Login = (props: any) => {
         showPassword: false,
     });
 
-    const { register, handleSubmit, reset } = useForm<State>();
-
-    const onSubmit: SubmitHandler<State> = async data => {
-        console.log("Form submitted with data " + data.email + data.password);
-
-        let user;
-
-        setLoading(true);
-
-        try {
-            // user = await login(data);
-            reset();
-        } catch (error) {
-            console.log(error);
-        }
-
-        if (user) {
-            props.history.push("/dashboard");
-        } else {
-            setLoading(true);
-        }
-
-    };
-
     const handleClickShowPassword = () => {
         setValues({
             ...values,
@@ -107,10 +77,6 @@ const Login = (props: any) => {
         event.preventDefault();
     };
 
-    const handleChange =
-        (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-            setValues({ ...values, [prop]: event.target.value });
-        };
 
     return (
         <Container sx={{ marginTop: "128px", display: "flex", justifyContent: "center" }}>
@@ -145,7 +111,7 @@ const Login = (props: any) => {
                                 }}
                             />
                         </Box>
-                        <Box sx={{ margin: "16px" }}>
+                        <Box sx={{ margin: "16px auto" }}>
                             <Button variant="contained" onClick={loginUser}>Login</Button>
                         </Box>
                     </FormControl>

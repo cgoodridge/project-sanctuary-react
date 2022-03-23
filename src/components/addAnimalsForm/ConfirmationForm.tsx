@@ -12,8 +12,6 @@ const ConfirmationForm = () => {
   const animal = useSelector(selectForm);
   const locations = useSelector(selectLocations);
   const images = useSelector(selectImages);
-  console.log(animal);
-  console.log("locations are " + locations);
 
   /// Form values
   const [kingdom, setKingdom] = useState('');

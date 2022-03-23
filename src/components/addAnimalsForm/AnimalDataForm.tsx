@@ -6,7 +6,6 @@ import { saveData } from '../../slices/formDataSlice';
 
 const AnimalDataForm = ({ saveAnimalData }:any) => {
 
-    console.log("Save animal value " + saveAnimalData);
     const dispatch = useDispatch();
 
     const [kingdom, setKingdom] = useState('');

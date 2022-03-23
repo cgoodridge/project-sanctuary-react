@@ -12,6 +12,11 @@ import { Link } from 'react-router-dom';
 import './animalListComponent.css';
 import CircularProgress from '@mui/material/CircularProgress';
 import AddAnimal from '../addAnimalsForm/AddAnimal';
+import TextField from '@mui/material/TextField';
+import Input from '@mui/material/Input';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
 
 const AnimalListComponent = () => {
 
@@ -19,11 +24,11 @@ const AnimalListComponent = () => {
     const _isMounted = useRef(true);
 
     const [loading, setLoading] = useState(true);
-    
-    const checkWhiteSpace = ( name: string) => {
+
+    const checkWhiteSpace = (name: string) => {
         return name.indexOf(' ') >= 0;
     }
-    
+
 
     useEffect(() => {
 
@@ -43,7 +48,20 @@ const AnimalListComponent = () => {
 
     return (
         <>
-            <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 2, sm: 8, md: 12 }} sx={{ marginTop:"64px", marginBottom:"32px" }}>
+            <Box sx={{ margin: '16px 0' }}>
+                <Input
+                    id="input-with-icon-adornment"
+                    placeholder='Search'
+                    startAdornment={
+                        <InputAdornment position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                    }
+                />
+            </Box>
+
+            <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 2, sm: 8, md: 12 }} sx={{ marginTop: "64px", marginBottom: "32px" }}>
+
                 {animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.map((animal, key) => (
                     <Grid item xs={2} sm={4} md={4} key={key}>
                         <Card sx={{ maxWidth: 300, minWidth: 300 }}>
@@ -69,8 +87,8 @@ const AnimalListComponent = () => {
                 ))}
             </Grid>
             <AddAnimal />
-            
-            
+
+
         </>
     )
 }

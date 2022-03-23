@@ -51,7 +51,8 @@ const AnimalDetail = ({ data }: any) => {
       _isMounted.current = false;
     }
 
-  }, [name]);
+  }, []);
+// }, [name]);
 
   return (
     <>

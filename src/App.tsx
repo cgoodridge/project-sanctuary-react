@@ -6,8 +6,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Dashboard from './pages/dashboard/Dashboard';
-import { useDispatch } from 'react-redux';
-import { logout, login } from './slices/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout, login, selectUser } from './slices/userSlice';
 import firebase from 'firebase/compat/app';
 import ProtectedRoute from './router/ProtectedRoute';
 import RedirectRoute from './router/RedirectRoute';
@@ -130,6 +130,8 @@ const App = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
 
+  const user = useSelector(selectUser);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -186,103 +188,113 @@ const App = () => {
 
   }, []);
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    firebase
-      .auth()
-      .onAuthStateChanged(authUser => {
-        if (authUser) {
-          // The user just logged in/was logged in
-          dispatch(
-            login({
-              email: authUser.email,
-              uid: authUser.uid,
-              displayName: authUser.displayName,
-            }))
-        } else {
-          // The user is logged out
-          dispatch(logout());
-        }
-      });
+  //   firebase
+  //     .auth()
+  //     .onAuthStateChanged(authUser => {
+  //       if (authUser) {
+  //         // The user just logged in/was logged in
+  //         dispatch(
+  //           login({
+  //             email: authUser.email,
+  //             uid: authUser.uid,
+  //             displayName: authUser.displayName,
+  //           }))
+  //       } else {
+  //         // The user is logged out
+  //         dispatch(logout());
+  //       }
+  //     });
 
-    return () => { // ComponentWillUnmount 
-      _isMounted.current = false;
-    }
-  });
+  //   return () => { // ComponentWillUnmount 
+  //     _isMounted.current = false;
+  //   }
+  // });
 
   return (
     <ThemeProvider theme={theme}>
-      <AppBar open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: '36px',
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="p">
-            Dashboard
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      {user ?
+        <AppBar open={open}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{
+                marginRight: '36px',
+                ...(open && { display: 'none' }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="p">
+              Dashboard
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        :
+        <div></div>
+      }
+
 
       <Router>
-        <Drawer variant="permanent" open={open}>
-          <DrawerHeader>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-            </IconButton>
-          </DrawerHeader>
-          <Divider />
-          <List>
-            <ListItem button component={Link} to="/">
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText primary="Dashboard" />
-            </ListItem>
+        {user ?
+          <Drawer variant="permanent" open={open}>
+            <DrawerHeader>
+              <IconButton onClick={handleDrawerClose}>
+                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+              </IconButton>
+            </DrawerHeader>
+            <Divider />
+            <List>
+              <ListItem button component={Link} to="/">
+                <ListItemIcon>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText primary="Dashboard" />
+              </ListItem>
 
-            <ListItem button component={Link} to="/animals">
-              <ListItemIcon>
-                <PetsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Animals" />
-            </ListItem>
-            <ListItem button component={Link} to="/locations">
-              <ListItemIcon>
-                <MapIcon />
-              </ListItemIcon>
-              <ListItemText primary="Locations" />
-            </ListItem>
-            <ListItem button component={Link} to="/users">
-              <ListItemIcon>
-                <PeopleIcon />
-              </ListItemIcon>
-              <ListItemText primary="Users" />
-            </ListItem>
-            <ListItem button component={Link} to="/settings">
-              <ListItemIcon>
-                <SettingsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Settings" />
-            </ListItem>
-          </List>
-          <Divider />
-          <List>
-            <ListItem button onClick={logoutAndClear}>
-              <ListItemIcon>
-                <LogoutIcon />
-              </ListItemIcon>
-              <ListItemText primary="Logout" />
-            </ListItem>
-          </List>
-        </Drawer>
+              <ListItem button component={Link} to="/animals">
+                <ListItemIcon>
+                  <PetsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Animals" />
+              </ListItem>
+              <ListItem button component={Link} to="/locations">
+                <ListItemIcon>
+                  <MapIcon />
+                </ListItemIcon>
+                <ListItemText primary="Locations" />
+              </ListItem>
+              <ListItem button component={Link} to="/users">
+                <ListItemIcon>
+                  <PeopleIcon />
+                </ListItemIcon>
+                <ListItemText primary="Users" />
+              </ListItem>
+              <ListItem button component={Link} to="/settings">
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Settings" />
+              </ListItem>
+            </List>
+            <Divider />
+            <List>
+              <ListItem button onClick={logoutAndClear}>
+                <ListItemIcon>
+                  <LogoutIcon />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+              </ListItem>
+            </List>
+          </Drawer>
+          :
+          <div></div>
+        }
+
         <Box component="main" sx={{ flexGrow: 1, p: 16 }}>
           <Routes>
             <Route path="/" element={

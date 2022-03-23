@@ -19,12 +19,10 @@ export const formDataSlice = createSlice({
         locations: [],
         imgURLS: []
     },
-
     reducers: {
 
         saveData: (state: any, action: any) => {
             state.formData = action.payload;
-
         },
 
         saveImageURLS: (state: any, action: any) => {
@@ -33,7 +31,6 @@ export const formDataSlice = createSlice({
 
         saveLocations: (state: any, action: any) => {
             state.locations = [...state.locations, action.payload];
-            console.log(state.locations);
         }
 
     }

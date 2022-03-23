@@ -153,7 +153,7 @@ const AddAnimal = () => {
                 redListStatus: redListStatus,
                 scientificName: scientificName,
                 source: source
-            }).then((data) => {
+            }).then(() => {
                 database
                     .collection('locations')
                     .doc()
