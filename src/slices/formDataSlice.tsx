@@ -16,7 +16,7 @@ export const formDataSlice = createSlice({
             species: "",
             description: "",
         },
-        locations: null,
+        locations: [],
         imgURLS: []
     },
 

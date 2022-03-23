@@ -3,9 +3,9 @@ import { RootStateOrAny } from 'react-redux';
 
 
 interface TPayload {
-    email: string | null;
-    uid: string | null;
-    displayName: string | null;
+    email: string | null | undefined;
+    uid: string | undefined;
+    displayName: string | null | undefined;
 };
 
 export interface AuthState {
@@ -20,7 +20,7 @@ export const initialState: AuthState = {
 
 
 export const userSlice = createSlice({
-    name: "user",
+    name: "userData",
     initialState,
     reducers: {
 
@@ -37,6 +37,6 @@ export const userSlice = createSlice({
 
 export const { login, logout } = userSlice.actions;
 
-export const selectUser = (state: RootStateOrAny) => state.user.user;
+export const selectUser = (state: RootStateOrAny) => state.user.currentUser;
 
 export default userSlice.reducer;

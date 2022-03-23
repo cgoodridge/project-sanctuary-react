@@ -18,7 +18,7 @@ import UserListComponent from './components/userListComponent/UserListComponent'
 import AnimalListComponent from './components/animalListComponent/AnimalListComponent';
 import MapComponent from './components/mapComponent/MapComponent';
 import Settings from './pages/settings/Settings';
-import { database } from './firebase/auth';
+import { database, firebaseLogout } from './firebase/auth';
 import Animal from './interfaces/animal';
 import AppBarComponent from './components/appBarComponent/AppBarComponent';
 import Toolbar from '@mui/material/Toolbar';
@@ -140,7 +140,10 @@ const App = () => {
   };
 
   const logoutAndClear = () => {
-    dispatch(logout());
+    firebaseLogout()
+      .then(() => {
+        dispatch(logout());
+      });
 
     // logout();
   };

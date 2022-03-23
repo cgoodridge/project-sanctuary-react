@@ -8,4 +8,4 @@ const RedirectRoute = ({ children }: any) => {
     return !user ? children : <Navigate to="/" />
 }
 
-export default RedirectRoute
+export default RedirectRoute;

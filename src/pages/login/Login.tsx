@@ -9,10 +9,11 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import firebase from '../../firebase/firebaseConfig';
-import { login } from '../../firebase/auth';
+import { firebaseLogin } from '../../firebase/auth';
+import { login, selectUser } from '../../slices/userSlice';
 import "./login.css";
 
 interface State {
@@ -21,43 +22,48 @@ interface State {
     showPassword: boolean;
 }
 
+interface LocalUserCred {
+    email: string;
+    uid: string;
+    displayName: string;
+}
+
 const Login = (props: any) => {
 
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState<string>('');
     const location = useLocation();
-    // console.log(props.location.state.prevPath);
 
     const dispatch = useDispatch();
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState<string>('');
     const [fieldVal, setFieldVal] = useState('password');
     const [loading, setLoading] = useState(false);
     const [showPassword, setPasswordVisibility] = useState(false);
 
     const loginUser = (e: any) => {
-        if (email === '' || password === '') {
-            return;
-        }
         setLoading(true);
-        e.preventDefault();
+        // e.preventDefault();
 
-        // login(email, password);
+        if (email === '' || password === '') {
+            alert("Email or password field cannot be empty");
+            return;
+        } else {
 
-        firebase
-            .auth()
-            .signInWithEmailAndPassword(email, password)
-            .then((userAuth: any) => {
+            let userResult = firebaseLogin(email, password);
+            userResult.then((data) => {
                 dispatch(login({
-                    email: userAuth.user.email,
-                    uid: userAuth.user.uid,
-                    displayName: userAuth.user.displayName,
+                    email: data?.email,
+                    uid: data?.uid,
+                    displayName: data?.displayName
                 }))
             })
             .then(() => {
                 navigate('/');
                 setLoading(false);
             })
-            .catch(error => alert(error.message));
+            .catch(error => alert(error.message)); //Replace with modal message?
+        }
+        // login(email, password);
     }
 
     const [values, setValues] = useState<State>({
@@ -76,7 +82,7 @@ const Login = (props: any) => {
         setLoading(true);
 
         try {
-            user = await login(data);
+            // user = await login(data);
             reset();
         } catch (error) {
             console.log(error);
@@ -113,7 +119,7 @@ const Login = (props: any) => {
                 <form >
                     <FormControl>
                         <Box sx={{ marginTop: "16px" }}>
-                            <TextField required fullWidth id="email" label="Email" variant="standard" value={email} onChange={e => setEmail(e.target.value)} />
+                            <TextField required fullWidth id="email" label="Email" variant="standard" type="email" value={email} onChange={e => setEmail(e.target.value)} />
                         </Box>
                         <Box sx={{ marginTop: "16px" }}>
                             <TextField
@@ -140,7 +146,7 @@ const Login = (props: any) => {
                             />
                         </Box>
                         <Box sx={{ margin: "16px" }}>
-                            <Button variant="contained" type="submit" onClick={loginUser}>Login</Button>
+                            <Button variant="contained" onClick={loginUser}>Login</Button>
                         </Box>
                     </FormControl>
                 </form>

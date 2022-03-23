@@ -17,11 +17,10 @@ export const firebaseLogout = () => {
         .signOut();
 }
 
-export const login = async (email, password) => {
+export const firebaseLogin = async (email, password) => {
     const resp = await firebase
         .auth()
         .signInWithEmailAndPassword(email, password);
-
     return resp.user;
 }
 
