@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { database } from '../../firebase/auth';
+import { database, locationCollectionRef } from '../../firebase/auth';
 import Box from '@mui/material/Box';
 import './locationListComponent.css';
 import Accordion from '@mui/material/Accordion';
@@ -16,25 +16,53 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link } from 'react-router-dom';
+import { getDocs } from 'firebase/firestore';
 
 const LocationListComponent = () => {
 
     const _isMounted = useRef(true);
     const [locations, setLocations] = useState<any[]>([]);
 
+
     useEffect(() => {
 
-        database
-            .collection('locations')
-            .onSnapshot(snapshot => (
-                setLocations(snapshot.docs.map(doc => ({
+        const getLocationList = async () => {
+            const data = await getDocs(locationCollectionRef);
+            if (_isMounted.current) {
+                setLocations(data.docs.map(doc => ({
                     name: doc.data().name,
                     locationColour: doc.data().locationColour,
                     longitude: doc.data().longitude,
                     latitude: doc.data().latitude,
                     animals: doc.data().animals
                 })))
-            ))
+            }
+        }
+
+        getLocationList();
+
+        return () => { // ComponentWillUnmount 
+            _isMounted.current = false;
+        }
+
+    }, []);
+
+    useEffect(() => {
+
+        if (_isMounted.current) {
+            database
+                .collection('locations')
+                .onSnapshot(snapshot => (
+                    setLocations(snapshot.docs.map(doc => ({
+                        name: doc.data().name,
+                        locationColour: doc.data().locationColour,
+                        longitude: doc.data().longitude,
+                        latitude: doc.data().latitude,
+                        animals: doc.data().animals
+                    })))
+                ))
+        }
+
         return () => { // ComponentWillUnmount 
             _isMounted.current = false;
         }

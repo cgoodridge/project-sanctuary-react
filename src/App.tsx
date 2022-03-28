@@ -44,6 +44,9 @@ import Divider from '@mui/material/Divider';
 import { Link } from 'react-router-dom';
 import MuiDrawer from '@mui/material/Drawer';
 import LocationListComponent from './components/locationListComponent/LocationListComponent';
+import { animalCollectionRef } from './firebase/auth';
+import { getDocs } from 'firebase/firestore';
+
 
 const drawerWidth = 240;
 const theme = createTheme({
@@ -153,64 +156,30 @@ const App = () => {
   const _isMounted = useRef(true);
   const [locations, setLocations] = useState<Animal[]>([]);
 
-
+  
   useEffect(() => {
 
-    database
-      .collection('animals')
-      .onSnapshot(snapshot => (
-        setLocations(snapshot.docs.map(doc => ({
-          class: doc.data().kingdomClass,
-          commonName: doc.data().commonName,
-          dateAdded: doc.data().dateAdded,
-          description: doc.data().description,
-          diet: doc.data().diet,
-          family: doc.data().family,
-          genus: doc.data().genus,
-          imgURL: doc.data().imgURL,
-          kingdom: doc.data().kingdom,
-          latitude: doc.data().latitude,
-          longitude: doc.data().longitude,
-          lifespan: doc.data().lifespan,
-          lifestyle: doc.data().lifestyle,
-          location: doc.data().location,
-          nameOfYoung: doc.data().nameOfYoung,
-          order: doc.data().order,
-          phylum: doc.data().phylum,
-          redlistStatus: doc.data().redListStatus,
-          scientificName: doc.data().scientificName,
-          source: doc.data().source,
-        })))
-      ))
+    firebase
+      .auth()
+      .onAuthStateChanged(authUser => {
+        if (authUser) {
+          // The user just logged in/was logged in
+          dispatch(
+            login({
+              email: authUser.email,
+              uid: authUser.uid,
+              displayName: authUser.displayName,
+            }))
+        } else {
+          // The user is logged out
+          dispatch(logout());
+        }
+      });
+
     return () => { // ComponentWillUnmount 
       _isMounted.current = false;
     }
-
-  }, []);
-
-  // useEffect(() => {
-
-  //   firebase
-  //     .auth()
-  //     .onAuthStateChanged(authUser => {
-  //       if (authUser) {
-  //         // The user just logged in/was logged in
-  //         dispatch(
-  //           login({
-  //             email: authUser.email,
-  //             uid: authUser.uid,
-  //             displayName: authUser.displayName,
-  //           }))
-  //       } else {
-  //         // The user is logged out
-  //         dispatch(logout());
-  //       }
-  //     });
-
-  //   return () => { // ComponentWillUnmount 
-  //     _isMounted.current = false;
-  //   }
-  // });
+  });
 
   return (
     <ThemeProvider theme={theme}>
@@ -326,7 +295,7 @@ const App = () => {
             } />
             <Route path="/locations" element={
               <ProtectedRoute>
-                <MapComponent locations={locations} zoomLevel={1} />
+                <MapComponent />
                 <LocationListComponent />
               </ProtectedRoute>
             } />

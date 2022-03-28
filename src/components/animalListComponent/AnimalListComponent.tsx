@@ -7,7 +7,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { database } from '../../firebase/auth';
+import { animalCollectionRef, database } from '../../firebase/auth';
 import { Link } from 'react-router-dom';
 import './animalListComponent.css';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -17,10 +17,13 @@ import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
+import Animal from '../../interfaces/animal';
+import { getDocs } from 'firebase/firestore';
 
 
 
-const AnimalListComponent = () => {
+
+const AnimalListComponent = ({ animalList }: any) => {
 
     const [animals, setAnimals] = useState<any[]>([]);
     const _isMounted = useRef(true);
@@ -31,17 +34,38 @@ const AnimalListComponent = () => {
         return name.indexOf(' ') >= 0;
     }
 
-
     useEffect(() => {
 
-        database
-            .collection('animals')
-            .onSnapshot(snapshot => (
-                setAnimals(snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    data: doc.data()
-                })))
-            ))
+        const getAnimalCount = async () => {
+            const data = await getDocs(animalCollectionRef);
+            if (_isMounted.current) {
+                setAnimals(data.docs.map(doc => ({
+                    class: doc.data().kingdomClass,
+                    commonName: doc.data().commonName,
+                    dateAdded: doc.data().dateAdded,
+                    description: doc.data().description,
+                    diet: doc.data().diet,
+                    family: doc.data().family,
+                    genus: doc.data().genus,
+                    imgURL: doc.data().imgURL,
+                    kingdom: doc.data().kingdom,
+                    latitude: doc.data().latitude,
+                    longitude: doc.data().longitude,
+                    lifespan: doc.data().lifespan,
+                    lifestyle: doc.data().lifestyle,
+                    location: doc.data().location,
+                    nameOfYoung: doc.data().nameOfYoung,
+                    order: doc.data().order,
+                    phylum: doc.data().phylum,
+                    redlistStatus: doc.data().redListStatus,
+                    scientificName: doc.data().scientificName,
+                    source: doc.data().source,
+                  })));
+            }
+        }
+
+        getAnimalCount();
+
         return () => { // ComponentWillUnmount 
             _isMounted.current = false;
         }
@@ -76,19 +100,19 @@ const AnimalListComponent = () => {
                             <CardMedia
                                 component="img"
                                 height="300"
-                                image={animal.data.imgURL}
-                                alt={animal.data.commonName}
+                                image={animal.imgURL}
+                                alt={animal.commonName}
                             />
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="div">
-                                    {animal.data.commonName}
+                                    {animal.commonName}
                                 </Typography>
                                 <Typography variant="body2" noWrap color="text.secondary">
-                                    {animal.data.description}
+                                    {animal.description}
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Link key={animal.id} className="learnMore" to={checkWhiteSpace(animal.data.commonName) ? `/animals/${animal.data.commonName.replace(/ /g, "_")}` : `/animals/${animal.data.commonName}`}><Button size="small" >Learn More </Button></Link>
+                                <Link key={animal.commonName} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >Learn More </Button></Link>
                             </CardActions>
                         </Card>
                     </Grid>
@@ -102,32 +126,28 @@ const AnimalListComponent = () => {
                                 <CardMedia
                                     component="img"
                                     height="300"
-                                    image={animal.data.imgURL}
-                                    alt={animal.data.commonName}
+                                    image={animal.imgURL}
+                                    alt={animal.commonName}
                                 />
                                 <CardContent>
                                     <Typography gutterBottom variant="h5" component="div">
-                                        {animal.data.commonName}
+                                        {animal.commonName}
                                     </Typography>
                                     <Typography variant="body2" noWrap color="text.secondary">
-                                        {animal.data.description}
+                                        {animal.description}
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Link key={animal.id} className="learnMore" to={checkWhiteSpace(animal.data.commonName) ? `/animals/${animal.data.commonName.replace(/ /g, "_")}` : `/animals/${animal.data.commonName}`}><Button size="small" >Learn More </Button></Link>
+                                    <Link key={animal.commonName} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >Learn More</Button></Link>
                                 </CardActions>
                             </Card>
                         </Grid>
                     ))
-
-
                 }
             </Grid>
             <AddAnimal />
-
-
         </>
     )
 }
 
-export default AnimalListComponent
+export default AnimalListComponent;

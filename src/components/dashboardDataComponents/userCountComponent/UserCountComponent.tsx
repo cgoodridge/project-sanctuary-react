@@ -6,6 +6,8 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
+import { userCollectionRef } from '../../../firebase/auth';
+import { getDocs } from 'firebase/firestore';
 
 const UserCountComponent = () => {
 
@@ -15,11 +17,15 @@ const UserCountComponent = () => {
 
     useEffect(() => {
 
-        database
-            .collection('users')
-            .onSnapshot(snapshot => (
-                setCount(snapshot.size)
-            ))
+        const getUserCount = async () => {
+            const data = await getDocs(userCollectionRef);
+            if (_isMounted.current) {
+                setCount(data.size);
+            }
+        }
+
+        getUserCount();
+
         return () => { // ComponentWillUnmount 
             _isMounted.current = false;
         }

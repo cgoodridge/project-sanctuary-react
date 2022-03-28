@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import './animalDetail.css';
-import { database } from '../../firebase/auth';
+import { animalCollectionRef, database } from '../../firebase/auth';
 import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -8,22 +8,22 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { Divider } from '@mui/material';
 import DetailMapComponent from '../../components/detailMapComponent/DetailMapComponent';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
 import { red } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
-import { Link } from 'react-router-dom';
 import Animal from '../../interfaces/animal';
+import { getDocs, where } from 'firebase/firestore';
 
 
-const AnimalDetail = ({ data }: any) => {
+
+const AnimalDetail = () => {
 
   let animalData: Animal = {};
 
   const navigate = useNavigate();
+  const animalRef = database.collection("animals");
 
   const [animalInfo, setAnimalInfo] = useState<Animal>({});
   const { name } = useParams();
@@ -31,32 +31,51 @@ const AnimalDetail = ({ data }: any) => {
   // animalData.commonName = "test 23";
   const _isMounted = useRef(true);
 
+  // useEffect(() => {
 
+  //   if (_isMounted.current) {
+  //     database
+  //       .collection('animals')
+  //       .where('commonName', '==', name?.replace(/_/g, ' '))
+  //       .get()
+  //       .then(snapshot => {
+  //         snapshot.forEach(doc => {
+  //           const data = doc.data();
+  //           animalData = data;
+  //           setAnimalInfo(animalData);
+  //           // console.log(animalData);
+  //         })
+  //       })
+  //   }
 
-  useEffect(() => {
+  //   return () => { // ComponentWillUnmount 
+  //     _isMounted.current = false;
+  //   }
 
-    database
-      .collection('animals')
-      .where('commonName', '==', name?.replace(/_/g, ' '))
-      .get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          animalData = data;
-          setAnimalInfo(animalData);
-          // console.log(animalData);
-        })
-      })
-    return () => { // ComponentWillUnmount 
-      _isMounted.current = false;
-    }
+  // }, []);
 
-  }, []);
-// }, [name]);
+  // useEffect(() => {
+
+  //   const getAnimalInfo = async () => {
+  //     const data = await animalRef.where('commonName', '==', name?.replace(/_/g, ''));
+  //     if (_isMounted.current) {
+  //       // const data = data.get();
+  //       // console.log((data.get()).docs);
+  //     }
+  //   }
+
+  //   getAnimalInfo();
+
+  //   return () => { // ComponentWillUnmount 
+  //     _isMounted.current = false;
+  //   }
+
+  // }, []);
+
+  // }, [name]);
 
   return (
     <>
-
       <IconButton
         size="large"
         edge="start"

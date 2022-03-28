@@ -2,15 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import './mapComponent.css';
 import LocationPin from './LocationPin';
 import GoogleMapReact from 'google-map-react';
-import { database } from '../../firebase/auth';
-import Container from '@mui/material/Container';
+import { animalCollectionRef, database } from '../../firebase/auth';
 import Animal from '../../interfaces/animal';
-import Button from '@mui/material/Button';
-import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
+import { getDocs } from 'firebase/firestore';
 
 
 export interface SimpleDialogProps {
@@ -33,20 +29,56 @@ const SimpleDialog = (props: SimpleDialogProps) => {
     return (
         <Dialog onClose={handleClose} open={open}>
             <DialogTitle>Set backup account</DialogTitle>
-
-
         </Dialog>
     );
 }
 
-const MapComponent = ({ locations, zoomLevel }: any) => {
+const MapComponent = () => {
 
     const mapkey: string = process.env.REACT_APP_API_KEY || '';
 
     const [open, setOpen] = React.useState(false);
+    const [locations, setLocations] = useState<Animal[]>([]);
+    const _isMounted = useRef(true);
 
+    useEffect(() => {
 
-
+        const getLocationList = async () => {
+          const data = await getDocs(animalCollectionRef);
+          if (_isMounted.current) {
+            setLocations(data.docs.map(doc => ({
+              class: doc.data().kingdomClass,
+              commonName: doc.data().commonName,
+              dateAdded: doc.data().dateAdded,
+              description: doc.data().description,
+              diet: doc.data().diet,
+              family: doc.data().family,
+              genus: doc.data().genus,
+              imgURL: doc.data().imgURL,
+              kingdom: doc.data().kingdom,
+              latitude: doc.data().latitude,
+              longitude: doc.data().longitude,
+              lifespan: doc.data().lifespan,
+              lifestyle: doc.data().lifestyle,
+              location: doc.data().location,
+              nameOfYoung: doc.data().nameOfYoung,
+              order: doc.data().order,
+              phylum: doc.data().phylum,
+              redlistStatus: doc.data().redListStatus,
+              scientificName: doc.data().scientificName,
+              source: doc.data().source,
+            })))
+          }
+        }
+    
+        getLocationList();
+    
+        return () => { // ComponentWillUnmount 
+          _isMounted.current = false;
+        }
+    
+      }, []);
+    
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -90,7 +122,7 @@ const MapComponent = ({ locations, zoomLevel }: any) => {
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: mapkey }}
                     defaultCenter={location}
-                    defaultZoom={zoomLevel}
+                    defaultZoom={1}
                     onChildClick={showInfo}
                 >
                     {locations?.map((location: any, key: any) => (

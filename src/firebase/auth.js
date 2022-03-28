@@ -2,7 +2,7 @@ import firebase from '../firebase/firebaseConfig';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/compat/storage';
-import "firebase/firestore";
+import { collection } from 'firebase/firestore';
 
 export const signup = async ({ firstName, lastName, email, password }) => {
     const response = await firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -26,3 +26,7 @@ export const firebaseLogin = async (email, password) => {
 
 export const database = firebase.firestore();
 export const storage = firebase.storage();
+
+export const animalCollectionRef = collection(database, "animals");
+export const userCollectionRef = collection(database, "users");
+export const locationCollectionRef = collection(database, "locations");

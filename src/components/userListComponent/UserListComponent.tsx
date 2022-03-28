@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { database } from '../../firebase/auth';
+import { database, userCollectionRef } from '../../firebase/auth';
 import { Card, Container } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -24,6 +24,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { alpha } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
+import { getDocs } from 'firebase/firestore';
 
 
 interface Data {
@@ -284,18 +285,20 @@ const UserListComponent = () => {
 
     useEffect(() => {
 
-        database
-            .collection('users')
-            .onSnapshot(snapshot => (
-                setUsers(snapshot.docs.map(doc => ({
+        const getUserList = async () => {
+            const data = await getDocs(userCollectionRef);
+            if (_isMounted.current) {
+                setUsers(data.docs.map(doc => ({
                     id: doc.id,
-                    // data: doc.data(),
                     firstName: doc.data().firstName,
                     lastName: doc.data().lastName,
                     role: doc.data().role,
                     dateAdded: doc.data().dateAdded.toDate().toDateString(),
                 })))
-            ))
+            }
+        }
+
+        getUserList();
 
         return () => { // ComponentWillUnmount 
             _isMounted.current = false;

@@ -5,20 +5,27 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
+import { animalCollectionRef } from '../../../firebase/auth';
+import { getDocs, onSnapshot } from 'firebase/firestore';
 
 const AnimalCountComponent = () => {
 
     const [count, setCount] = useState<number>(0);
 
+
     const _isMounted = useRef(true);
 
     useEffect(() => {
 
-        database
-            .collection('animals')
-            .onSnapshot(snapshot => (
-                setCount(snapshot.size)
-            ))
+        const getAnimalCount = async () => {
+            const data = await getDocs(animalCollectionRef);
+            if (_isMounted.current) {
+                setCount(data.size);
+            }
+        }
+
+        getAnimalCount();
+
         return () => { // ComponentWillUnmount 
             _isMounted.current = false;
         }
@@ -32,7 +39,7 @@ const AnimalCountComponent = () => {
                     Active Animals
                 </Typography>
                 <Typography sx={{ fontSize: 42, fontWeight: 'bold', textAlign: 'center' }} color="text.secondary" gutterBottom component="p">
-                    {count <=0 ? <CircularProgress/> : count}
+                    {count <= 0 ? <CircularProgress /> : count}
                 </Typography>
             </CardContent>
         </Card >
