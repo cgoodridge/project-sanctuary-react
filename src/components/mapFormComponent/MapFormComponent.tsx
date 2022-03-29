@@ -48,7 +48,7 @@ const MapFormComponent = () => {
 
     return (
         <div className="map">
-            <h2 className="map-h2">Animal Locations</h2>
+            <h2 className="map-h2">Choose Locations</h2>
 
             <div className="google-map">
                 <Wrapper apiKey={mapkey} render={render}>

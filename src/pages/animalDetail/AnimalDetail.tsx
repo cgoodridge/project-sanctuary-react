@@ -54,25 +54,24 @@ const AnimalDetail = () => {
 
   // }, []);
 
-  // useEffect(() => {
+  useEffect(() => {
 
-  //   const getAnimalInfo = async () => {
-  //     const data = await animalRef.where('commonName', '==', name?.replace(/_/g, ''));
-  //     if (_isMounted.current) {
-  //       // const data = data.get();
-  //       // console.log((data.get()).docs);
-  //     }
-  //   }
+    const getAnimalInfo = async () => {
+      const data = await animalRef.where('commonName', '==', name?.replace(/_/g, ''));
+      if (_isMounted.current) {
+        // const data = data.get();
+        // console.log((data.get()).docs);
+      }
+    }
 
-  //   getAnimalInfo();
+    getAnimalInfo();
 
-  //   return () => { // ComponentWillUnmount 
-  //     _isMounted.current = false;
-  //   }
+    return () => { // ComponentWillUnmount 
+      _isMounted.current = false;
+    }
 
-  // }, []);
+  }, []);
 
-  // }, [name]);
 
   return (
     <>

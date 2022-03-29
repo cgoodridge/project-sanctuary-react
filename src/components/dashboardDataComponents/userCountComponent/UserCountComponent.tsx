@@ -16,20 +16,16 @@ const UserCountComponent = () => {
     const _isMounted = useRef(true);
 
     useEffect(() => {
-
         const getUserCount = async () => {
             const data = await getDocs(userCollectionRef);
             if (_isMounted.current) {
                 setCount(data.size);
             }
         }
-
         getUserCount();
-
         return () => { // ComponentWillUnmount 
             _isMounted.current = false;
         }
-
     }, []);
 
     return (

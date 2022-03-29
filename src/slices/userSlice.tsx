@@ -17,8 +17,6 @@ export const initialState: AuthState = {
     isAuth: false,
 };
 
-
-
 export const userSlice = createSlice({
     name: "userData",
     initialState,
@@ -31,7 +29,6 @@ export const userSlice = createSlice({
         logout: (state) => {    
             state.currentUser = undefined;
         }
-
     }
 });
 

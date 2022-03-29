@@ -156,30 +156,32 @@ const App = () => {
   const _isMounted = useRef(true);
   const [locations, setLocations] = useState<Animal[]>([]);
 
-  
+
   useEffect(() => {
 
     firebase
       .auth()
       .onAuthStateChanged(authUser => {
-        if (authUser) {
-          // The user just logged in/was logged in
-          dispatch(
-            login({
-              email: authUser.email,
-              uid: authUser.uid,
-              displayName: authUser.displayName,
-            }))
-        } else {
-          // The user is logged out
-          dispatch(logout());
+        if (_isMounted.current) {
+          if (authUser) {
+            // The user just logged in/was logged in
+            dispatch(
+              login({
+                email: authUser.email,
+                uid: authUser.uid,
+                displayName: authUser.displayName,
+              }))
+          } else {
+            // The user is logged out
+            dispatch(logout());
+          }
         }
       });
 
     return () => { // ComponentWillUnmount 
       _isMounted.current = false;
     }
-  });
+  }, [dispatch]);
 
   return (
     <ThemeProvider theme={theme}>

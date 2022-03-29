@@ -23,7 +23,6 @@ const LocationListComponent = () => {
     const _isMounted = useRef(true);
     const [locations, setLocations] = useState<any[]>([]);
 
-
     useEffect(() => {
 
         const getLocationList = async () => {
@@ -47,28 +46,6 @@ const LocationListComponent = () => {
 
     }, []);
 
-    useEffect(() => {
-
-        if (_isMounted.current) {
-            database
-                .collection('locations')
-                .onSnapshot(snapshot => (
-                    setLocations(snapshot.docs.map(doc => ({
-                        name: doc.data().name,
-                        locationColour: doc.data().locationColour,
-                        longitude: doc.data().longitude,
-                        latitude: doc.data().latitude,
-                        animals: doc.data().animals
-                    })))
-                ))
-        }
-
-        return () => { // ComponentWillUnmount 
-            _isMounted.current = false;
-        }
-
-    }, []);
-
     return (
         <Box>
             <Typography variant='h6'>
@@ -76,7 +53,6 @@ const LocationListComponent = () => {
             </Typography>
 
             {locations.map((location, key) => (
-
                 <Accordion key={key}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
