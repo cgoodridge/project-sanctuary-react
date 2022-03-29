@@ -21,8 +21,8 @@ const MapComponent = () => {
     const [jsonClicks, setJsonClicks] = useState<google.maps.LatLng[]>([]);
 
     const [center, setCenter] = useState<google.maps.LatLngLiteral>({
-        lat: 0,
-        lng: 0,
+        lat: 21,
+        lng: 7,
     });
 
     const onClick = (e: google.maps.MapMouseEvent) => {
@@ -55,7 +55,7 @@ const MapComponent = () => {
                     <Map
                         center={center}
                         onClick={onClick}
-                        zoom={1}
+                        zoom={3}
                         style={{ flexGrow: "1", height: "100%" }}
                     >
                         {clicks.map((latLng, i) => (

@@ -28,39 +28,19 @@ const AnimalDetail = () => {
   const [animalInfo, setAnimalInfo] = useState<Animal>({});
   const { name } = useParams();
 
-  // animalData.commonName = "test 23";
   const _isMounted = useRef(true);
-
-  // useEffect(() => {
-
-  //   if (_isMounted.current) {
-  //     database
-  //       .collection('animals')
-  //       .where('commonName', '==', name?.replace(/_/g, ' '))
-  //       .get()
-  //       .then(snapshot => {
-  //         snapshot.forEach(doc => {
-  //           const data = doc.data();
-  //           animalData = data;
-  //           setAnimalInfo(animalData);
-  //           // console.log(animalData);
-  //         })
-  //       })
-  //   }
-
-  //   return () => { // ComponentWillUnmount 
-  //     _isMounted.current = false;
-  //   }
-
-  // }, []);
 
   useEffect(() => {
 
     const getAnimalInfo = async () => {
-      const data = await animalRef.where('commonName', '==', name?.replace(/_/g, ''));
+      const dataRes = await animalRef.where('commonName', '==', name?.replace(/_/g, ''));
       if (_isMounted.current) {
-        // const data = data.get();
-        // console.log((data.get()).docs);
+        dataRes.get().then((val) => {
+          val.forEach((doc) => {
+            console.log(doc.data().commonName)
+            setAnimalInfo(doc.data())
+          })
+        })
       }
     }
 

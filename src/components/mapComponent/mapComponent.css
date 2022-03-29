@@ -11,6 +11,10 @@
     width: 100%;
     height: 30vh;
   }
+
+  .google-map-page {
+    height: 40vh;
+  }
   .map{
     margin: 16px;
   }

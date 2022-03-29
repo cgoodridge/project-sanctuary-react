@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -27,6 +27,8 @@ const Login = (props: any) => {
     const navigate = useNavigate();
     const [email, setEmail] = useState<string>('');
     const location = useLocation();
+    const _isMounted = useRef(true);
+
 
     const dispatch = useDispatch();
     const [password, setPassword] = useState<string>('');
@@ -51,11 +53,11 @@ const Login = (props: any) => {
                     displayName: data?.displayName
                 }))
             })
-            .then(() => {
-                navigate('/');
-                setLoading(false);
-            })
-            .catch(error => alert(error.message)); //Replace with modal message?
+                .then(() => {
+                    navigate('/');
+                    setLoading(false);
+                })
+                .catch(error => alert(error.message)); //Replace with modal message?
         }
         // login(email, password);
     }
