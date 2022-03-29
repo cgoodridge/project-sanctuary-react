@@ -49,7 +49,7 @@ const MapComponent = () => {
 
     return (
         <div className="map-page">
-            <h2 className="map-h2">Choose Locations</h2>
+            <h2 className="map-h2">Locations</h2>
             <div className="google-map-page">
                 <Wrapper apiKey={mapkey} render={render}>
                     <Map
