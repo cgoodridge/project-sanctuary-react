@@ -2,18 +2,15 @@ import React, { useRef, useState } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import firebase from '../../firebase/firebaseConfig';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { firebaseLogin } from '../../firebase/auth';
-import { login, selectUser } from '../../slices/userSlice';
+import { login } from '../../slices/userSlice';
 import "./login.css";
 import LoadingButton from '@mui/lab/LoadingButton';
 
@@ -34,18 +31,28 @@ const Login = (props: any) => {
     const dispatch = useDispatch();
     const [password, setPassword] = useState<string>('');
     const [fieldVal, setFieldVal] = useState('password');
+    const [loginErrorText, setLoginErrorText] = useState('');
+    const [errorText, setErrorText] = useState('')
     const [loading, setLoading] = useState(false);
+    const [isValid, setIsValid] = useState(true);
     const [showPassword, setPasswordVisibility] = useState(false);
 
+
+
+    const getLoginError = (message: string) => {
+        setLoginErrorText(message);
+        setIsValid(false);
+    }
+
     const loginUser = (e: any) => {
-        setLoading(true);
         e.preventDefault();
 
         if (email === '' || password === '') {
-            alert("Email or password field cannot be empty");
+            getLoginError("Email or password field cannot be empty");
             return;
         } else {
-
+            setIsValid(true);
+            setLoading(true);
             let userResult = firebaseLogin(email, password);
             userResult.then((data) => {
                 dispatch(login({
@@ -58,7 +65,7 @@ const Login = (props: any) => {
                     setLoading(false);
                     navigate('/');
                 })
-                .catch(error => alert(error.message)); //Replace with modal message?
+                .catch(error => getLoginError(error.message)); 
         }
         // login(email, password);
     }
@@ -82,13 +89,13 @@ const Login = (props: any) => {
 
 
     return (
-        <Container sx={{ marginTop: "128px", display: "flex", justifyContent: "center" }}>
+        <Container sx={{ marginTop: "128px", width: '40vw', display: "flex", justifyContent: "center", alignItems:'center', flexDirection:'column' }}>
             <Box>
                 <img src="./images/logo.png" alt="Project Sanctuary Logo" />
                 <form >
                     <FormControl>
                         <Box sx={{ marginTop: "16px" }}>
-                            <TextField required fullWidth id="email" label="Email" variant="standard" type="email" value={email} onChange={e => setEmail(e.target.value)} />
+                            <TextField required fullWidth id="email" label="Email" variant="standard" type="email" value={email} onChange={(e: any) => setEmail(e.target.value)} />
                         </Box>
                         <Box sx={{ marginTop: "16px" }}>
                             <TextField
@@ -97,7 +104,7 @@ const Login = (props: any) => {
                                 id="password"
                                 type={values.showPassword ? 'text' : 'password'}
                                 value={password}
-                                onChange={e => setPassword(e.target.value)}
+                                onChange={(e: any) => setPassword(e.target.value)}
                                 label="Password"
                                 variant="standard"
                                 InputProps={{
@@ -114,12 +121,15 @@ const Login = (props: any) => {
                                 }}
                             />
                         </Box>
-                        <Box sx={{ margin: "16px auto" }}>
+                        <Box sx={{ margin: "16px auto", display: 'flex', flexDirection: 'column' }}>
                             <LoadingButton loading={loading} loadingPosition="center" variant="contained" onClick={loginUser}>Login</LoadingButton>
                         </Box>
+
                     </FormControl>
                 </form>
             </Box>
+            {!isValid ? <span className="errorMessage">{loginErrorText}</span> : <></>}
+
         </Container>
     )
 }
