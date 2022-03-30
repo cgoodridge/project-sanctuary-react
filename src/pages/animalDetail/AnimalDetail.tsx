@@ -70,8 +70,8 @@ const AnimalDetail = () => {
         <Box sx={{ height: '100vh', marginTop: "32px" }}>
 
           <Grid container>
-            <Grid item xs={4}>
-              <img className='animalImage' src={animalInfo !== "" ? animalInfo.imgURL : ""} alt={animalInfo !== "" ? animalInfo.commonName : ""} height="400" />
+            <Grid item xs={4} className='imageContainer'>
+              <img className='animalImage' src={animalInfo !== "" ? animalInfo.imgURL : ""} alt={animalInfo !== "" ? animalInfo.commonName : ""}/>
             </Grid>
             <Grid item xs={8}>
               <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
