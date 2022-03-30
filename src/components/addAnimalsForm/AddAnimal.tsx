@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -12,27 +12,24 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
-import Typography from '@mui/material/Typography';
 import AnimalDataForm from './AnimalDataForm';
-import ImagesForm from './ImagesForm';
-import LocationForm from './LocationForm';
 import ConfirmationForm from './ConfirmationForm';
 import TextField from '@mui/material/TextField';
 import { saveData } from '../../slices/formDataSlice';
 import { useDispatch } from 'react-redux';
-import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import { database, storage } from '../../firebase/auth';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import './addAnimal.css';
+import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
-import { ChangeEvent } from 'react';
-import MapComponent from '../mapComponent/MapComponent';
 import MapFormComponent from '../mapFormComponent/MapFormComponent';
 import { useSelector } from 'react-redux';
 import { selectForm, selectLocations, selectImages } from '../../slices/formDataSlice';
 import { selectUser } from '../../slices/userSlice';
 import firebase from '../../firebase/firebaseConfig';
+import Badge from '@mui/material/Badge';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 const steps = [
@@ -105,6 +102,17 @@ const AddAnimal = () => {
             console.log('We do not have a file');
         }
     };
+
+    const removeImage = (index: number) => {
+        // console.log("Index value " + index);
+        // console.log(selectedFiles[0]);
+        
+        const newFileList = [...selectedFiles];
+        newFileList.splice(index, 1);
+        setSelectedFiles(newFileList);
+
+        console.log(selectedFiles);
+    }
 
     const animal = useSelector(selectForm);
     const locations = useSelector(selectLocations);
@@ -290,7 +298,7 @@ const AddAnimal = () => {
                                 id="kingdom"
                                 label="Kingdom"
                                 value={kingdom}
-                                onChange={e => setKingdom(e.target.value)}
+                                onChange={(e: any) => setKingdom(e.target.value)}
                                 type="text"
                                 variant="standard"
                             />
@@ -300,7 +308,7 @@ const AddAnimal = () => {
                                 margin="dense"
                                 id="phylum"
                                 value={phylum}
-                                onChange={e => setPhylum(e.target.value)}
+                                onChange={(e: any) => setPhylum(e.target.value)}
                                 label="Phylum"
                                 type="text"
                                 variant="standard"
@@ -316,7 +324,7 @@ const AddAnimal = () => {
                                 id="kingdomClass"
                                 label="Class"
                                 value={kingdomClass}
-                                onChange={e => setKingdomClass(e.target.value)}
+                                onChange={(e: any) => setKingdomClass(e.target.value)}
                                 type="text"
                                 fullWidth
                                 variant="standard"
@@ -328,7 +336,7 @@ const AddAnimal = () => {
                                 id="order"
                                 label="Order"
                                 value={order}
-                                onChange={e => setOrder(e.target.value)}
+                                onChange={(e: any) => setOrder(e.target.value)}
                                 type="text"
                                 fullWidth
                                 variant="standard"
@@ -345,7 +353,7 @@ const AddAnimal = () => {
                                 id="family"
                                 label="Family"
                                 value={family}
-                                onChange={e => setFamily(e.target.value)}
+                                onChange={(e: any) => setFamily(e.target.value)}
                                 type="text"
                                 fullWidth
                                 variant="standard"
@@ -357,7 +365,7 @@ const AddAnimal = () => {
                                 id="genus"
                                 label="Genus"
                                 value={genus}
-                                onChange={e => setGenus(e.target.value)}
+                                onChange={(e: any) => setGenus(e.target.value)}
                                 type="text"
                                 fullWidth
                                 variant="standard"
@@ -374,7 +382,7 @@ const AddAnimal = () => {
                                 id="species"
                                 label="Species"
                                 value={species}
-                                onChange={e => setSpecies(e.target.value)}
+                                onChange={(e: any) => setSpecies(e.target.value)}
                                 type="text"
                                 fullWidth
                                 variant="standard"
@@ -386,7 +394,7 @@ const AddAnimal = () => {
                                 id="commonName"
                                 label="Common Name"
                                 value={commonName}
-                                onChange={e => setCommonName(e.target.value)}
+                                onChange={(e: any) => setCommonName(e.target.value)}
                                 type="text"
                                 fullWidth
                                 variant="standard"
@@ -402,7 +410,7 @@ const AddAnimal = () => {
                                 id="description"
                                 label="Description"
                                 value={description}
-                                onChange={e => setDescription(e.target.value)}
+                                onChange={(e: any) => setDescription(e.target.value)}
                                 type="text"
                                 fullWidth
                                 multiline
@@ -432,9 +440,11 @@ const AddAnimal = () => {
                                                     padding: '16px'
                                                 }}
                                             >
-                                                <Paper className="imgTile" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', }} elevation={2}>
-                                                    <img src={URL.createObjectURL(file)} ></img>
-                                                </Paper>
+                                                <Badge badgeContent={<IconButton onClick={() => removeImage(key)}> <CloseIcon sx={{ color: 'black', fontSize: 24 }} >Test</CloseIcon> </IconButton>} >
+                                                    <Paper className="imgTile" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', }} elevation={2}>
+                                                        <img src={URL.createObjectURL(file)} ></img>
+                                                    </Paper>
+                                                </Badge>
                                             </Box>
                                         </Grid>
                                     ))
