@@ -6,7 +6,7 @@ import { createCustomEqual } from "fast-equals";
 import { isLatLngLiteral } from "@googlemaps/typescript-guards";
 import Button from '@mui/material/Button';
 import { useDispatch } from 'react-redux';
-import { saveLocations } from '../../slices/formDataSlice';
+import { saveLocations } from '../../slices/locationDataSlice';
 import './mapComponent.css';
 
 const render = (status: Status) => {

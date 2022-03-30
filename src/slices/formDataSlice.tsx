@@ -16,7 +16,6 @@ export const formDataSlice = createSlice({
             species: "",
             description: "",
         },
-        locations: [],
         imgURLS: []
     },
     reducers: {
@@ -29,18 +28,13 @@ export const formDataSlice = createSlice({
             state.imgURLS = [...state.imgURLS, action.payload];
         },
 
-        saveLocations: (state: any, action: any) => {
-            state.locations = [...state.locations, action.payload];
-        }
-
     }
 
 });
 
-export const { saveData, saveImageURLS, saveLocations } = formDataSlice.actions;
+export const { saveData, saveImageURLS } = formDataSlice.actions;
 
 export const selectForm = (state: RootStateOrAny) => state.form.formData;
-export const selectLocations = (state: RootStateOrAny) => state.form.locations;
 export const selectImages = (state: RootStateOrAny) => state.form.imageURLS;
 
 export default formDataSlice.reducer;

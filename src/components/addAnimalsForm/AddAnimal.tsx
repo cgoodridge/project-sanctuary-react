@@ -25,11 +25,13 @@ import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import MapFormComponent from '../mapFormComponent/MapFormComponent';
 import { useSelector } from 'react-redux';
-import { selectForm, selectLocations, selectImages } from '../../slices/formDataSlice';
+import { selectForm, selectImages } from '../../slices/formDataSlice';
+import { selectLocations } from '../../slices/locationDataSlice';
 import { selectUser } from '../../slices/userSlice';
 import firebase from '../../firebase/firebaseConfig';
 import Badge from '@mui/material/Badge';
 import CloseIcon from '@mui/icons-material/Close';
+import { arrayUnion } from 'firebase/firestore';
 
 
 const steps = [
@@ -95,23 +97,12 @@ const AddAnimal = () => {
         */
         setSelectedFiles(selectedFiles => [...selectedFiles, ...e.target.files]);
 
-        // For testing, delete later
-        if (e.target.files.length > 0) {
-            console.log('We have files' + e.target.files);
-        } else {
-            console.log('We do not have a file');
-        }
     };
 
     const removeImage = (index: number) => {
-        // console.log("Index value " + index);
-        // console.log(selectedFiles[0]);
-        
         const newFileList = [...selectedFiles];
         newFileList.splice(index, 1);
         setSelectedFiles(newFileList);
-
-        console.log(selectedFiles);
     }
 
     const animal = useSelector(selectForm);

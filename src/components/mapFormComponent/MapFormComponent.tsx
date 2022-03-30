@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef, Children, isValidElement, cloneElement } from 'react';
-import LocationPin from '../mapComponent/LocationPin';
-import GoogleMapReact from 'google-map-react';
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import { createCustomEqual } from "fast-equals";
 import { isLatLngLiteral } from "@googlemaps/typescript-guards";
 import Button from '@mui/material/Button';
 import { useDispatch } from 'react-redux';
-import { saveLocations } from '../../slices/formDataSlice';
+import { selectLocations } from '../../slices/locationDataSlice';
+import { saveLocations } from '../../slices/locationDataSlice';
 
 const render = (status: Status) => {
     return <h1>{status}</h1>;
@@ -35,11 +34,13 @@ const MapFormComponent = () => {
 
         clicks.map((location) => {
             console.log(JSON.parse(JSON.stringify(location)));
-            setJsonClicks(jsonClicks => [...jsonClicks, JSON.parse(JSON.stringify(location))]);
+            let newLocation = JSON.parse(JSON.stringify(location));
+            // console.log("New Locations are " + newLocation.lat);
+            setJsonClicks(jsonClicks => [...jsonClicks, newLocation]);
         })
         console.log("JSON Clicks are " + jsonClicks);
 
-        dispatch(saveLocations([jsonClicks]));
+        dispatch(saveLocations(jsonClicks));
     }
     const clearLocations = () => {
         setClicks([]);

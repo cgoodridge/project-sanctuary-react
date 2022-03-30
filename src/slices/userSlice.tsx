@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootStateOrAny } from 'react-redux';
+import { store } from '../store';
+import { persistStore } from 'redux-persist';
+import { persistor } from "../index";
+
+// const persistor = persistStore(store);
 
 
 interface TPayload {
@@ -27,6 +32,7 @@ export const userSlice = createSlice({
         },
 
         logout: (state) => {    
+            // persistor.purge();
             state.currentUser = undefined;
         }
     }

@@ -10,7 +10,7 @@ import reportWebVitals from './reportWebVitals';
 import './firebase/firebaseConfig';
 
 
-const persistor = persistStore(store);
+export const persistor = persistStore(store);
 
 ReactDOM.render(
   <React.StrictMode>

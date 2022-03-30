@@ -46,6 +46,7 @@ import MuiDrawer from '@mui/material/Drawer';
 import LocationListComponent from './components/locationListComponent/LocationListComponent';
 import { animalCollectionRef } from './firebase/auth';
 import { getDocs } from 'firebase/firestore';
+import { persistor } from '.';
 
 
 const drawerWidth = 240;
@@ -130,6 +131,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 
 const App = () => {
+
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
 
@@ -145,6 +147,7 @@ const App = () => {
   };
 
   const logoutAndClear = () => {
+    persistor.purge();
     firebaseLogout()
       .then(() => {
         dispatch(logout());

@@ -2,7 +2,8 @@ import { Box } from '@mui/material';
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { useSelector } from 'react-redux';
-import { selectForm, selectImages, selectLocations } from '../../slices/formDataSlice';
+import { selectForm, selectImages } from '../../slices/formDataSlice';
+import { selectLocations } from '../../slices/locationDataSlice';
 import { storage, database } from '../../firebase/auth';
 
 const ConfirmationForm = () => {
@@ -11,6 +12,7 @@ const ConfirmationForm = () => {
 
   const animal = useSelector(selectForm);
   const locations = useSelector(selectLocations);
+  console.log(locations);
   const images = useSelector(selectImages);
 
   /// Form values
@@ -24,9 +26,6 @@ const ConfirmationForm = () => {
   const [commonName, setCommonName] = useState('');
   const [description, setDescription] = useState('');
   /// End form values
-
-
-  
 
   return (
     <Box>
@@ -42,7 +41,7 @@ const ConfirmationForm = () => {
           id="kingdom"
           label="Kingdom"
           value={animal.kingdom}
-          onChange={e => setKingdom(e.target.value)}
+          onChange={(e: any) => setKingdom(e.target.value)}
           type="text"
           variant="standard"
         />
@@ -52,7 +51,7 @@ const ConfirmationForm = () => {
           margin="dense"
           id="phylum"
           value={animal.phylum}
-          onChange={e => setPhylum(e.target.value)}
+          onChange={(e: any) => setPhylum(e.target.value)}
           label="Phylum"
           type="text"
           variant="standard"
@@ -69,7 +68,7 @@ const ConfirmationForm = () => {
           id="kingdomClass"
           label="Class"
           value={animal.kingdomClass}
-          onChange={e => setKingdomClass(e.target.value)}
+          onChange={(e: any) => setKingdomClass(e.target.value)}
           type="text"
           fullWidth
           variant="standard"
@@ -82,7 +81,7 @@ const ConfirmationForm = () => {
           id="order"
           label="Order"
           value={animal.order}
-          onChange={e => setOrder(e.target.value)}
+          onChange={(e: any) => setOrder(e.target.value)}
           type="text"
           fullWidth
           variant="standard"
@@ -100,7 +99,7 @@ const ConfirmationForm = () => {
           id="family"
           label="Family"
           value={animal.family}
-          onChange={e => setFamily(e.target.value)}
+          onChange={(e: any) => setFamily(e.target.value)}
           type="text"
           fullWidth
           variant="standard"
@@ -113,7 +112,7 @@ const ConfirmationForm = () => {
           id="genus"
           label="Genus"
           value={animal.genus}
-          onChange={e => setGenus(e.target.value)}
+          onChange={(e: any) => setGenus(e.target.value)}
           type="text"
           fullWidth
           variant="standard"
@@ -131,7 +130,7 @@ const ConfirmationForm = () => {
           id="species"
           label="Species"
           value={animal.species}
-          onChange={e => setSpecies(e.target.value)}
+          onChange={(e: any) => setSpecies(e.target.value)}
           type="text"
           fullWidth
           variant="standard"
@@ -144,7 +143,7 @@ const ConfirmationForm = () => {
           id="commonName"
           label="Common Name"
           value={animal.commonName}
-          onChange={e => setCommonName(e.target.value)}
+          onChange={(e: any) => setCommonName(e.target.value)}
           type="text"
           fullWidth
           variant="standard"
@@ -161,7 +160,7 @@ const ConfirmationForm = () => {
           id="description"
           label="Description"
           value={animal.description}
-          onChange={e => setDescription(e.target.value)}
+          onChange={(e: any) => setDescription(e.target.value)}
           type="text"
           fullWidth
           multiline

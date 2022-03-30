@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { database, userCollectionRef } from '../../firebase/auth';
-import { Card, Container } from '@mui/material';
+import { userCollectionRef, authRef, database } from '../../firebase/auth';
+import { Badge, Card, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fab, Input, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import "./userListComponent.css";
@@ -25,12 +25,18 @@ import { visuallyHidden } from '@mui/utils';
 import { alpha } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { getDocs } from 'firebase/firestore';
+import AnimalDataForm from '../addAnimalsForm/AnimalDataForm';
+import ConfirmationForm from '../addAnimalsForm/ConfirmationForm';
+import MapFormComponent from '../mapFormComponent/MapFormComponent';
+import AddIcon from '@mui/icons-material/Add';
+import { useNavigate } from 'react-router-dom';
 
 
 interface Data {
     firstName: string;
     lastName: string;
     role: string;
+    email: string;
     dateAdded: Date;
 
 }
@@ -91,10 +97,16 @@ const headCells: readonly HeadCell[] = [
         label: 'Last Name',
     },
     {
+        id: 'email',
+        numeric: false,
+        label: 'E-mail',
+    },
+    {
         id: 'role',
         numeric: false,
         label: 'Role',
     },
+    
     {
         id: 'dateAdded',
         numeric: true,
@@ -172,7 +184,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
                 pl: { sm: 2 },
                 pr: { xs: 1, sm: 1 },
                 ...(numSelected > 0 && {
-                    bgcolor: (theme) =>
+                    bgcolor: (theme: { palette: { primary: { main: string; }; action: { activatedOpacity: number; }; }; }) =>
                         alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
                 }),
             }}
@@ -292,6 +304,7 @@ const UserListComponent = () => {
                     id: doc.id,
                     firstName: doc.data().firstName,
                     lastName: doc.data().lastName,
+                    email: doc.data().email,
                     role: doc.data().role,
                     dateAdded: doc.data().dateAdded.toDate().toDateString(),
                 })))
@@ -306,85 +319,228 @@ const UserListComponent = () => {
 
     }, []);
 
-    // console.log(users[0].data.lastName);
+    useEffect(() => {
+
+        const getUserList = async () => {
+            const data = await getDocs(userCollectionRef);
+            if (_isMounted.current) {
+
+            }
+        }
+
+        getUserList();
+
+        return () => { // ComponentWillUnmount 
+            _isMounted.current = false;
+        }
+
+    }, []);
+
+    const navigate = useNavigate();
+
+    const handleSave = () => {
+        authRef.createUserWithEmailAndPassword(email, password)
+            .then((user) => {
+                database
+                    .collection('users')
+                    .doc(user.user?.uid)
+                    .set({
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        role: role
+                    })
+            })
+            .then(() => {
+                setFirstName('');
+                setLastName('');
+                setEmail('');
+                setPassword('');
+                setRole('');
+                navigate('/users');
+            })
+            .catch(error => alert(error.message))
+    }
+
+    const [openDialog, setOpenDialog] = useState(false);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [role, setRole] = useState('');
+
+
+    const handleClickOpen = () => {
+        setOpenDialog(true);
+    };
+
+    const handleClose = () => {
+        setOpenDialog(false);
+    };
+
     return (
-        <Box sx={{ width: '100%' }}>
-            <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} />
-                <TableContainer>
-                    <Table
-                        sx={{ minWidth: 750 }}
-                        aria-labelledby="tableTitle"
-                        size={dense ? 'small' : 'medium'}
-                    >
-                        <EnhancedTableHead
-                            numSelected={selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
-                            onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
-                        />
-                        <TableBody>
-                            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+        <>
+            <Box sx={{ width: '100%' }}>
+                <Paper sx={{ width: '100%', mb: 2 }}>
+                    <EnhancedTableToolbar numSelected={selected.length} />
+                    <TableContainer>
+                        <Table
+                            sx={{ minWidth: 750 }}
+                            aria-labelledby="tableTitle"
+                            size={dense ? 'small' : 'medium'}
+                        >
+                            <EnhancedTableHead
+                                numSelected={selected.length}
+                                order={order}
+                                orderBy={orderBy}
+                                onSelectAllClick={handleSelectAllClick}
+                                onRequestSort={handleRequestSort}
+                                rowCount={rows.length}
+                            />
+                            <TableBody>
+                                {/* if you don't need to support IE11, you can replace the `stableSort` call with:
               rows.slice().sort(getComparator(order, orderBy)) */}
-                            {stableSort(rows, getComparator(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row, index) => {
-                                    // const isItemSelected = isSelected(row.firstName);
-                                    const labelId = `enhanced-table-checkbox-${index}`;
+                                {stableSort(rows, getComparator(order, orderBy))
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((row, index) => {
+                                        // const isItemSelected = isSelected(row.firstName);
+                                        const labelId = `enhanced-table-checkbox-${index}`;
 
-                                    return (
-                                        <TableRow
-                                            hover
-                                            // onClick={(event) => handleClick(event, row.firstName)}
-                                            role="checkbox"
-                                            // aria-checked={isItemSelected}
-                                            tabIndex={-1}
-                                            key={row.firstName}
-                                        // selected={isItemSelected}
-                                        >
-                                            <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    color="primary"
-                                                    // checked={isItemSelected}
-                                                    inputProps={{
-                                                        'aria-labelledby': labelId,
-                                                    }}
-                                                />
-                                            </TableCell>
-                                            <TableCell align='left' component="th" id={labelId} scope="row" padding="normal">{row.firstName}</TableCell>
-                                            <TableCell align="left">{row.lastName}</TableCell>
-                                            <TableCell align="left">{row.role}</TableCell>
-                                            <TableCell align="right">{row.dateAdded}</TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: (dense ? 33 : 53) * emptyRows,
-                                    }}
-                                >
-                                    <TableCell colSpan={4} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
+                                        return (
+                                            <TableRow
+                                                hover
+                                                // onClick={(event) => handleClick(event, row.firstName)}
+                                                role="checkbox"
+                                                // aria-checked={isItemSelected}
+                                                tabIndex={-1}
+                                                key={row.firstName}
+                                            // selected={isItemSelected}
+                                            >
+                                                <TableCell padding="checkbox">
+                                                    <Checkbox
+                                                        color="primary"
+                                                        // checked={isItemSelected}
+                                                        inputProps={{
+                                                            'aria-labelledby': labelId,
+                                                        }}
+                                                    />
+                                                </TableCell>
+                                                <TableCell align='left' component="th" id={labelId} scope="row" padding="normal">{row.firstName}</TableCell>
+                                                <TableCell align="left">{row.lastName}</TableCell>
+                                                <TableCell align="left">{row.email}</TableCell>
+                                                <TableCell align="left">{row.role}</TableCell>
+                                                <TableCell align="right">{row.dateAdded}</TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                {emptyRows > 0 && (
+                                    <TableRow
+                                        style={{
+                                            height: (dense ? 33 : 53) * emptyRows,
+                                        }}
+                                    >
+                                        <TableCell colSpan={4} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </Paper>
+            </Box>
 
-        </Box>
+            <Dialog open={openDialog} onClose={handleClose} >
+                <DialogTitle>Save New User</DialogTitle>
+                <DialogContent>
+                    
+                    <form action="">
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="firstName"
+                                label="First Name"
+                                value={firstName}
+                                onChange={(e: any) => setFirstName(e.target.value)}
+                                type="text"
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="lastName"
+                                label="Last Name"
+                                value={lastName}
+                                onChange={(e: any) => setLastName(e.target.value)}
+                                type="text"
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="email"
+                                label="E-mail"
+                                value={email}
+                                onChange={(e: any) => setEmail(e.target.value)}
+                                type="email"
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="password"
+                                label="Password"
+                                value={password}
+                                onChange={(e: any) => setPassword(e.target.value)}
+                                type="password"
+                                variant="standard"
+                            />
+                            <InputLabel id="demo-simple-select-standard-label">Role</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-standard-label"
+                                id="demo-simple-select-standard"
+                                value={role}
+                                onChange={(e: any) => setRole(e.target.value)}
+                                label="Role"
+                                
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                <MenuItem value={"admin"}>Admin</MenuItem>
+                                <MenuItem value={"user"}>User</MenuItem>
 
+                            </Select>
+                        </Box>
+                    </form>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleSave}>Save</Button>
+                </DialogActions>
+            </Dialog>
+            <Container>
+                <Box sx={{ '& > :not(style)': { m: 1 }, position: "fixed", right: "10%" }}>
+                    <Fab color="primary" variant="extended" onClick={handleClickOpen}>
+                        <AddIcon sx={{ mr: 1 }} />
+                        Add User
+                    </Fab>
+                </Box>
+            </Container>
+        </>
     );
 }
 

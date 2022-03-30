@@ -26,6 +26,7 @@ export const firebaseLogin = async (email, password) => {
 
 export const database = firebase.firestore();
 export const storage = firebase.storage();
+export const authRef = firebase.auth();
 
 export const animalCollectionRef = collection(database, "animals");
 export const userCollectionRef = collection(database, "users");
