@@ -15,6 +15,7 @@ import firebase from '../../firebase/firebaseConfig';
 import { firebaseLogin } from '../../firebase/auth';
 import { login, selectUser } from '../../slices/userSlice';
 import "./login.css";
+import LoadingButton from '@mui/lab/LoadingButton';
 
 interface State {
     email: string;
@@ -54,8 +55,8 @@ const Login = (props: any) => {
                 }))
             })
                 .then(() => {
-                    navigate('/');
                     setLoading(false);
+                    navigate('/');
                 })
                 .catch(error => alert(error.message)); //Replace with modal message?
         }
@@ -114,7 +115,7 @@ const Login = (props: any) => {
                             />
                         </Box>
                         <Box sx={{ margin: "16px auto" }}>
-                            <Button variant="contained" onClick={loginUser}>Login</Button>
+                            <LoadingButton loading={loading} loadingPosition="center" variant="contained" onClick={loginUser}>Login</LoadingButton>
                         </Box>
                     </FormControl>
                 </form>
