@@ -5,21 +5,20 @@ export const locationDataSlice = createSlice({
 
     name: "locationData",
     initialState: {
-        locations: null,
+        locations: [{}],
     },
     reducers: {
         saveLocations: (state: any, action: any) => {
             state.locations = [...state.locations, ...action.payload];
-            console.log("The locations are " + action?.payload);
         },
 
-        clearLocations: (state: any, action: any) => {
-            state.locations = null,
+        clear: (state: any) => {
+            state.locations = [];
         }
     }
 });
 
-export const { saveLocations, clearLocations } = locationDataSlice.actions;
+export const { saveLocations, clear } = locationDataSlice.actions;
 
 export const selectLocations = (state: RootStateOrAny) => state.location.locations;
 
