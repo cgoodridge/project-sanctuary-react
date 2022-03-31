@@ -89,6 +89,8 @@ const AddAnimal = () => {
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [imageURLS, setImageURLS] = useState<string[]>([]);
     const [isFilePicked, setIsFilePicked] = useState(false);
+    const [openConfirmMessage, setOpenConfirmMessage] = useState(false);
+
 
     const handleFileUpload = (e: any) => {
         /* List of files is "array-like" not an actual array
@@ -172,9 +174,17 @@ const AddAnimal = () => {
                         imgURL: imageURLS[0]
                     }).then((result) => {
                         setLoading(false);
-                        //Display pop up confirmation message here
+                        
                         setOpenDialog(false);
-                        console.log("Finished uploading");
+                        setKingdom('');
+                        setPhylum('');
+                        setKingdomClass('');
+                        setOrder('');
+                        setFamily('');
+                        setGenus('');
+                        setSpecies('');
+                        setDescription('');
+                        handleConfirmMessageOpen();
                     })
             })
     }
@@ -207,23 +217,25 @@ const AddAnimal = () => {
 
     const handleNext = (e: any) => {
 
-        dispatch(saveData({
-            kingdom: kingdom,
-            phylum: phylum,
-            kingdomClass: kingdomClass,
-            order: order,
-            family: family,
-            genus: genus,
-            species: species,
-            description: description,
-        }))
-
-
         if (e && activeStep === 0) {
-            
-            setSaveAnimalData(true);
-
+            if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '') {
+                alert("One or more fields, must be filled");
+                return;
+            } else {
+                setSaveAnimalData(true);
+                dispatch(saveData({
+                    kingdom: kingdom,
+                    phylum: phylum,
+                    kingdomClass: kingdomClass,
+                    order: order,
+                    family: family,
+                    genus: genus,
+                    species: species,
+                    description: description,
+                }))
+            }
         }
+
         if (e && activeStep === 1) {
             if (selectedFiles.length === 0) {
                 alert("Please choose at least 1 image");
@@ -248,7 +260,7 @@ const AddAnimal = () => {
                 steps.findIndex((step, i) => !(i in completed))
                 : activeStep + 1;
         setActiveStep(newActiveStep);
-        
+
     };
 
     const handleFormComponentSubmission = (step: number) => {
@@ -263,27 +275,37 @@ const AddAnimal = () => {
         setActiveStep(step);
     };
 
-    const handleUpload = () => {
-        console.log("...uploading data");
-
+    const handleConfirmMessageOpen = () => {
+        setOpenConfirmMessage(true);
     };
 
-    // const handleComplete = () => {
-    //     const newCompleted = completed;
-    //     newCompleted[activeStep] = true;
-    //     setCompleted(newCompleted);
-    //     handleNext();
-    // };
-
-    // const handleReset = () => {
-    //     setActiveStep(0);
-    //     setCompleted({});
-    // };
+    const handleConfirmMessageClose = () => {
+        setOpenConfirmMessage(false);
+    };
 
     // End of stepper code
 
     return (
         <>
+            <Dialog
+                open={openConfirmMessage}
+                onClose={handleConfirmMessageClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title" sx={{ textAlign: 'center' }}>
+                    New Animal Added!
+                </DialogTitle>
+                <DialogContent className="resConfirmed">
+                    <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_tia15mzy.json" background="transparent" speed="1" style={{ width: '250px', height: '250px' }} loop autoplay></lottie-player>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleConfirmMessageClose} autoFocus>
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             <Dialog open={openDialog} onClose={handleClose} >
 
                 <DialogTitle>Add To the Sanctuary</DialogTitle>
@@ -499,7 +521,7 @@ const AddAnimal = () => {
                     <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
                     {activeStep === 3 ? <LoadingButton loading={loading} loadingPosition="center" type='submit' form="animalInfoForm" onClick={saveNewAnimal} sx={{ mr: 1 }}>Upload</LoadingButton>
                         :
-                        <Button type='submit' form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
+                        <Button form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>
             </Dialog>
             <Container>
