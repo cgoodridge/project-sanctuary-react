@@ -205,7 +205,7 @@ const AddAnimal = () => {
         return completedSteps() === totalSteps();
     };
 
-    const handleNext = () => {
+    const handleNext = (e: any) => {
 
         dispatch(saveData({
             kingdom: kingdom,
@@ -219,9 +219,26 @@ const AddAnimal = () => {
         }))
 
 
-        if (activeStep === 0) {
+        if (e && activeStep === 0) {
+            
             setSaveAnimalData(true);
 
+        }
+        if (e && activeStep === 1) {
+            if (selectedFiles.length === 0) {
+                alert("Please choose at least 1 image");
+                return;
+            }
+            // return;
+        }
+
+        if (e && activeStep === 2) {
+            alert("Just passed image ");
+            // return;
+        }
+        if (e && activeStep === 3) {
+            alert("Just passed image ");
+            // return;
         }
 
         const newActiveStep =
@@ -231,6 +248,7 @@ const AddAnimal = () => {
                 steps.findIndex((step, i) => !(i in completed))
                 : activeStep + 1;
         setActiveStep(newActiveStep);
+        
     };
 
     const handleFormComponentSubmission = (step: number) => {
