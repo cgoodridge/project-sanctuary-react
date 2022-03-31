@@ -30,6 +30,8 @@ import ConfirmationForm from '../addAnimalsForm/ConfirmationForm';
 import MapFormComponent from '../mapFormComponent/MapFormComponent';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
+import firebase from '../../firebase/firebaseConfig';
+
 
 
 interface Data {
@@ -106,7 +108,7 @@ const headCells: readonly HeadCell[] = [
         numeric: false,
         label: 'Role',
     },
-    
+
     {
         id: 'dateAdded',
         numeric: true,
@@ -336,38 +338,60 @@ const UserListComponent = () => {
 
     }, []);
 
-    const navigate = useNavigate();
-
-    const handleSave = () => {
-        authRef.createUserWithEmailAndPassword(email, password)
-            .then((user) => {
-                database
-                    .collection('users')
-                    .doc(user.user?.uid)
-                    .set({
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email,
-                        role: role
-                    })
-            })
-            .then(() => {
-                setFirstName('');
-                setLastName('');
-                setEmail('');
-                setPassword('');
-                setRole('');
-                navigate('/users');
-            })
-            .catch(error => alert(error.message))
-    }
-
     const [openDialog, setOpenDialog] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [passwordConfirm, setPasswordConfirm] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [passwordErrorState, setPasswordErrorState] = useState(false);
     const [role, setRole] = useState('');
+    const [openConfirmMessage, setOpenConfirmMessage] = useState(false);
+    const navigate = useNavigate();
+
+    const handleSave = () => {
+        if (password !== passwordConfirm) {
+            setPasswordError("Passwords do not match");
+            setPasswordErrorState(true);
+            return;
+        } else {
+            authRef.createUserWithEmailAndPassword(email, password)
+                .then((user) => {
+                    database
+                        .collection('users')
+                        .doc(user.user?.uid)
+                        .set({
+                            firstName: firstName,
+                            lastName: lastName,
+                            email: email,
+                            dateAdded: firebase.firestore.Timestamp.fromDate(new Date()),
+                            role: role
+                        })
+                })
+                .then(() => {
+                    setFirstName('');
+                    setLastName('');
+                    setEmail('');
+                    setPassword('');
+                    setRole('');
+                    setOpenDialog(false);
+                    setOpenConfirmMessage(true);
+                    navigate('/users');
+                })
+                .catch(error => alert(error.message))
+        }
+
+    }
+
+
+    const handleConfirmMessageOpen = () => {
+        setOpenConfirmMessage(true);
+    };
+
+    const handleConfirmMessageClose = () => {
+        setOpenConfirmMessage(false);
+    };
 
 
     const handleClickOpen = () => {
@@ -380,6 +404,25 @@ const UserListComponent = () => {
 
     return (
         <>
+            <Dialog
+                open={openConfirmMessage}
+                onClose={handleConfirmMessageClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title" sx={{textAlign: 'center'}}>
+                    New User Added!
+                </DialogTitle>
+                <DialogContent className="resConfirmed">
+                    <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_tia15mzy.json" background="transparent" speed="1" style={{ width: '250px', height: '250px' }} loop autoplay></lottie-player>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleConfirmMessageClose} autoFocus>
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             <Box sx={{ width: '100%' }}>
                 <Paper sx={{ width: '100%', mb: 2 }}>
                     <EnhancedTableToolbar numSelected={selected.length} />
@@ -460,13 +503,12 @@ const UserListComponent = () => {
             <Dialog open={openDialog} onClose={handleClose} >
                 <DialogTitle>Save New User</DialogTitle>
                 <DialogContent>
-                    
+
                     <form action="">
-                        <Box sx={{
-                            '& > :not(style)': { m: 1, width: '28ch' },
-                        }}>
+                        <Box sx={{ width: '25vw' }}>
                             <TextField
                                 required
+                                fullWidth
                                 autoFocus
                                 margin="dense"
                                 id="firstName"
@@ -479,6 +521,7 @@ const UserListComponent = () => {
                             <TextField
                                 required
                                 autoFocus
+                                fullWidth
                                 margin="dense"
                                 id="lastName"
                                 label="Last Name"
@@ -490,6 +533,7 @@ const UserListComponent = () => {
                             <TextField
                                 required
                                 autoFocus
+                                fullWidth
                                 margin="dense"
                                 id="email"
                                 label="E-mail"
@@ -501,6 +545,7 @@ const UserListComponent = () => {
                             <TextField
                                 required
                                 autoFocus
+                                fullWidth
                                 margin="dense"
                                 id="password"
                                 label="Password"
@@ -509,14 +554,28 @@ const UserListComponent = () => {
                                 type="password"
                                 variant="standard"
                             />
+                            <TextField
+                                required
+                                autoFocus
+                                fullWidth
+                                margin="dense"
+                                id="passwordConfirm"
+                                label="Confirm Password"
+                                value={passwordConfirm}
+                                onChange={(e: any) => setPasswordConfirm(e.target.value)}
+                                type="password"
+                                variant="standard"
+                            />
+                            {passwordErrorState ? <span className='passwordError'>{passwordError}</span> : <></>}
                             <InputLabel id="demo-simple-select-standard-label">Role</InputLabel>
                             <Select
                                 labelId="demo-simple-select-standard-label"
                                 id="demo-simple-select-standard"
                                 value={role}
+                                fullWidth
                                 onChange={(e: any) => setRole(e.target.value)}
                                 label="Role"
-                                
+
                             >
                                 <MenuItem value="">
                                     <em>None</em>
