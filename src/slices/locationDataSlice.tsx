@@ -11,11 +11,15 @@ export const locationDataSlice = createSlice({
         saveLocations: (state: any, action: any) => {
             state.locations = [...state.locations, ...action.payload];
             console.log("The locations are " + action?.payload);
+        },
+
+        clearLocations: (state: any, action: any) => {
+            state.locations = null,
         }
     }
 });
 
-export const { saveLocations } = locationDataSlice.actions;
+export const { saveLocations, clearLocations } = locationDataSlice.actions;
 
 export const selectLocations = (state: RootStateOrAny) => state.location.locations;
 

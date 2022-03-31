@@ -177,7 +177,6 @@ const AddAnimal = () => {
                         console.log("Finished uploading");
                     })
             })
-
     }
 
     /// End of code for uploading gallery images
