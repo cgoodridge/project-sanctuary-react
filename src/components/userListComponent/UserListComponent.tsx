@@ -31,8 +31,7 @@ import MapFormComponent from '../mapFormComponent/MapFormComponent';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import firebase from '../../firebase/firebaseConfig';
-
-
+import EditIcon from '@mui/icons-material/Edit';
 
 interface Data {
     firstName: string;
@@ -108,12 +107,12 @@ const headCells: readonly HeadCell[] = [
         numeric: false,
         label: 'Role',
     },
-
     {
         id: 'dateAdded',
         numeric: true,
         label: 'Date Added',
     },
+
 ];
 
 interface EnhancedTableProps {
@@ -410,7 +409,7 @@ const UserListComponent = () => {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title" sx={{textAlign: 'center'}}>
+                <DialogTitle id="alert-dialog-title" sx={{ textAlign: 'center' }}>
                     New User Added!
                 </DialogTitle>
                 <DialogContent className="resConfirmed">
@@ -453,7 +452,7 @@ const UserListComponent = () => {
                                             <TableRow
                                                 hover
                                                 // onClick={(event) => handleClick(event, row.firstName)}
-                                                role="checkbox"
+                                                // role="checkbox"
                                                 // aria-checked={isItemSelected}
                                                 tabIndex={-1}
                                                 key={row.firstName}
@@ -473,6 +472,11 @@ const UserListComponent = () => {
                                                 <TableCell align="left">{row.email}</TableCell>
                                                 <TableCell align="left">{row.role}</TableCell>
                                                 <TableCell align="right">{row.dateAdded}</TableCell>
+                                                <TableCell align="right">
+                                                    <IconButton aria-label="edit">
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                </TableCell>
                                             </TableRow>
                                         );
                                     })}
