@@ -32,7 +32,7 @@ import firebase from '../../firebase/firebaseConfig';
 import Badge from '@mui/material/Badge';
 import CloseIcon from '@mui/icons-material/Close';
 import { arrayUnion } from 'firebase/firestore';
-
+import LoadingButton from '@mui/lab/LoadingButton';
 
 const steps = [
     'Enter Information',
@@ -107,28 +107,37 @@ const AddAnimal = () => {
 
     const animal = useSelector(selectForm);
     const locations = useSelector(selectLocations);
+    console.log(locations);
     const images = useSelector(selectImages);
     const user = useSelector(selectUser);
+    const promises: any[] = [];
 
     const saveNewAnimal = () => {
         setLoading(true);
-        for (var file of selectedFiles) {
-            storage
+        selectedFiles.map(file => {
+            promises.push(storage
                 .ref(`images/${commonName}/${file?.name}`)
                 .put(file)
                 .then(() => {
                     storage
                         .ref(`images/${commonName}/${file?.name}`)
                         .getDownloadURL()
-                        .then((url) => {
-                            setImageURLS(imageURLS => [...imageURLS, url]);
+                        .then((urls) => {
+                            setImageURLS(imageURLS => [...imageURLS, urls]);
                         })
                     setLoading(false);
-
                 })
-                .catch(error => alert(error.message))
-        }
+                .catch(error => alert(error.message)));
+        })
 
+        Promise.all(promises)
+            .then(result => {
+                uploadAnimal();
+            })
+            .catch(error => alert("Promise rejected"))
+    }
+
+    const uploadAnimal = () => {
         database
             .collection('animals')
             .doc()
@@ -164,12 +173,12 @@ const AddAnimal = () => {
                     }).then((result) => {
                         setLoading(false);
                         //Display pop up confirmation message here
+                        setOpenDialog(false);
                         console.log("Finished uploading");
                     })
             })
 
     }
-
 
     /// End of code for uploading gallery images
 
@@ -471,7 +480,7 @@ const AddAnimal = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
-                    {activeStep === 3 ? <Button type='submit' form="animalInfoForm" onClick={saveNewAnimal} sx={{ mr: 1 }}>Upload</Button>
+                    {activeStep === 3 ? <LoadingButton loading={loading} loadingPosition="center" type='submit' form="animalInfoForm" onClick={saveNewAnimal} sx={{ mr: 1 }}>Upload</LoadingButton>
                         :
                         <Button type='submit' form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>
