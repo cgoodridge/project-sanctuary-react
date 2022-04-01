@@ -15,7 +15,7 @@ import StepButton from '@mui/material/StepButton';
 import AnimalDataForm from './AnimalDataForm';
 import ConfirmationForm from './ConfirmationForm';
 import TextField from '@mui/material/TextField';
-import { saveData } from '../../slices/formDataSlice';
+import { clearImageURLS, saveData, saveImageURLS } from '../../slices/formDataSlice';
 import { useDispatch } from 'react-redux';
 import { database, storage } from '../../firebase/auth';
 import Paper from '@mui/material/Paper';
@@ -87,7 +87,7 @@ const AddAnimal = () => {
     });
 
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-    const [imageURLS, setImageURLS] = useState<string[]>([]);
+    const [imageURLS, setImageURLS] = useState<any[]>([]);
     const [isFilePicked, setIsFilePicked] = useState(false);
     const [openConfirmMessage, setOpenConfirmMessage] = useState(false);
 
@@ -110,32 +110,69 @@ const AddAnimal = () => {
     const animal = useSelector(selectForm);
     const locations = useSelector(selectLocations);
     const images = useSelector(selectImages);
+    console.log(images);
     const user = useSelector(selectUser);
     const promises: any[] = [];
 
     const saveNewAnimal = () => {
         setLoading(true);
+
+
         selectedFiles.map(file => {
             promises.push(storage
                 .ref(`images/${commonName}/${file?.name}`)
                 .put(file)
-                .then(() => {
-                    storage
-                        .ref(`images/${commonName}/${file?.name}`)
-                        .getDownloadURL()
-                        .then((urls) => {
-                            setImageURLS(imageURLS => [...imageURLS, urls]);
-                        })
-                    setLoading(false);
-                })
                 .catch(error => alert(error.message)));
         })
 
+
+
         Promise.all(promises)
             .then(result => {
-                uploadAnimal();
+                storage
+                    .ref(`images/${commonName}/`)
+                    .listAll()
+                    .then((urls) => {
+                        urls.items.forEach((image) => {
+                            image.getDownloadURL().then((url) => {
+                                dispatch(saveImageURLS(url))
+                                // setImageURLS(imageURLS);
+                            })
+                        })
+                    }).then(() => {
+                        uploadAnimal();
+                        dispatch(clearImageURLS());
+                        setLoading(false);
+                    })
             })
             .catch(error => alert("Promise rejected"))
+
+        /// OLD CODE
+
+        // selectedFiles.map(file => {
+        //     promises.push(storage
+        //         .ref(`images/${commonName}/${file?.name}`)
+        //         .put(file)
+        //         .then(() => {
+        //             storage
+        //                 .ref(`images/${commonName}/${file?.name}`)
+        //                 .getDownloadURL()
+        //                 .then((urls) => {
+        //                     setImageURLS(imageURLS => [...imageURLS, urls]);
+        //                 })
+        //             setLoading(false);
+        //         })
+        //         .catch(error => alert(error.message)));
+        // })
+
+        // Promise.all(promises)
+        //     .then(result => {
+        //         uploadAnimal();
+        //     })
+        //     .catch(error => alert("Promise rejected"))
+
+
+        /// END OF OLD CODE
     }
 
     const uploadAnimal = () => {
@@ -151,7 +188,7 @@ const AddAnimal = () => {
                 diet: diet,
                 family: family,
                 genus: genus,
-                imgURLS: imageURLS,
+                imgURLS: images,
                 kingdom: kingdom,
                 locations: locations,
                 lifespan: lifespan,
@@ -183,7 +220,9 @@ const AddAnimal = () => {
                         setSpecies('');
                         setDescription('');
                         handleConfirmMessageOpen();
+
                     })
+
             })
     }
 

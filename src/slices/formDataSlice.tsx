@@ -26,13 +26,18 @@ export const formDataSlice = createSlice({
 
         saveImageURLS: (state: any, action: any) => {
             state.imgURLS = [...state.imgURLS, action.payload];
+            console.log(state.imgURLS);
         },
+
+        clearImageURLS: (state: any) => {
+            state.imgURLS = [];
+        }
 
     }
 
 });
 
-export const { saveData, saveImageURLS } = formDataSlice.actions;
+export const { saveData, saveImageURLS, clearImageURLS } = formDataSlice.actions;
 
 export const selectForm = (state: RootStateOrAny) => state.form.formData;
 export const selectImages = (state: RootStateOrAny) => state.form.imageURLS;
