@@ -33,6 +33,7 @@ import Badge from '@mui/material/Badge';
 import CloseIcon from '@mui/icons-material/Close';
 import { arrayUnion } from 'firebase/firestore';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { clear } from '../../slices/locationDataSlice';
 
 const steps = [
     'Enter Information',
@@ -87,7 +88,7 @@ const AddAnimal = () => {
     });
 
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-    const [imageURLS, setImageURLS] = useState<string[]>([]);
+    const [imageURLS, setImageURLS] = useState<any[]>([]);
     const [isFilePicked, setIsFilePicked] = useState(false);
     const [openConfirmMessage, setOpenConfirmMessage] = useState(false);
 
@@ -120,21 +121,24 @@ const AddAnimal = () => {
             promises.push(storage
                 .ref(`images/${commonName}/${file?.name}`)
                 .put(file)
-                .then(() => {
-                    storage
-                        .ref(`images/${commonName}/${file?.name}`)
-                        .getDownloadURL()
-                        .then((urls) => {
-                            setImageURLS(imageURLS => [...imageURLS, urls]);
-                        })
-                    setLoading(false);
-                })
                 .catch(error => alert(error.message)));
         })
 
+
+
         Promise.all(promises)
             .then(result => {
-                uploadAnimal();
+                storage
+                    .ref(`images/${commonName}/`)
+                    .listAll()
+                    .then((urls) => {
+                        urls.items.forEach((image) => {
+                            setImageURLS(imageURLS => [...imageURLS, image.getDownloadURL]);
+                        })
+                    }).then(() => {
+                        uploadAnimal();
+                        setLoading(false);
+                    })
             })
             .catch(error => alert("Promise rejected"))
     }
@@ -174,7 +178,7 @@ const AddAnimal = () => {
                         imgURL: imageURLS[0]
                     }).then((result) => {
                         setLoading(false);
-                        
+
                         setOpenDialog(false);
                         setKingdom('');
                         setPhylum('');
@@ -185,6 +189,7 @@ const AddAnimal = () => {
                         setSpecies('');
                         setDescription('');
                         handleConfirmMessageOpen();
+                        dispatch(clear());
                     })
             })
     }
@@ -245,11 +250,9 @@ const AddAnimal = () => {
         }
 
         if (e && activeStep === 2) {
-            alert("Just passed image ");
             // return;
         }
         if (e && activeStep === 3) {
-            alert("Just passed image ");
             // return;
         }
 
@@ -524,7 +527,7 @@ const AddAnimal = () => {
                         <Button form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>
             </Dialog>
-            <Container>
+            <Container sx={{position: 'fixed', margin: 0, top: 'auto', right: 20, bottom: 100, left: 'auto'}}>
                 <Box sx={{ '& > :not(style)': { m: 1 }, position: "fixed", right: "10%" }}>
                     <Fab color="primary" variant="extended" onClick={handleClickOpen}>
                         <AddIcon sx={{ mr: 1 }} />
