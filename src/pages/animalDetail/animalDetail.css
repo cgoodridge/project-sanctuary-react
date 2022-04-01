@@ -1,12 +1,15 @@
-.animalImage{
+@import "~react-image-gallery/styles/css/image-gallery.css";
+
+.animalImage {
     border-radius: 10px;
 
 }
 
-.imageContainer{
+.imageContainer {
     height: 400px;
     width: 300px;
 }
+
 .imageContainer img {
     width: 100%;
     height: 100%;

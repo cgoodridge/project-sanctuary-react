@@ -15,7 +15,7 @@ import { red } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
 import Animal from '../../interfaces/animal';
 import { getDocs, where } from 'firebase/firestore';
-
+import ImageGallery from 'react-image-gallery';
 
 
 const AnimalDetail = () => {
@@ -26,7 +26,11 @@ const AnimalDetail = () => {
   const animalRef = database.collection("animals");
 
   const [animalInfo, setAnimalInfo] = useState<Animal>({});
+  const [animalImages, setAnimalImages] = useState<any[]>([]);
   const { name } = useParams();
+
+
+  console.log(animalImages);
 
   const _isMounted = useRef(true);
 
@@ -37,8 +41,8 @@ const AnimalDetail = () => {
       if (_isMounted.current) {
         dataRes.get().then((val) => {
           val.forEach((doc) => {
-            console.log(doc.data().commonName)
             setAnimalInfo(doc.data())
+            setAnimalImages(animalImages => [...animalImages, doc.data().imgURLS]);
           })
         })
       }
@@ -51,7 +55,6 @@ const AnimalDetail = () => {
     }
 
   }, []);
-
 
   return (
     <>
@@ -71,7 +74,8 @@ const AnimalDetail = () => {
 
           <Grid container>
             <Grid item xs={4} className='imageContainer'>
-              <img className='animalImage' src={animalInfo !== "" ? animalInfo.imgURL : ""} alt={animalInfo !== "" ? animalInfo.commonName : ""}/>
+              {/* <img className='animalImage' src={animalInfo !== "" ? animalInfo.imgURL : ""} alt={animalInfo !== "" ? animalInfo.commonName : ""}/> */}
+              <ImageGallery showFullscreenButton={false} showPlayButton={false} showThumbnails={false} items={animalImages[0]} />
             </Grid>
             <Grid item xs={8}>
               <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>

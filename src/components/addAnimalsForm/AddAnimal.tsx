@@ -15,7 +15,7 @@ import StepButton from '@mui/material/StepButton';
 import AnimalDataForm from './AnimalDataForm';
 import ConfirmationForm from './ConfirmationForm';
 import TextField from '@mui/material/TextField';
-import { saveData } from '../../slices/formDataSlice';
+import { clearImageURLS, saveData, saveImageURLS } from '../../slices/formDataSlice';
 import { useDispatch } from 'react-redux';
 import { database, storage } from '../../firebase/auth';
 import Paper from '@mui/material/Paper';
@@ -110,13 +110,15 @@ const AddAnimal = () => {
 
     const animal = useSelector(selectForm);
     const locations = useSelector(selectLocations);
-    console.log(locations);
     const images = useSelector(selectImages);
+    console.log(images);
     const user = useSelector(selectUser);
     const promises: any[] = [];
 
     const saveNewAnimal = () => {
         setLoading(true);
+
+
         selectedFiles.map(file => {
             promises.push(storage
                 .ref(`images/${commonName}/${file?.name}`)
@@ -133,14 +135,45 @@ const AddAnimal = () => {
                     .listAll()
                     .then((urls) => {
                         urls.items.forEach((image) => {
-                            setImageURLS(imageURLS => [...imageURLS, image.getDownloadURL]);
+                            image.getDownloadURL().then((url) => {
+                                dispatch(saveImageURLS(url))
+                                // setImageURLS(imageURLS);
+                            })
                         })
                     }).then(() => {
                         uploadAnimal();
+                        dispatch(clearImageURLS());
                         setLoading(false);
                     })
             })
             .catch(error => alert("Promise rejected"))
+
+        /// OLD CODE
+
+        // selectedFiles.map(file => {
+        //     promises.push(storage
+        //         .ref(`images/${commonName}/${file?.name}`)
+        //         .put(file)
+        //         .then(() => {
+        //             storage
+        //                 .ref(`images/${commonName}/${file?.name}`)
+        //                 .getDownloadURL()
+        //                 .then((urls) => {
+        //                     setImageURLS(imageURLS => [...imageURLS, urls]);
+        //                 })
+        //             setLoading(false);
+        //         })
+        //         .catch(error => alert(error.message)));
+        // })
+
+        // Promise.all(promises)
+        //     .then(result => {
+        //         uploadAnimal();
+        //     })
+        //     .catch(error => alert("Promise rejected"))
+
+
+        /// END OF OLD CODE
     }
 
     const uploadAnimal = () => {
@@ -149,14 +182,14 @@ const AddAnimal = () => {
             .doc()
             .set({
                 addedBy: user.uid,
-                class: kingdomClass,
+                kingdomClass: kingdomClass,
                 commonName: commonName,
                 dateAdded: firebase.firestore.Timestamp.fromDate(new Date()),
                 description: description,
                 diet: diet,
                 family: family,
                 genus: genus,
-                imgURLS: imageURLS,
+                imgURLS: images,
                 kingdom: kingdom,
                 locations: locations,
                 lifespan: lifespan,
@@ -178,7 +211,6 @@ const AddAnimal = () => {
                         imgURL: imageURLS[0]
                     }).then((result) => {
                         setLoading(false);
-
                         setOpenDialog(false);
                         setKingdom('');
                         setPhylum('');
@@ -189,8 +221,8 @@ const AddAnimal = () => {
                         setSpecies('');
                         setDescription('');
                         handleConfirmMessageOpen();
-                        dispatch(clear());
                     })
+
             })
     }
 
@@ -223,7 +255,7 @@ const AddAnimal = () => {
     const handleNext = (e: any) => {
 
         if (e && activeStep === 0) {
-            if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '') {
+            if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '' || commonName === '') {
                 alert("One or more fields, must be filled");
                 return;
             } else {
@@ -246,13 +278,15 @@ const AddAnimal = () => {
                 alert("Please choose at least 1 image");
                 return;
             }
-            // return;
         }
 
         if (e && activeStep === 2) {
+            // alert("Just passed image ");
             // return;
         }
+
         if (e && activeStep === 3) {
+            // alert("Just passed image ");
             // return;
         }
 
@@ -296,17 +330,21 @@ const AddAnimal = () => {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
+
                 <DialogTitle id="alert-dialog-title" sx={{ textAlign: 'center' }}>
                     New Animal Added!
                 </DialogTitle>
+
                 <DialogContent className="resConfirmed">
                     <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_tia15mzy.json" background="transparent" speed="1" style={{ width: '250px', height: '250px' }} loop autoplay></lottie-player>
                 </DialogContent>
+
                 <DialogActions>
                     <Button onClick={handleConfirmMessageClose} autoFocus>
                         OK
                     </Button>
                 </DialogActions>
+
             </Dialog>
 
             <Dialog open={openDialog} onClose={handleClose} >
@@ -444,6 +482,92 @@ const AddAnimal = () => {
                         </Box>
 
                         <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="diet"
+                                label="Diet"
+                                value={diet}
+                                onChange={(e: any) => setDiet(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="lifestyle"
+                                label="Lifestyle"
+                                value={lifestyle}
+                                onChange={(e: any) => setLifestyle(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="lifespan"
+                                label="Lifespan"
+                                value={lifespan}
+                                onChange={(e: any) => setLifespan(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="nameOfYoung"
+                                label="Name of Young"
+                                value={nameOfYoung}
+                                onChange={(e: any) => setNameOfYoung(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="redListStatus"
+                                label="Red List Status"
+                                value={redListStatus}
+                                onChange={(e: any) => setRedListStatus(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="scientificName"
+                                label="Scientific Name"
+                                value={scientificName}
+                                onChange={(e: any) => setScientificName(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+
+                        <Box sx={{
                             '& > :not(style)': { m: 1, width: '60ch' },
                         }}>
                             <TextField
@@ -456,6 +580,22 @@ const AddAnimal = () => {
                                 type="text"
                                 fullWidth
                                 multiline
+                                variant="standard"
+                            />
+                        </Box>
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '60ch' },
+                        }}>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="source"
+                                label="Source"
+                                required
+                                value={source}
+                                onChange={(e: any) => setSource(e.target.value)}
+                                type="text"
+                                fullWidth
                                 variant="standard"
                             />
                         </Box>
