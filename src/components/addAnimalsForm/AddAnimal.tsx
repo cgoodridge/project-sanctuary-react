@@ -216,7 +216,7 @@ const AddAnimal = () => {
     const handleNext = (e: any) => {
 
         if (e && activeStep === 0) {
-            if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '') {
+            if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '' || commonName === '') {
                 alert("One or more fields, must be filled");
                 return;
             } else {
@@ -443,6 +443,92 @@ const AddAnimal = () => {
                         </Box>
 
                         <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="diet"
+                                label="Diet"
+                                value={diet}
+                                onChange={(e: any) => setDiet(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="lifestyle"
+                                label="Lifestyle"
+                                value={lifestyle}
+                                onChange={(e: any) => setLifestyle(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="lifespan"
+                                label="Lifespan"
+                                value={lifespan}
+                                onChange={(e: any) => setLifespan(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="nameOfYoung"
+                                label="Name of Young"
+                                value={nameOfYoung}
+                                onChange={(e: any) => setNameOfYoung(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="redListStatus"
+                                label="Red List Status"
+                                value={redListStatus}
+                                onChange={(e: any) => setRedListStatus(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="scientificName"
+                                label="Scientific Name"
+                                value={scientificName}
+                                onChange={(e: any) => setScientificName(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+
+                        <Box sx={{
                             '& > :not(style)': { m: 1, width: '60ch' },
                         }}>
                             <TextField
@@ -455,6 +541,22 @@ const AddAnimal = () => {
                                 type="text"
                                 fullWidth
                                 multiline
+                                variant="standard"
+                            />
+                        </Box>
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '60ch' },
+                        }}>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="source"
+                                label="Source"
+                                required
+                                value={source}
+                                onChange={(e: any) => setSource(e.target.value)}
+                                type="text"
+                                fullWidth
                                 variant="standard"
                             />
                         </Box>
