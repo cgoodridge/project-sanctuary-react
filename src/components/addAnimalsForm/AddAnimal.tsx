@@ -109,7 +109,6 @@ const AddAnimal = () => {
 
     const animal = useSelector(selectForm);
     const locations = useSelector(selectLocations);
-    console.log(locations);
     const images = useSelector(selectImages);
     const user = useSelector(selectUser);
     const promises: any[] = [];
@@ -145,7 +144,7 @@ const AddAnimal = () => {
             .doc()
             .set({
                 addedBy: user.uid,
-                class: kingdomClass,
+                kingdomClass: kingdomClass,
                 commonName: commonName,
                 dateAdded: firebase.firestore.Timestamp.fromDate(new Date()),
                 description: description,
@@ -174,7 +173,6 @@ const AddAnimal = () => {
                         imgURL: imageURLS[0]
                     }).then((result) => {
                         setLoading(false);
-                        
                         setOpenDialog(false);
                         setKingdom('');
                         setPhylum('');
@@ -241,15 +239,15 @@ const AddAnimal = () => {
                 alert("Please choose at least 1 image");
                 return;
             }
-            // return;
         }
 
         if (e && activeStep === 2) {
-            alert("Just passed image ");
+            // alert("Just passed image ");
             // return;
         }
+
         if (e && activeStep === 3) {
-            alert("Just passed image ");
+            // alert("Just passed image ");
             // return;
         }
 
@@ -293,17 +291,21 @@ const AddAnimal = () => {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
+
                 <DialogTitle id="alert-dialog-title" sx={{ textAlign: 'center' }}>
                     New Animal Added!
                 </DialogTitle>
+
                 <DialogContent className="resConfirmed">
                     <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_tia15mzy.json" background="transparent" speed="1" style={{ width: '250px', height: '250px' }} loop autoplay></lottie-player>
                 </DialogContent>
+
                 <DialogActions>
                     <Button onClick={handleConfirmMessageClose} autoFocus>
                         OK
                     </Button>
                 </DialogActions>
+
             </Dialog>
 
             <Dialog open={openDialog} onClose={handleClose} >

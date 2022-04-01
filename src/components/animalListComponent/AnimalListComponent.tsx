@@ -40,14 +40,14 @@ const AnimalListComponent = ({ animalList }: any) => {
             const data = await getDocs(animalCollectionRef);
             if (_isMounted.current) {
                 setAnimals(data.docs.map(doc => ({
-                    class: doc.data().kingdomClass,
+                    kingdomClass: doc.data().kingdomClass,
                     commonName: doc.data().commonName,
                     dateAdded: doc.data().dateAdded,
                     description: doc.data().description,
                     diet: doc.data().diet,
                     family: doc.data().family,
                     genus: doc.data().genus,
-                    imgURL: doc.data().imgURL,
+                    imgURLS: doc.data().imgURLS,
                     kingdom: doc.data().kingdom,
                     latitude: doc.data().latitude,
                     longitude: doc.data().longitude,
@@ -100,7 +100,7 @@ const AnimalListComponent = ({ animalList }: any) => {
                             <CardMedia
                                 component="img"
                                 height="300"
-                                image={animal.imgURL}
+                                image={animal.imgURLS[0]}
                                 alt={animal.commonName}
                             />
                             <CardContent>
