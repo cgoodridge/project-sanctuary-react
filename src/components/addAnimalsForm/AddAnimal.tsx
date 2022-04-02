@@ -15,7 +15,6 @@ import StepButton from '@mui/material/StepButton';
 import AnimalDataForm from './AnimalDataForm';
 import ConfirmationForm from './ConfirmationForm';
 import TextField from '@mui/material/TextField';
-import { clearImageURLS, saveData, saveImageURLS } from '../../slices/formDataSlice';
 import { useDispatch } from 'react-redux';
 import { database, storage } from '../../firebase/auth';
 import Paper from '@mui/material/Paper';
@@ -25,7 +24,7 @@ import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import MapFormComponent from '../mapFormComponent/MapFormComponent';
 import { useSelector } from 'react-redux';
-import { selectForm, selectImages } from '../../slices/formDataSlice';
+import { selectForm, saveData } from '../../slices/formDataSlice';
 import { selectLocations } from '../../slices/locationDataSlice';
 import { selectUser } from '../../slices/userSlice';
 import firebase from '../../firebase/firebaseConfig';
@@ -34,6 +33,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { arrayUnion } from 'firebase/firestore';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { clear } from '../../slices/locationDataSlice';
+import { clearImageURLS, saveImageURLS, selectImages } from '../../slices/imageDataSlice';
 
 const steps = [
     'Enter Information',
@@ -142,7 +142,6 @@ const AddAnimal = () => {
                         })
                     }).then(() => {
                         uploadAnimal();
-                        dispatch(clearImageURLS());
                         setLoading(false);
                     })
             })
@@ -201,6 +200,8 @@ const AddAnimal = () => {
                 scientificName: scientificName,
                 source: source
             }).then(() => {
+                dispatch(clearImageURLS());
+
                 database
                     .collection('locations')
                     .doc()
@@ -209,7 +210,7 @@ const AddAnimal = () => {
                         locationColour: "Blue",
                         name: locationName,
                         imgURL: imageURLS[0]
-                    }).then((result) => {
+                    }).then(() => {
                         setLoading(false);
                         setOpenDialog(false);
                         setKingdom('');

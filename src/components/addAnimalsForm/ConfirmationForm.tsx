@@ -2,9 +2,10 @@ import { Box } from '@mui/material';
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { useSelector } from 'react-redux';
-import { selectForm, selectImages } from '../../slices/formDataSlice';
+import { selectForm } from '../../slices/formDataSlice';
 import { selectLocations } from '../../slices/locationDataSlice';
 import { storage, database } from '../../firebase/auth';
+import { selectImages } from '../../slices/imageDataSlice';
 
 const ConfirmationForm = () => {
 
