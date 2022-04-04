@@ -5,7 +5,7 @@ export const locationDataSlice = createSlice({
 
     name: "locationData",
     initialState: {
-        locations: [{}],
+        locations: [],
     },
     reducers: {
         saveLocations: (state: any, action: any) => {
@@ -13,7 +13,7 @@ export const locationDataSlice = createSlice({
         },
 
         clear: (state: any) => {
-            state.locations = [{}];
+            state.locations = [];
         }
     }
 });

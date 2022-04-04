@@ -89,6 +89,7 @@ const AddAnimal = () => {
 
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [imageURLS, setImageURLS] = useState<any[]>([]);
+    const [locationData, setLocationData] = useState<any[]>([]);
     const [newImageURLS, setNewImageURLS] = useState<any[]>([]);
     const [isFilePicked, setIsFilePicked] = useState(false);
     const [openConfirmMessage, setOpenConfirmMessage] = useState(false);
@@ -219,7 +220,7 @@ const AddAnimal = () => {
                 genus: genus,
                 imgURLS: imageURLS,
                 kingdom: kingdom,
-                locations: locations,
+                locations: locationData,
                 lifespan: lifespan,
                 lifestyle: lifestyle,
                 nameOfYoung: nameOfYoung,
@@ -319,6 +320,7 @@ const AddAnimal = () => {
             // alert("Just passed image ");
             getImageURLS();
             console.log("These are the images " + images);
+            setLocationData(locationData => locations);
             // return;
         }
 
