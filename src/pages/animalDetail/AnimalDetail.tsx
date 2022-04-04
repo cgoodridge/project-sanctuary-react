@@ -39,12 +39,14 @@ const AnimalDetail = () => {
     const getAnimalInfo = async () => {
       const dataRes = await animalRef.where('commonName', '==', name?.replace(/_/g, ''));
       if (_isMounted.current) {
+        
         dataRes.get().then((val) => {
-          val.forEach((doc) => {
+          val?.forEach((doc) => {
             setAnimalInfo(doc.data())
             setAnimalImages(animalImages => [...animalImages, doc.data().imgURLS]);
           })
         })
+        
       }
     }
 
@@ -75,7 +77,7 @@ const AnimalDetail = () => {
           <Grid container>
             <Grid item xs={4} className='imageContainer'>
               {/* <img className='animalImage' src={animalInfo !== "" ? animalInfo.imgURL : ""} alt={animalInfo !== "" ? animalInfo.commonName : ""}/> */}
-              <ImageGallery showFullscreenButton={false} showPlayButton={false} showThumbnails={false} items={animalImages[0]} />
+              {animalImages.length !== 0 ? <ImageGallery showFullscreenButton={false} showPlayButton={false} showThumbnails={false} items={animalImages[0]} /> : <></>}
             </Grid>
             <Grid item xs={8}>
               <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
@@ -84,7 +86,7 @@ const AnimalDetail = () => {
               <Grid container justifyContent="center">
                 <Grid item>
                   <Typography variant="h5" gutterBottom sx={{ textAlign: 'center' }}>
-                    <a href="https://www.iucnredlist.org/">IUCN Red List Status</a>  - {animalInfo.redlistStatus}
+                    <a href="https://www.iucnredlist.org/">IUCN Red List Status</a>  - {animalInfo ? animalInfo.redlistStatus : 'N/A'}
                   </Typography>
                 </Grid>
                 <Grid item sx={{ marginLeft: '8px' }}>

@@ -13,7 +13,7 @@ export const locationDataSlice = createSlice({
         },
 
         clear: (state: any) => {
-            state.locations = [];
+            state.locations = [{}];
         }
     }
 });
