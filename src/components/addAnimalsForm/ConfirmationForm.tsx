@@ -13,7 +13,7 @@ const ConfirmationForm = () => {
 
   const animal = useSelector(selectForm);
   const locations = useSelector(selectLocations);
-  console.log(locations);
+  // console.log(locations);
   const images = useSelector(selectImages);
 
   /// Form values

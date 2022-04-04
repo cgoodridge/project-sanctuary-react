@@ -89,6 +89,7 @@ const AddAnimal = () => {
 
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [imageURLS, setImageURLS] = useState<any[]>([]);
+    const [newImageURLS, setNewImageURLS] = useState<any[]>([]);
     const [isFilePicked, setIsFilePicked] = useState(false);
     const [openConfirmMessage, setOpenConfirmMessage] = useState(false);
 
@@ -111,41 +112,68 @@ const AddAnimal = () => {
     const animal = useSelector(selectForm);
     const locations = useSelector(selectLocations);
     const images = useSelector(selectImages);
-    console.log(images);
+
     const user = useSelector(selectUser);
     const promises: any[] = [];
+    const newURLS: any[] = [];
 
-    const saveNewAnimal = () => {
-        setLoading(true);
+    useEffect(() => {
+        if (images.length > 0) {
+            // console.log("About to upload Animal");
+            // uploadAnimal();
+        }
+    }, [images])
 
+    const uploadImages = async () => {
+        await Promise.all(
+            selectedFiles.map(file => {
+                promises.push(storage
+                    .ref(`images/${commonName}/${file?.name}`)
+                    .put(file)
+                    .catch(error => alert(error.message)));
+            })
+        )
+    }
 
-        selectedFiles.map(file => {
-            promises.push(storage
-                .ref(`images/${commonName}/${file?.name}`)
-                .put(file)
-                .catch(error => alert(error.message)));
-        })
-
-        Promise.all(promises)
+    const getImageURLS = async () => {
+        await Promise.all(promises)
             .then(result => {
                 storage
                     .ref(`images/${commonName}/`)
                     .listAll()
                     .then((urls) => {
                         urls.items.forEach((image) => {
-                            image.getDownloadURL().then((url) => {
-                                dispatch(saveImageURLS(url))
-                                // setImageURLS(imageURLS);
-                            })
+                            image.getDownloadURL()
+                                .then(async (url) => {
+                                    let newURL = url;
+                                    // console.log("Image URL is " + url);
+                                    setImageURLS((imageURLS) => [...imageURLS, newURL]);
+                                    // dispatch(saveImageURLS(newURL));
+                                })
                         })
-                    }).then(() => {
-                        uploadAnimal();
+
+                    })
+                    .then(async () => {
                         setLoading(false);
                     })
             })
             .catch(error => alert("Promise rejected"))
+    }
 
-        /// OLD CODE
+
+    const saveNewAnimal = async () => {
+        setLoading(true);
+
+        if (images.length > 0) {
+            dispatch(clearImageURLS());
+        }
+
+
+
+
+
+
+        ////// OLD CODE
 
         // selectedFiles.map(file => {
         //     promises.push(storage
@@ -169,11 +197,14 @@ const AddAnimal = () => {
         //     })
         //     .catch(error => alert("Promise rejected"))
 
+        ////// END OF OLD CODE
 
-        /// END OF OLD CODE
     }
 
-    const uploadAnimal = () => {
+    const uploadAnimal = async () => {
+
+
+
         database
             .collection('animals')
             .doc()
@@ -186,7 +217,7 @@ const AddAnimal = () => {
                 diet: diet,
                 family: family,
                 genus: genus,
-                imgURLS: images,
+                imgURLS: imageURLS,
                 kingdom: kingdom,
                 locations: locations,
                 lifespan: lifespan,
@@ -198,7 +229,6 @@ const AddAnimal = () => {
                 scientificName: scientificName,
                 source: source
             }).then(() => {
-                dispatch(clearImageURLS());
 
                 database
                     .collection('locations')
@@ -219,10 +249,14 @@ const AddAnimal = () => {
                         setGenus('');
                         setSpecies('');
                         setDescription('');
+                        dispatch(clearImageURLS());
+                        dispatch(clear());
                         handleConfirmMessageOpen();
                     })
 
             })
+
+
     }
 
     /// End of code for uploading gallery images
@@ -254,7 +288,8 @@ const AddAnimal = () => {
     const handleNext = (e: any) => {
 
         if (e && activeStep === 0) {
-            if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '' || commonName === '') {
+            // if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '' || commonName === '') {
+            if (commonName === '') {
                 alert("One or more fields, must be filled");
                 return;
             } else {
@@ -277,10 +312,13 @@ const AddAnimal = () => {
                 alert("Please choose at least 1 image");
                 return;
             }
+            uploadImages();
         }
 
         if (e && activeStep === 2) {
             // alert("Just passed image ");
+            getImageURLS();
+            console.log("These are the images " + images);
             // return;
         }
 
@@ -661,7 +699,7 @@ const AddAnimal = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
-                    {activeStep === 3 ? <LoadingButton loading={loading} loadingPosition="center" type='submit' form="animalInfoForm" onClick={saveNewAnimal} sx={{ mr: 1 }}>Upload</LoadingButton>
+                    {activeStep === 3 ? <LoadingButton loading={loading} loadingPosition="center" type='submit' form="animalInfoForm" onClick={uploadAnimal} sx={{ mr: 1 }}>Upload</LoadingButton>
                         :
                         <Button form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>

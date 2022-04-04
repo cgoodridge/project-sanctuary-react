@@ -30,16 +30,11 @@ const MapFormComponent = () => {
     };
 
     const confirmLocations = () => {
-        // This allows us to access the JSON properties. Continue on this route
-        console.log(JSON.parse(JSON.stringify(clicks)));
-
         clicks.map((location) => {
-            console.log(JSON.parse(JSON.stringify(location)));
             let newLocation = JSON.parse(JSON.stringify(location));
             // console.log("New Locations are " + newLocation.lat);
             setJsonClicks(jsonClicks => [...jsonClicks, newLocation]);
         })
-        console.log("JSON Clicks are " + jsonClicks);
         dispatch(saveLocations(jsonClicks));
     }
     const clearLocations = () => {

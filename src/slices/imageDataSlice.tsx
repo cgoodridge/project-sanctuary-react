@@ -5,22 +5,27 @@ export const imageDataSlice = createSlice({
 
     name: "imageData",
     initialState: {
-        images: [{}],
+        images: [],
     },
     reducers: {
         saveImageURLS: (state: any, action: any) => {
-            state.imgURLS = [...state.imgURLS, action.payload];
-            console.log(state.imgURLS);
+
+            let newImages = [...state.images];
+            newImages = [...newImages, action.payload];
+
+            state.images = newImages;
+
+            console.log("State images are " + state.images);
         },
 
         clearImageURLS: (state: any) => {
-            state.imgURLS = [{}];
+            state.images = [];
         }
     }
 });
 
 export const { saveImageURLS, clearImageURLS } = imageDataSlice.actions;
 
-export const selectImages = (state: RootStateOrAny) => state.location.locations;
+export const selectImages = (state: RootStateOrAny) => state.image.images;
 
 export default imageDataSlice.reducer;

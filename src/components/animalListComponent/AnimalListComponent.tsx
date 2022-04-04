@@ -31,7 +31,9 @@ const AnimalListComponent = ({ animalList }: any) => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const checkWhiteSpace = (name: string) => {
-        return name.indexOf(' ') >= 0;
+        if (name) {
+            return name.indexOf(' ') >= 0;
+        }
     }
 
     useEffect(() => {
@@ -60,7 +62,7 @@ const AnimalListComponent = ({ animalList }: any) => {
                     redlistStatus: doc.data().redListStatus,
                     scientificName: doc.data().scientificName,
                     source: doc.data().source,
-                  })));
+                })));
             }
         }
 
