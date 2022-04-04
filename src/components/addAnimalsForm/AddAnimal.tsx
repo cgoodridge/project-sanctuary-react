@@ -125,8 +125,6 @@ const AddAnimal = () => {
                 .catch(error => alert(error.message)));
         })
 
-
-
         Promise.all(promises)
             .then(result => {
                 storage
@@ -668,7 +666,7 @@ const AddAnimal = () => {
                 </DialogActions>
             </Dialog>
             <Container>
-                <Box sx={{ '& > :not(style)': { m: 1 }, position: "fixed", right: "10%" }}>
+                <Box sx={{ '& > :not(style)': { m: 1 }, position: "fixed", bottom: "10%", right: "10%" }}>
                     <Fab color="primary" variant="extended" onClick={handleClickOpen}>
                         <AddIcon sx={{ mr: 1 }} />
                         Add Animal

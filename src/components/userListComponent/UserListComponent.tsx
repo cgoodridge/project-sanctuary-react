@@ -477,6 +477,11 @@ const UserListComponent = () => {
                                                         <EditIcon />
                                                     </IconButton>
                                                 </TableCell>
+                                                <TableCell align="left">
+                                                    <IconButton aria-label="edit">
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </TableCell>
                                             </TableRow>
                                         );
                                     })}
