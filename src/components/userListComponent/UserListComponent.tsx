@@ -493,9 +493,10 @@ const UserListComponent = () => {
                                                     />
 
                                                         :
+                                                        <Tooltip title="Currently Logged in User">
+                                                            <PersonIcon sx={{ color: "green" }} />
+                                                        </Tooltip>
 
-                                                        <PersonIcon sx={{ color: "green" }} />
-                                                        
                                                     }
                                                 </TableCell>
 
