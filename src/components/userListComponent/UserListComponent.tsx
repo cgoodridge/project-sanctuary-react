@@ -208,6 +208,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         // Show confirmation dialog
         console.log("Deleting items " + props.selectedVals);
 
+        
     }
 
 

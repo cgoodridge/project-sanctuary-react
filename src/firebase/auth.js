@@ -2,6 +2,7 @@ import firebase from '../firebase/firebaseConfig';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/compat/storage';
+
 import { collection } from 'firebase/firestore';
 
 export const signup = async ({ firstName, lastName, email, password }) => {
