@@ -32,6 +32,9 @@ import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import firebase from '../../firebase/firebaseConfig';
 import EditIcon from '@mui/icons-material/Edit';
+import { selectUser } from '../../slices/userSlice';
+import { useSelector } from 'react-redux';
+import PersonIcon from '@mui/icons-material/Person';
 
 interface Data {
     id: string;
@@ -204,9 +207,9 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
     const handleDelete = () => {
         // Show confirmation dialog
         console.log("Deleting items " + props.selectedVals);
-    
+
     }
-    
+
 
     return (
         <Toolbar
@@ -266,6 +269,7 @@ const UserListComponent = () => {
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     console.log("Selected IDs are " + selected);
+    const currentUser = useSelector(selectUser);
 
     const _isMounted = useRef(true);
     const [rows, setUsers] = useState<Data[]>([]);
@@ -351,6 +355,7 @@ const UserListComponent = () => {
 
     }, []);
 
+
     const [openDialog, setOpenDialog] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -362,6 +367,7 @@ const UserListComponent = () => {
     const [role, setRole] = useState('');
     const [openConfirmMessage, setOpenConfirmMessage] = useState(false);
     const navigate = useNavigate();
+
 
     const handleSave = () => {
         if (password !== passwordConfirm) {
@@ -397,7 +403,7 @@ const UserListComponent = () => {
 
     }
 
-    
+
 
     const handleEdit = () => {
         // Replace cells with text fields
@@ -443,7 +449,7 @@ const UserListComponent = () => {
 
             <Box sx={{ width: '100%' }}>
                 <Paper sx={{ width: '100%', mb: 2 }}>
-                    <EnhancedTableToolbar numSelected={selected.length} selectedVals={selected}/>
+                    <EnhancedTableToolbar numSelected={selected.length} selectedVals={selected} />
                     <TableContainer>
                         <Table
                             sx={{ minWidth: 750 }}
@@ -478,24 +484,33 @@ const UserListComponent = () => {
                                                 selected={isItemSelected}
                                             >
                                                 <TableCell padding="checkbox">
-                                                    <Checkbox
+                                                    {currentUser.uid !== row.id ? <Checkbox
                                                         color="primary"
                                                         checked={isItemSelected}
                                                         inputProps={{
                                                             'aria-labelledby': labelId,
                                                         }}
                                                     />
+
+                                                        :
+
+                                                        <PersonIcon sx={{ color: "green" }} />
+                                                        
+                                                    }
                                                 </TableCell>
+
                                                 <TableCell align='left' component="th" id={labelId} scope="row" padding="normal">{row.firstName}</TableCell>
                                                 <TableCell align="left">{row.lastName}</TableCell>
                                                 <TableCell align="left">{row.email}</TableCell>
                                                 <TableCell align="left">{row.role}</TableCell>
                                                 <TableCell align="right">{row.dateAdded}</TableCell>
+
                                                 <TableCell align="right">
                                                     <IconButton aria-label="edit">
                                                         <EditIcon />
                                                     </IconButton>
                                                 </TableCell>
+
                                             </TableRow>
                                         );
                                     })}
