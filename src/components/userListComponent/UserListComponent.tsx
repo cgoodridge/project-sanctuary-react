@@ -34,12 +34,31 @@ import firebase from '../../firebase/firebaseConfig';
 import EditIcon from '@mui/icons-material/Edit';
 
 interface Data {
+    id: string;
     firstName: string;
     lastName: string;
     role: string;
     email: string;
-    dateAdded: Date;
+    dateAdded: string;
 
+}
+
+function createData(
+    id: string,
+    firstName: string,
+    lastName: string,
+    role: string,
+    email: string,
+    dateAdded: string,
+): Data {
+    return {
+        id,
+        firstName,
+        lastName,
+        role,
+        email,
+        dateAdded,
+    };
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -174,10 +193,20 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
     numSelected: number;
+    selectedVals: readonly string[];
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
     const { numSelected } = props;
+
+    // const { selectedVals } = props.selectedVals;
+
+    const handleDelete = () => {
+        // Show confirmation dialog
+        console.log("Deleting items " + props.selectedVals);
+    
+    }
+    
 
     return (
         <Toolbar
@@ -211,7 +240,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
             )}
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
-                    <IconButton>
+                    <IconButton onClick={handleDelete}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
@@ -227,6 +256,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
 };
 
 
+
 const UserListComponent = () => {
 
     const [order, setOrder] = useState<Order>('asc');
@@ -235,9 +265,10 @@ const UserListComponent = () => {
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    console.log("Selected IDs are " + selected);
 
     const _isMounted = useRef(true);
-    const [rows, setUsers] = useState<any[]>([]);
+    const [rows, setUsers] = useState<Data[]>([]);
 
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
@@ -250,7 +281,7 @@ const UserListComponent = () => {
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.name);
+            const newSelecteds = rows.map((n) => n.id);
             setSelected(newSelecteds);
             return;
         }
@@ -320,23 +351,6 @@ const UserListComponent = () => {
 
     }, []);
 
-    useEffect(() => {
-
-        const getUserList = async () => {
-            const data = await getDocs(userCollectionRef);
-            if (_isMounted.current) {
-
-            }
-        }
-
-        getUserList();
-
-        return () => { // ComponentWillUnmount 
-            _isMounted.current = false;
-        }
-
-    }, []);
-
     const [openDialog, setOpenDialog] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -383,6 +397,11 @@ const UserListComponent = () => {
 
     }
 
+    
+
+    const handleEdit = () => {
+        // Replace cells with text fields
+    }
 
     const handleConfirmMessageOpen = () => {
         setOpenConfirmMessage(true);
@@ -424,7 +443,7 @@ const UserListComponent = () => {
 
             <Box sx={{ width: '100%' }}>
                 <Paper sx={{ width: '100%', mb: 2 }}>
-                    <EnhancedTableToolbar numSelected={selected.length} />
+                    <EnhancedTableToolbar numSelected={selected.length} selectedVals={selected}/>
                     <TableContainer>
                         <Table
                             sx={{ minWidth: 750 }}
@@ -445,23 +464,23 @@ const UserListComponent = () => {
                                 {stableSort(rows, getComparator(order, orderBy))
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row, index) => {
-                                        // const isItemSelected = isSelected(row.firstName);
+                                        const isItemSelected = isSelected(row.id);
                                         const labelId = `enhanced-table-checkbox-${index}`;
 
                                         return (
                                             <TableRow
                                                 hover
-                                                // onClick={(event) => handleClick(event, row.firstName)}
-                                                // role="checkbox"
-                                                // aria-checked={isItemSelected}
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                role="checkbox"
+                                                aria-checked={isItemSelected}
                                                 tabIndex={-1}
-                                                key={row.firstName}
-                                            // selected={isItemSelected}
+                                                key={row.id}
+                                                selected={isItemSelected}
                                             >
                                                 <TableCell padding="checkbox">
                                                     <Checkbox
                                                         color="primary"
-                                                        // checked={isItemSelected}
+                                                        checked={isItemSelected}
                                                         inputProps={{
                                                             'aria-labelledby': labelId,
                                                         }}
@@ -475,11 +494,6 @@ const UserListComponent = () => {
                                                 <TableCell align="right">
                                                     <IconButton aria-label="edit">
                                                         <EditIcon />
-                                                    </IconButton>
-                                                </TableCell>
-                                                <TableCell align="left">
-                                                    <IconButton aria-label="edit">
-                                                        <DeleteIcon />
                                                     </IconButton>
                                                 </TableCell>
                                             </TableRow>
