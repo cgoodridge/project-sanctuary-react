@@ -34,6 +34,7 @@ import { arrayUnion } from 'firebase/firestore';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { clear } from '../../slices/locationDataSlice';
 import { clearImageURLS, saveImageURLS, selectImages } from '../../slices/imageDataSlice';
+import { useNavigate } from 'react-router-dom';
 
 const steps = [
     'Enter Information',
@@ -46,6 +47,7 @@ const AddAnimal = () => {
 
     const [openDialog, setOpenDialog] = useState(false);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
 
     const [saveAnimalData, setSaveAnimalData] = useState(false);
@@ -119,11 +121,8 @@ const AddAnimal = () => {
     const newURLS: any[] = [];
 
     useEffect(() => {
-        if (images.length > 0) {
-            // console.log("About to upload Animal");
-            // uploadAnimal();
-        }
-    }, [images])
+        
+    }, [locationData])
 
     const uploadImages = async () => {
         await Promise.all(
@@ -203,9 +202,6 @@ const AddAnimal = () => {
     }
 
     const uploadAnimal = async () => {
-
-
-
         database
             .collection('animals')
             .doc()
@@ -253,6 +249,7 @@ const AddAnimal = () => {
                         dispatch(clearImageURLS());
                         dispatch(clear());
                         handleConfirmMessageOpen();
+                        
                     })
 
             })
@@ -374,7 +371,7 @@ const AddAnimal = () => {
                     New Animal Added!
                 </DialogTitle>
 
-                <DialogContent className="resConfirmed">
+                <DialogContent className="dataSaved">
                     <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_tia15mzy.json" background="transparent" speed="1" style={{ width: '250px', height: '250px' }} loop autoplay></lottie-player>
                 </DialogContent>
 

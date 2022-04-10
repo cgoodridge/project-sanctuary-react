@@ -7,7 +7,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { animalCollectionRef, database } from '../../firebase/auth';
+import { animalCollectionRef, database, storage } from '../../firebase/auth';
 import { Link } from 'react-router-dom';
 import './animalListComponent.css';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -36,12 +36,33 @@ const AnimalListComponent = ({ animalList }: any) => {
         }
     }
 
+    const removeAnimal = async (id: string, commonName: string) => {
+        database
+            .collection("animals")
+            .doc(id)
+            .delete()
+            .then(() => {
+                storage
+                    .ref(`images/${commonName}`)
+                    .listAll()
+                    .then((image) => {
+                        image.items.forEach((file) => {
+                            file.delete();
+                        })
+                    })
+                    .then(() => {
+                        console.log("Animal deleted");
+                    })
+            });
+    };
+
     useEffect(() => {
 
         const getAnimalCount = async () => {
             const data = await getDocs(animalCollectionRef);
             if (_isMounted.current) {
                 setAnimals(data.docs.map(doc => ({
+                    id: doc.id,
                     kingdomClass: doc.data().kingdomClass,
                     commonName: doc.data().commonName,
                     dateAdded: doc.data().dateAdded,
@@ -72,7 +93,7 @@ const AnimalListComponent = ({ animalList }: any) => {
             _isMounted.current = false;
         }
 
-    }, []);
+    }, [animals]);
 
     return (
         <>
@@ -94,41 +115,16 @@ const AnimalListComponent = ({ animalList }: any) => {
                     }} />
             </Box>
 
-            <Grid container spacing={{ xs: 2, md: 2 }} columns={{ xs: 2, sm: 8, md: 12 }} sx={{ marginTop: "64px", marginBottom: "32px" }}>
+            <Box sx={{ flexGrow: 1 }}>
+                <Grid container spacing={{ xs: 2, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{ marginTop: "64px", marginBottom: "32px" }}>
 
-                {searchQuery === '' ? animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.map((animal, key) => (
-                    <Grid item xs={2} sm={2} md={3} lg={4} key={key}>
-                        <Card sx={{ maxWidth: 300, minWidth: 300 }}>
-                            <CardMedia
-                                component="img"
-                                height="300"
-                                image={animal.imgURLS[0]}
-                                alt={animal.commonName}
-                            />
-                            <CardContent>
-                                <Typography gutterBottom variant="h5" component="div">
-                                    {animal.commonName}
-                                </Typography>
-                                <Typography variant="body2" noWrap color="text.secondary">
-                                    {animal.description}
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Link key={animal.commonName} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >Learn More </Button></Link>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                ))
-
-                    :
-
-                    animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.filter(animal => animal.commonName.toLowerCase().includes(searchQuery.toLowerCase())).map((animal, key) => (
-                        <Grid item xs={2} sm={4} md={4} key={key}>
+                    {searchQuery === '' ? animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.map((animal, key) => (
+                        <Grid item xs={12} sm={4} md={4} lg={4} key={key}>
                             <Card sx={{ maxWidth: 300, minWidth: 300 }}>
                                 <CardMedia
                                     component="img"
                                     height="300"
-                                    image={animal.imgURL}
+                                    image={animal.imgURLS[0]}
                                     alt={animal.commonName}
                                 />
                                 <CardContent>
@@ -140,13 +136,43 @@ const AnimalListComponent = ({ animalList }: any) => {
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Link key={animal.commonName} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >Learn More</Button></Link>
+                                    <Link key={animal.commonName} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >Learn More </Button></Link>
+                                    <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete </Button>
                                 </CardActions>
                             </Card>
                         </Grid>
                     ))
-                }
-            </Grid>
+
+                        :
+
+                        animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.filter(animal => animal.commonName.toLowerCase().includes(searchQuery.toLowerCase())).map((animal, key) => (
+                            <Grid item xs={2} sm={4} md={4} key={key}>
+                                <Card sx={{ maxWidth: 300, minWidth: 300 }}>
+                                    <CardMedia
+                                        component="img"
+                                        height="300"
+                                        image={animal.imgURLS[0]}
+                                        alt={animal.commonName}
+                                    />
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            {animal.commonName}
+                                        </Typography>
+                                        <Typography variant="body2" noWrap color="text.secondary">
+                                            {animal.description}
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Link key={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >Learn More</Button></Link>
+                                        <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete </Button>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+                        ))
+                    }
+                </Grid>
+            </Box>
+
             <AddAnimal />
         </>
     )
