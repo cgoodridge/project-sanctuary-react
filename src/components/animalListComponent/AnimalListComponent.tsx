@@ -136,8 +136,8 @@ const AnimalListComponent = ({ animalList }: any) => {
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Link key={animal.commonName} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >Learn More </Button></Link>
-                                    <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete </Button>
+                                    <Link key={animal.commonName} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
+                                    <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
                                 </CardActions>
                             </Card>
                         </Grid>
@@ -163,8 +163,8 @@ const AnimalListComponent = ({ animalList }: any) => {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Link key={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >Learn More</Button></Link>
-                                        <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete </Button>
+                                        <Link key={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
+                                        <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
