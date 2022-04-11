@@ -10,14 +10,12 @@ import { persistReducer } from 'redux-persist';
 import { RootStateOrAny } from 'react-redux';
 import thunk from 'redux-thunk';
 
-
 const rootReducer = combineReducers({
     user: userReducer,
     form: formDataReducer,
     location: locationReducer,
     image: imageReducer
 });
-
 
 const persistConfig = {
     key: 'root',
@@ -26,7 +24,6 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer<RootStateOrAny>(persistConfig, rootReducer);
-
 
 export const store = configureStore(
     {

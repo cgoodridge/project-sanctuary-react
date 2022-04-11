@@ -116,7 +116,7 @@ const AnimalListComponent = ({ animalList }: any) => {
             </Box>
 
             <Box sx={{ flexGrow: 1 }}>
-                <Grid container spacing={{ xs: 2, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{ marginTop: "64px", marginBottom: "32px" }}>
+                <Grid container direction="row" spacing={{ xs: 2, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{ marginTop: "64px", marginBottom: "32px" }}>
 
                     {searchQuery === '' ? animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.map((animal, key) => (
                         <Grid item xs={12} sm={4} md={4} lg={4} key={key}>

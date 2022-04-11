@@ -74,15 +74,18 @@ const AddAnimal = () => {
     const confirmLocations = () => {
         clicks.map((location) => {
             let newLocation = JSON.parse(JSON.stringify(location));
-            // console.log("New Locations are " + newLocation.lat);
-            setJsonClicks(jsonClicks => [...jsonClicks, newLocation]);
+
+            if (jsonClicks.some(locationVal => locationVal.lat === newLocation.lat) && jsonClicks.some(locationVal => locationVal.lng === newLocation.lng)) {
+                return;
+            } else {
+                setJsonClicks(jsonClicks => [...jsonClicks, newLocation]);
+            }
         })
         // dispatch(saveLocations(jsonClicks));
     }
     const clearLocations = () => {
         setClicks([]);
         setJsonClicks([]);
-        dispatch(clear());
     }
 
     // Map Code End
@@ -111,7 +114,7 @@ const AddAnimal = () => {
     const [lifestyle, setLifestyle] = useState('');
     const [nameOfYoung, setNameOfYoung] = useState('');
     const [commonName, setCommonName] = useState('');
-    const [scientificName, setScientificName] = useState('');
+    const [groupBehaviour, setGroupBehaviour] = useState('');
     const [source, setSource] = useState('');
     const [redListStatus, setRedListStatus] = useState('');
     const [description, setDescription] = useState('');
@@ -162,9 +165,6 @@ const AddAnimal = () => {
     const promises: any[] = [];
     const newURLS: any[] = [];
 
-    useEffect(() => {
-
-    }, [locations])
 
     const uploadImages = async () => {
         await Promise.all(
@@ -202,50 +202,9 @@ const AddAnimal = () => {
             .catch(error => alert("Promise rejected"))
     }
 
-
-    const saveNewAnimal = async () => {
-        setLoading(true);
-
-        if (images.length > 0) {
-            dispatch(clearImageURLS());
-        }
-
-
-
-
-
-
-        ////// OLD CODE
-
-        // selectedFiles.map(file => {
-        //     promises.push(storage
-        //         .ref(`images/${commonName}/${file?.name}`)
-        //         .put(file)
-        //         .then(() => {
-        //             storage
-        //                 .ref(`images/${commonName}/${file?.name}`)
-        //                 .getDownloadURL()
-        //                 .then((urls) => {
-        //                     setImageURLS(imageURLS => [...imageURLS, urls]);
-        //                 })
-        //             setLoading(false);
-        //         })
-        //         .catch(error => alert(error.message)));
-        // })
-
-        // Promise.all(promises)
-        //     .then(result => {
-        //         uploadAnimal();
-        //     })
-        //     .catch(error => alert("Promise rejected"))
-
-        ////// END OF OLD CODE
-
-    }
-
     const uploadAnimal = async () => {
-        console.log(locations);
-        /*
+
+
         database
             .collection('animals')
             .doc()
@@ -260,14 +219,14 @@ const AddAnimal = () => {
                 genus: genus,
                 imgURLS: imageURLS,
                 kingdom: kingdom,
-                locations: locationData,
+                locations: jsonClicks,
                 lifespan: lifespan,
                 lifestyle: lifestyle,
                 nameOfYoung: nameOfYoung,
                 order: order,
                 phylum: phylum,
                 redListStatus: redListStatus,
-                scientificName: scientificName,
+                groupBehaviour: groupBehaviour,
                 source: source
             }).then(() => {
 
@@ -291,14 +250,14 @@ const AddAnimal = () => {
                         setSpecies('');
                         setDescription('');
                         dispatch(clearImageURLS());
-                        dispatch(clear());
+                        setJsonClicks([]);
+                        // dispatch(clear());
                         handleConfirmMessageOpen();
                         navigate('/animals');
                     })
 
             })
-        
-*/
+
     }
 
     /// End of code for uploading gallery images
@@ -636,10 +595,10 @@ const AddAnimal = () => {
                                 required
                                 autoFocus
                                 margin="dense"
-                                id="scientificName"
-                                label="Scientific Name"
-                                value={scientificName}
-                                onChange={(e: any) => setScientificName(e.target.value)}
+                                id="groupBehaviour"
+                                label="Group Behaviour"
+                                value={groupBehaviour}
+                                onChange={(e: any) => setGroupBehaviour(e.target.value)}
                                 type="text"
                                 fullWidth
                                 variant="standard"
@@ -736,31 +695,32 @@ const AddAnimal = () => {
                             </Grid>
                         </Box>
 
-                        : activeStep === 2 ? <div className="map">
-                            <h2 className="map-h2">Choose Locations</h2>
+                        : activeStep === 2 ?
+                            <div className="map">
+                                <h2 className="map-h2">Choose Locations</h2>
 
-                            <div className="google-map">
-                                <Wrapper apiKey={mapkey} render={render}>
-                                    <Map
-                                        center={center}
-                                        onClick={onClick}
-                                        zoom={3}
-                                        style={{ flexGrow: "1", height: "100%" }}
-                                    >
-                                        {clicks.map((latLng, i) => (
-                                            <Marker key={i} position={latLng} />
-                                        ))}
-                                    </Map>
-                                </Wrapper>
-                            </div>
+                                <div className="google-map">
+                                    <Wrapper apiKey={mapkey} render={render}>
+                                        <Map
+                                            center={center}
+                                            onClick={onClick}
+                                            zoom={3}
+                                            style={{ flexGrow: "1", height: "100%" }}
+                                        >
+                                            {clicks.map((latLng, i) => (
+                                                <Marker key={i} position={latLng} />
+                                            ))}
+                                        </Map>
+                                    </Wrapper>
+                                </div>
 
-                            <Button sx={{ marginTop: "8px" }} onClick={confirmLocations}>
-                                Confirm Locations
-                            </Button>
-                            <Button sx={{ marginTop: "8px" }} onClick={clearLocations}>
-                                Clear Locations
-                            </Button>
-                        </div> : activeStep === 3 ? <ConfirmationForm /> : <AnimalDataForm />}
+                                <Button sx={{ marginTop: "8px" }} onClick={confirmLocations}>
+                                    Confirm Locations
+                                </Button>
+                                <Button sx={{ marginTop: "8px" }} onClick={clearLocations}>
+                                    Clear Locations
+                                </Button>
+                            </div> : activeStep === 3 ? <ConfirmationForm /> : <AnimalDataForm />}
 
                 </DialogContent>
                 <DialogActions>
