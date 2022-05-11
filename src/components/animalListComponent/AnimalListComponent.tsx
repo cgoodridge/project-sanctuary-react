@@ -115,12 +115,12 @@ const AnimalListComponent = ({ animalList }: any) => {
                     }} />
             </Box>
 
-            <Box sx={{ flexGrow: 1 }}>
-                <Grid container direction="row" spacing={{ xs: 2, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{ marginTop: "64px", marginBottom: "32px" }}>
+            <Box sx={{ width: '70vw', margin: '0 auto' }}>
+                <Grid container direction="row" sx={{ marginTop: "64px", marginBottom: "32px" }}>
 
                     {searchQuery === '' ? animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.map((animal, key) => (
-                        <Grid item xs={12} sm={4} md={4} lg={4} key={key}>
-                            <Card sx={{ maxWidth: 300, minWidth: 300 }}>
+                        <Grid item xs={12} sm={6} md={3} key={key}>
+                            <Card sx={{ minWidth: 300, maxWidth: 250, margin: '20px' }}>
                                 <CardMedia
                                     component="img"
                                     height="300"
@@ -146,8 +146,8 @@ const AnimalListComponent = ({ animalList }: any) => {
                         :
 
                         animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.filter(animal => animal.commonName.toLowerCase().includes(searchQuery.toLowerCase())).map((animal, key) => (
-                            <Grid item xs={2} sm={4} md={4} key={key}>
-                                <Card sx={{ maxWidth: 300, minWidth: 300 }}>
+                            <Grid item xs={12} sm={4} md={6} key={key}>
+                                <Card sx={{ maxWidth: 300, minWidth: 250,  margin: '20px' }}>
                                     <CardMedia
                                         component="img"
                                         height="300"

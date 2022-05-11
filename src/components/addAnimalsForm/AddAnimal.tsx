@@ -730,6 +730,7 @@ const AddAnimal = () => {
                         <Button form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>
             </Dialog>
+            
             <Container>
                 <Box sx={{ '& > :not(style)': { m: 1 }, position: "fixed", bottom: "10%", right: "10%" }}>
                     <Fab color="primary" variant="extended" onClick={handleClickOpen}>
@@ -738,6 +739,7 @@ const AddAnimal = () => {
                     </Fab>
                 </Box>
             </Container>
+
         </>
     )
 }

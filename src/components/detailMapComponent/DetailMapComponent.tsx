@@ -6,7 +6,7 @@ import { database } from '../../firebase/auth';
 import Container from '@mui/material/Container';
 import Animal from '../../interfaces/animal';
 
-const DetailMapComponent = ({ zoomLevel, locationDetail }: any) => {
+const DetailMapComponent = ({ zoomLevel, animalInfo }: any) => {
 
     const mapkey: string = process.env.REACT_APP_API_KEY || '';
 
@@ -14,6 +14,7 @@ const DetailMapComponent = ({ zoomLevel, locationDetail }: any) => {
         lat: 21,
         lng: 7
     };
+    // { console.log(animalInfo.locations) }
 
     return (
 
@@ -26,11 +27,17 @@ const DetailMapComponent = ({ zoomLevel, locationDetail }: any) => {
                     center={location}
                     defaultZoom={zoomLevel}
                 >
-                    <LocationPin
-                        lat={locationDetail.latitude}
-                        lng={locationDetail.longitude}
-                        text={locationDetail.commonName}
-                    />
+                    {animalInfo.locations?.map((location: any, index: any) => {
+                        console.log(location.lat);
+                        <LocationPin
+                            key={index}
+                            lat={location.lat}
+                            lng={location.lng}
+                            text={animalInfo.commonName}
+                        />
+                    })
+                    }
+
                 </GoogleMapReact>
 
             </div>
