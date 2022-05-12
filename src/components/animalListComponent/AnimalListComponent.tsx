@@ -97,10 +97,10 @@ const AnimalListComponent = ({ animalList }: any) => {
 
     return (
         <>
-            <Box sx={{ margin: '16px 0' }}>
+            <Box sx={{ margin: '20px 20px', width: '40%' }}>
                 <TextField
                     id="standard-basic"
-                    fullWidth
+
                     label="Search"
                     color="primary"
                     variant="standard"
@@ -115,15 +115,42 @@ const AnimalListComponent = ({ animalList }: any) => {
                     }} />
             </Box>
 
-            <Box sx={{ width: '70vw', margin: '0 auto' }}>
-                <Grid container direction="row" sx={{ marginTop: "64px", marginBottom: "32px" }}>
+            {/* <Box sx={{ width: '100%', margin: '0 auto' }}> */}
+            <Grid container spacing={2} direction="row" sx={{ marginTop: "64px", marginBottom: "32px", backgroundColor: 'yellow', flexGrow: 1 }}>
 
-                    {searchQuery === '' ? animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.map((animal, key) => (
-                        <Grid item xs={12} sm={6} md={3} key={key}>
-                            <Card sx={{ minWidth: 300, maxWidth: 250, margin: '20px' }}>
+                {searchQuery === '' ? animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.map((animal, key) => (
+                    <Grid item xs={3} md={2.4} lg={2} key={key}>
+                        <Card sx={{ minWidth: 200, maxWidth: 350 }}>
+                            <CardMedia
+                                component="img"
+                                height="250"
+                                image={animal.imgURLS[0]}
+                                alt={animal.commonName}
+                            />
+                            <CardContent>
+                                <Typography gutterBottom variant="h5" component="div" noWrap>
+                                    {animal.commonName}
+                                </Typography>
+                                <Typography variant="body2" noWrap color="text.secondary">
+                                    {animal.description}
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Link key={animal.commonName} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
+                                <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                ))
+
+                    :
+
+                    animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.filter(animal => animal.commonName.toLowerCase().includes(searchQuery.toLowerCase())).map((animal, key) => (
+                        <Grid item xs={3} md={2.4} lg={2} key={key}>
+                            <Card sx={{ minWidth: 200, maxWidth: 350 }}>
                                 <CardMedia
                                     component="img"
-                                    height="300"
+                                    height="250"
                                     image={animal.imgURLS[0]}
                                     alt={animal.commonName}
                                 />
@@ -136,42 +163,15 @@ const AnimalListComponent = ({ animalList }: any) => {
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Link key={animal.commonName} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
+                                    <Link key={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
                                     <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
                                 </CardActions>
                             </Card>
                         </Grid>
                     ))
-
-                        :
-
-                        animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '150px auto' }}> <CircularProgress /> </Box> : animals.filter(animal => animal.commonName.toLowerCase().includes(searchQuery.toLowerCase())).map((animal, key) => (
-                            <Grid item xs={12} sm={4} md={6} key={key}>
-                                <Card sx={{ maxWidth: 300, minWidth: 250,  margin: '20px' }}>
-                                    <CardMedia
-                                        component="img"
-                                        height="300"
-                                        image={animal.imgURLS[0]}
-                                        alt={animal.commonName}
-                                    />
-                                    <CardContent>
-                                        <Typography gutterBottom variant="h5" component="div">
-                                            {animal.commonName}
-                                        </Typography>
-                                        <Typography variant="body2" noWrap color="text.secondary">
-                                            {animal.description}
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Link key={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
-                                        <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
-                                    </CardActions>
-                                </Card>
-                            </Grid>
-                        ))
-                    }
-                </Grid>
-            </Box>
+                }
+            </Grid>
+            {/* </Box> */}
 
             <AddAnimal />
         </>
