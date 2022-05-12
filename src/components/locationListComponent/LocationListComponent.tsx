@@ -52,8 +52,8 @@ const LocationListComponent = () => {
                 Locations
             </Typography>
 
-            {locations.map((location, key) => (
-                <Accordion key={key}>
+            {locations.map((location, index) => (
+                <Accordion key={index}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
@@ -63,9 +63,9 @@ const LocationListComponent = () => {
                     </AccordionSummary>
                     <AccordionDetails>
                         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                            {location.animals.map((animal: any, key: any) => (
+                            {location.animals.map((animal: any, index: any) => (
                                 <>
-                                    <ListItem alignItems="flex-start" key={key} secondaryAction={
+                                    <ListItem alignItems="flex-start" key={index} secondaryAction={
                                         <IconButton edge="end" aria-label="view" component={Link} to={`/animals/${animal.commonName}`}>
                                             <VisibilityIcon />
                                         </IconButton>

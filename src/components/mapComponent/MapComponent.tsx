@@ -51,18 +51,22 @@ const MapComponent = () => {
         <div className="map-page">
             <h2 className="map-h2">Locations</h2>
             <div className="google-map-page">
+
                 <Wrapper apiKey={mapkey} render={render}>
+
                     <Map
                         center={center}
-                        onClick={onClick}
                         zoom={3}
                         style={{ flexGrow: "1", height: "100%" }}
                     >
                         {clicks.map((latLng, i) => (
                             <Marker key={i} position={latLng} />
                         ))}
+
                     </Map>
+
                 </Wrapper>
+
             </div>
         </div>
     )
