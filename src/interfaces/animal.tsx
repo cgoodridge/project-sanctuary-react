@@ -1,12 +1,12 @@
 export default interface Animal {
   kingdomClass?: string,
-  commonName?: string,
+  commonName?: string | undefined,
   dateAdded?: number,
   description?: string,
   diet?: string,
   family?: string,
   genus?: string,
-  imgURL?: string,
+  imgURLS?: Array<String>,
   kingdom?: string,
   lat?: number,
   lng?: number,
@@ -17,7 +17,7 @@ export default interface Animal {
   order?: string,
   phylum?: string,
   redlistStatus?: string,
-  scientificName?: string,
-  source?: string
-
+  species?: string,
+  source?: string,
+  imageSource?: string
 }

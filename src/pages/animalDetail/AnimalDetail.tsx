@@ -80,7 +80,7 @@ const AnimalDetail = () => {
             </Grid>
             <Grid item xs={8}>
               <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
-                {animalInfo.scientificName} - {animalInfo.commonName}
+                {animalInfo.species} - {animalInfo.commonName}
               </Typography>
               <Grid container justifyContent="center">
                 <Grid item>
@@ -179,7 +179,7 @@ const AnimalDetail = () => {
                       </Grid>
                       <Grid item>
                         <Typography variant="body1" gutterBottom>
-                          {" " + " " + animalInfo.scientificName}
+                          {" " + " " + animalInfo.species}
                         </Typography>
                       </Grid>
                     </Grid>

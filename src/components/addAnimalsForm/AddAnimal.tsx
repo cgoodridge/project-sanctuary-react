@@ -116,6 +116,7 @@ const AddAnimal = () => {
     const [commonName, setCommonName] = useState('');
     const [groupBehaviour, setGroupBehaviour] = useState('');
     const [source, setSource] = useState('');
+    const [imageSource, setImageSource] = useState('');
     const [redListStatus, setRedListStatus] = useState('');
     const [description, setDescription] = useState('');
     const [locationName, setLocationName] = useState('');
@@ -227,7 +228,8 @@ const AddAnimal = () => {
                 phylum: phylum,
                 redListStatus: redListStatus,
                 groupBehaviour: groupBehaviour,
-                source: source
+                source: source,
+                imageSource: imageSource
             }).then(() => {
 
                 database
@@ -261,8 +263,6 @@ const AddAnimal = () => {
     }
 
     /// End of code for uploading gallery images
-
-
     // Stepper Code
 
     const [activeStep, setActiveStep] = useState(0);
@@ -628,10 +628,26 @@ const AddAnimal = () => {
                                 autoFocus
                                 margin="dense"
                                 id="source"
-                                label="Source"
+                                label="Information Source"
                                 required
                                 value={source}
                                 onChange={(e: any) => setSource(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '60ch' },
+                        }}>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="imgSrc"
+                                label="Image Source"
+                                required
+                                value={imageSource}
+                                onChange={(e: any) => setImageSource(e.target.value)}
                                 type="text"
                                 fullWidth
                                 variant="standard"
@@ -730,7 +746,7 @@ const AddAnimal = () => {
                         <Button form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>
             </Dialog>
-            
+
             <Container>
                 <Box sx={{ '& > :not(style)': { m: 1 }, position: "fixed", bottom: "10%", right: "10%" }}>
                     <Fab color="primary" variant="extended" onClick={handleClickOpen}>

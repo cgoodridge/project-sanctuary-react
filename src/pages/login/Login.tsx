@@ -47,12 +47,13 @@ const Login = (props: any) => {
     const loginUser = (e: any) => {
         e.preventDefault();
 
+        setLoading(true);
+
         if (email === '' || password === '') {
             getLoginError("Email or password field cannot be empty");
             return;
         } else {
             setIsValid(true);
-            setLoading(true);
             let userResult = firebaseLogin(email, password);
             userResult.then((data) => {
                 dispatch(login({
