@@ -24,6 +24,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { Menu } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import _ from 'underscore';
+import '../darkMode/DarkMode.css';
 
 const AnimalListComponent = ({ animalList }: any) => {
 
@@ -125,6 +126,7 @@ const AnimalListComponent = ({ animalList }: any) => {
                     id="standard-basic"
                     label="Search"
                     color="primary"
+                    className="iconColour"
                     variant="standard"
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
@@ -141,7 +143,8 @@ const AnimalListComponent = ({ animalList }: any) => {
                     aria-controls={open ? 'filter-menu' : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
-                    onClick={handleClick}>
+                    onClick={handleClick}
+                    className="iconColour">
                     <FilterListIcon />
                 </IconButton>
 
@@ -173,7 +176,7 @@ const AnimalListComponent = ({ animalList }: any) => {
                             _.sortBy(animals, sortOption).reverse().map((animal: any, key: any) => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} key={key}>
 
-                                    <Card sx={{ minWidth: 200, maxWidth: 360 }}>
+                                    <Card sx={{ minWidth: 200, maxWidth: 360 }} className="cardColour">
 
                                         <CardMedia
                                             component="img"
@@ -183,7 +186,7 @@ const AnimalListComponent = ({ animalList }: any) => {
                                         />
 
                                         <CardContent>
-                                            <Typography gutterBottom variant="h5" component="div" noWrap>
+                                            <Typography gutterBottom variant="h5" noWrap>
                                                 {animal.commonName} - {animal.scientificName}
                                             </Typography>
                                             <Typography variant="body2" noWrap color="text.secondary">
@@ -204,7 +207,7 @@ const AnimalListComponent = ({ animalList }: any) => {
                             _.sortBy(animals, sortOption).map((animal: any, key: any) => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} key={key}>
 
-                                    <Card sx={{ minWidth: 200, maxWidth: 360 }}>
+                                    <Card sx={{ minWidth: 200, maxWidth: 360 }} className="cardColour">
 
                                         <CardMedia
                                             component="img"
@@ -214,7 +217,7 @@ const AnimalListComponent = ({ animalList }: any) => {
                                         />
 
                                         <CardContent>
-                                            <Typography gutterBottom variant="h5" component="div" noWrap>
+                                            <Typography gutterBottom variant="h5" noWrap>
                                                 {animal.commonName} - {animal.scientificName}
                                             </Typography>
                                             <Typography variant="body2" noWrap color="text.secondary">
@@ -232,12 +235,11 @@ const AnimalListComponent = ({ animalList }: any) => {
                                 </Grid>
                             ))
 
-
                         :
 
                         animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '120px auto' }}> <CircularProgress /> </Box> : animals.filter(animal => animal.commonName.toLowerCase().includes(searchQuery.toLowerCase())).map((animal, key) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={key}>
-                                <Card sx={{ minWidth: 200, maxWidth: 360 }}>
+                                <Card sx={{ minWidth: 200, maxWidth: 360 }} className="cardColour">
                                     <CardMedia
                                         component="img"
                                         height="250"

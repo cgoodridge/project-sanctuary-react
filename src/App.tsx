@@ -47,6 +47,8 @@ import LocationListComponent from './components/locationListComponent/LocationLi
 import { animalCollectionRef } from './firebase/auth';
 import { getDocs } from 'firebase/firestore';
 import { persistor } from '.';
+import DarkMode from './components/darkMode/DarkMode';
+import './components/darkMode/DarkMode.css';
 
 
 const drawerWidth = 240;
@@ -189,33 +191,35 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       {user ?
-        <AppBar open={open}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap component="p">
-              Dashboard
-            </Typography>
-          </Toolbar>
-        </AppBar>
+        <Box sx={{ flexGrow: 1 }}>
+          <AppBar open={open}>
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                sx={{
+                  marginRight: '36px',
+                  ...(open && { display: 'none' }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" noWrap component="p" sx={{ flexGrow: 1 }}>
+                Dashboard
+              </Typography>
+              <DarkMode />
+            </Toolbar>
+          </AppBar>
+        </Box>
         :
         <div></div>
       }
 
-
       <Router>
         {user ?
-          <Drawer variant="permanent" open={open}>
+          <Drawer variant="permanent" open={open} className="drawerColour">
             <DrawerHeader>
               <IconButton onClick={handleDrawerClose}>
                 {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
@@ -225,32 +229,32 @@ const App = () => {
             <List>
               <ListItem button component={Link} to="/">
                 <ListItemIcon>
-                  <DashboardIcon />
+                  <DashboardIcon className="iconColour" />
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" />
               </ListItem>
 
               <ListItem button component={Link} to="/animals">
                 <ListItemIcon>
-                  <PetsIcon />
+                  <PetsIcon className="iconColour" />
                 </ListItemIcon>
                 <ListItemText primary="Animals" />
               </ListItem>
               <ListItem button component={Link} to="/locations">
                 <ListItemIcon>
-                  <MapIcon />
+                  <MapIcon className="iconColour" />
                 </ListItemIcon>
                 <ListItemText primary="Locations" />
               </ListItem>
               <ListItem button component={Link} to="/users">
                 <ListItemIcon>
-                  <PeopleIcon />
+                  <PeopleIcon className="iconColour" />
                 </ListItemIcon>
                 <ListItemText primary="Users" />
               </ListItem>
               <ListItem button component={Link} to="/settings">
                 <ListItemIcon>
-                  <SettingsIcon />
+                  <SettingsIcon className="iconColour" />
                 </ListItemIcon>
                 <ListItemText primary="Settings" />
               </ListItem>
@@ -259,7 +263,7 @@ const App = () => {
             <List>
               <ListItem button onClick={logoutAndClear}>
                 <ListItemIcon>
-                  <LogoutIcon />
+                  <LogoutIcon className="iconColour" />
                 </ListItemIcon>
                 <ListItemText primary="Logout" />
               </ListItem>
