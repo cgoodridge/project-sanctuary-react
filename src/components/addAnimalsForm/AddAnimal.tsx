@@ -205,7 +205,6 @@ const AddAnimal = () => {
 
     const uploadAnimal = async () => {
 
-
         database
             .collection('animals')
             .doc()
@@ -296,6 +295,7 @@ const AddAnimal = () => {
             } else {
                 setSaveAnimalData(true);
                 dispatch(saveData({
+                    commonName: commonName,
                     kingdom: kingdom,
                     phylum: phylum,
                     kingdomClass: kingdomClass,

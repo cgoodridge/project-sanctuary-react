@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import './animalDetail.css';
 import { animalCollectionRef, database } from '../../firebase/auth';
 import { useParams } from 'react-router-dom';
-import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -17,6 +16,17 @@ import Animal from '../../interfaces/animal';
 import { getDocs, where } from 'firebase/firestore';
 import ImageGallery from 'react-image-gallery';
 import Carousel from 'nuka-carousel';
+import EditIcon from '@mui/icons-material/Edit';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import SaveIcon from '@mui/icons-material/Save';
+import CloseIcon from '@mui/icons-material/Close';
+import Tooltip from '@mui/material/Tooltip';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../slices/userSlice';
+import firebase from '../../firebase/firebaseConfig';
+import { doc } from 'firebase/firestore';
+
 
 
 const AnimalDetail = () => {
@@ -28,9 +38,44 @@ const AnimalDetail = () => {
 
   const [animalInfo, setAnimalInfo] = useState<Animal>({});
   const [animalImages, setAnimalImages] = useState<any[]>([]);
+  const [fieldEditStatus, setFieldEditStatus] = useState(false);
+  const user = useSelector(selectUser);
 
-  const [editVal, setEditVal] = useState(false);
+
+  const [commonName, setCommonName] = useState('');
+
+
   const { name } = useParams();
+
+  const editContent = () => {
+    setFieldEditStatus(true);
+    console.log(fieldEditStatus);
+  }
+
+  const saveContent = () => {
+    setFieldEditStatus(false);
+    saveData();
+    console.log(commonName);
+  }
+
+
+  const saveData = async () => {
+
+    // const animalDoc = doc(database, "animals", animalInf.)
+    database
+      .collection('animals')
+      .doc(animalInfo?.docId)
+      .update({
+        editedBy: user.uid,
+        commonName: commonName,
+        dateAdded: firebase.firestore.Timestamp.fromDate(new Date()),
+      }).then(() => {
+        console.log("Document successfully updated!")
+      }).catch((error) => {
+        console.error("Error updating document: ", error);
+      });
+
+  }
 
   const _isMounted = useRef(true);
 
@@ -45,6 +90,7 @@ const AnimalDetail = () => {
           val?.forEach((doc) => {
             setAnimalInfo(doc.data())
             setAnimalImages(animalImages => [...animalImages, doc.data().imgURLS]);
+
           })
         })
 
@@ -59,40 +105,158 @@ const AnimalDetail = () => {
 
   }, []);
 
+
+
+
   return (
     <>
-      <IconButton
-        size="large"
-        edge="start"
-        aria-label="Back Button"
-        onClick={() => navigate("/animals")}
-        sx={{ mr: 2 }}
-      >
-        <ArrowBackIcon sx={{ color: 'black', fontSize: "32px" }} />
-      </IconButton>
+      <Tooltip title="Go Back">
+        <IconButton
+          size="large"
+          edge="start"
+          aria-label="Back Button"
+          onClick={() => navigate("/animals")}
+          sx={{ mr: 2 }}
+        >
+          <ArrowBackIcon sx={{ color: 'black', fontSize: "32px" }} />
+        </IconButton>
+      </Tooltip>
 
       <Container maxWidth="lg">
 
-        <Box sx={{ height: '100vh', marginTop: "32px" }}>
+        <Box sx={{ height: '100vh', width: '80vw', marginTop: "32px" }}>
 
           <Grid container>
-            <Grid item xs={4} className='imageContainer'>
+            <Grid item xs={6} className='imageContainer'>
               {/* <img className='animalImage' src={animalInfo !== "" ? animalInfo.imgURL : ""} alt={animalInfo !== "" ? animalInfo.commonName : ""}/> */}
-              {animalImages.length !== 0 ? <Carousel>{animalImages.map((image, index) => <img key={index} src={image}></img>)}</Carousel> : <></>}
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
-                {animalInfo.species} - {animalInfo.commonName}
-              </Typography>
-              <Grid container justifyContent="center">
-                <Grid item>
-                  <Typography variant="h5" gutterBottom sx={{ textAlign: 'center' }}>
-                    <a href="https://www.iucnredlist.org/">IUCN</a> Red List Status - {animalInfo ? animalInfo.redlistStatus : 'N/A'}
+              {animalImages.length !== 0 ? <Carousel>{animalImages.map((image, index) => <img key={index} src={image} style={{ borderRadius: '10px' }}></img>)}</Carousel> : <></>}
+              <Grid container justifyContent="center" sx={{ marginTop: "16px" }}>
+                <Grid item xs={3}>
+                  <Typography variant="h6" gutterBottom>
+                    Young
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    {animalInfo.nameOfYoung}
                   </Typography>
                 </Grid>
-                <Grid item sx={{ marginLeft: '8px' }}>
-                  <Avatar sx={{ bgcolor: red[500] }}>LC</Avatar>
+                <Grid item xs={3}>
+                  <Typography variant="h6" gutterBottom>
+                    Lifespan
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    {animalInfo.lifespan}
+                  </Typography>
                 </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="h6" gutterBottom>
+                    Lifestyle
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    {animalInfo.lifestyle}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={6}>
+              <Grid container justifyContent="center" alignItems="center">
+                <Grid item>
+                  {fieldEditStatus ?
+                    <Box
+                      component="form"
+                      sx={{
+                        '& > :not(style)': { m: 1, width: '25ch' },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField id="standard-basic" label="Common Name" variant="standard" autoFocus margin="dense" placeholder={animalInfo.commonName} type="text" value={commonName || ''}
+                        onChange={(e: any) => setCommonName(e.target.value)} />
+                    </Box>
+
+                    :
+
+                    <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
+                      {animalInfo.commonName}
+                    </Typography>
+                  }
+
+                </Grid>
+                <Grid item>
+                  {
+                    fieldEditStatus ?
+
+                      commonName?.length === 0 ?
+                        <Tooltip title="Cancel Edit">
+                          <IconButton
+                            size="large"
+                            edge="start"
+                            aria-label="Cancel Button"
+                            onClick={saveContent}
+                            sx={{ mb: 1, ml: 1 }}
+                          >
+                            <CloseIcon sx={{ color: 'orange', fontSize: "32px" }} />
+                          </IconButton>
+                        </Tooltip>
+                        :
+                        <Tooltip title="Save Changes">
+                          <IconButton
+                            size="large"
+                            edge="start"
+                            aria-label="Save Button"
+                            onClick={saveContent}
+                            sx={{ mb: 1, ml: 1 }}
+                          >
+                            <SaveIcon sx={{ color: 'orange', fontSize: "32px" }} />
+                          </IconButton>
+                        </Tooltip>
+
+                      :
+                      <Tooltip title="Edit">
+
+                        <IconButton
+                          size="large"
+                          edge="start"
+                          aria-label="Edit Button"
+                          onClick={editContent}
+                          sx={{ mb: 1, ml: 1 }}
+                        >
+                          <EditIcon sx={{ color: 'orange', fontSize: "32px" }} />
+                        </IconButton>
+                      </Tooltip>
+                  }
+
+                </Grid>
+              </Grid>
+
+
+              <Grid container justifyContent="center" alignItems="center">
+                <Grid container justifyContent="center" alignItems="center">
+                  <Grid item>
+                    <Grid container>
+                      <Grid item>
+                        <Typography variant="h5" gutterBottom sx={{ textAlign: 'center' }}>
+                          <a href="https://www.iucnredlist.org/">IUCN</a> Red List Status - {animalInfo ? animalInfo.redlistStatus : 'N/A'}
+                        </Typography>
+                      </Grid>
+                      <Grid item sx={{ ml: 2, mb: 2 }}>
+                        <Avatar sx={{ bgcolor: red[500] }}>LC</Avatar>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <IconButton
+                      size="large"
+                      edge="start"
+                      aria-label="Edit Button"
+                      onClick={() => navigate("/animals")}
+                      sx={{ mb: 2, ml: 1 }}
+                    >
+                      <EditIcon sx={{ color: 'orange', fontSize: "32px" }} />
+                    </IconButton>
+                  </Grid>
+                </Grid>
+
+
 
                 <Grid container justifyContent="center">
                   <Grid item xs={6}>
@@ -176,41 +340,16 @@ const AnimalDetail = () => {
                     <Grid container justifyContent="center">
                       <Grid item>
                         <Typography variant="body1" gutterBottom>
-                          Scientific Name -
+                          Species -
                         </Typography>
                       </Grid>
                       <Grid item>
                         <Typography variant="body1" gutterBottom>
-                          {" " + " " + animalInfo.species}
+                          {" " + " " + animalInfo.scientificName}
                         </Typography>
                       </Grid>
                     </Grid>
-                    <Grid container justifyContent="center" sx={{ marginTop: "16px" }}>
-                      <Grid item xs={3}>
-                        <Typography variant="h6" gutterBottom>
-                          Young
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          {animalInfo.nameOfYoung}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={3}>
-                        <Typography variant="h6" gutterBottom>
-                          Lifespan
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          {animalInfo.lifespan}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={3}>
-                        <Typography variant="h6" gutterBottom>
-                          Lifestyle
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          {animalInfo.lifestyle}
-                        </Typography>
-                      </Grid>
-                    </Grid>
+
                   </Grid>
 
 
@@ -222,19 +361,23 @@ const AnimalDetail = () => {
             </Grid>
           </Grid>
 
-          <Box sx={{ marginTop: "16px" }}>
-            <Typography variant="body1" gutterBottom>
-              {animalInfo.description}
-            </Typography>
-          </Box>
+          <Grid container>
+            <Box sx={{ marginTop: "64px" }}>
+              <Typography variant="body1" gutterBottom>
+                {animalInfo.description}
+              </Typography>
+            </Box>
+          </Grid>
+
           <Divider />
           <Box sx={{ marginTop: "32px", paddingBottom: "32px" }}>
-            
+
             <DetailMapComponent animalInfo={animalInfo} zoomLevel={1} />
 
           </Box>
         </Box>
       </Container>
+
     </>
   )
 }
