@@ -49,7 +49,12 @@ import { getDocs } from 'firebase/firestore';
 import { persistor } from '.';
 import DarkMode from './components/darkMode/DarkMode';
 import './components/darkMode/DarkMode.css';
+import { Avatar, Button, Container, Menu, MenuItem, Tooltip } from '@mui/material';
+import AppBar from '@mui/material/AppBar';
 
+
+const pages = [{ buttonName: 'Dashboard', buttonURL: '/' }, { buttonName: 'Animals', buttonURL: '/animals' }, { buttonName: 'Locations', buttonURL: '/locations' }, { buttonName: 'Users', buttonURL: '/users' }];
+const settings = ['Profile', 'Account', 'Logout'];
 
 
 const drawerWidth = 240;
@@ -65,77 +70,6 @@ interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
-const openedMixin = (theme: Theme): CSSObject => ({
-  width: drawerWidth,
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: 'hidden',
-});
-
-const closedMixin = (theme: Theme): CSSObject => ({
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: 'hidden',
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(9)} + 1px)`,
-  },
-});
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-}));
-
-
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    paper: {
-      background: 'blue'
-    },
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
-  }),
-);
-
-
-
 const App = () => {
 
   const dispatch = useDispatch();
@@ -143,12 +77,22 @@ const App = () => {
 
   const user = useSelector(selectUser);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
   };
 
   const logoutAndClear = () => {
@@ -192,90 +136,138 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      {user ?
-        <Box sx={{ flexGrow: 1 }}>
-          <AppBar open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: '36px',
-                  ...(open && { display: 'none' }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" noWrap component="p" sx={{ flexGrow: 1 }}>
-                Dashboard
-              </Typography>
-              <DarkMode />
-            </Toolbar>
-          </AppBar>
-        </Box>
-        :
-        <div></div>
-      }
 
       <Router>
-        {user ?
-          <Drawer variant="permanent" open={open} sx={{ background: 'yellow' }}>
 
-            <DrawerHeader>
-              <IconButton onClick={handleDrawerClose}>
-                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-              </IconButton>
-            </DrawerHeader>
-            <Divider />
-            <List>
-              <ListItem button component={Link} to="/">
-                <ListItemIcon>
-                  <DashboardIcon className="iconColour" />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-              </ListItem>
+        <AppBar position="static" enableColorOnDark>
+          <Container maxWidth="xl">
+            <Toolbar disableGutters>
+              {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                href="/"
+                sx={{
+                  mr: 2,
+                  display: { xs: 'none', md: 'flex' },
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }}
+              >
+                PROJECT SANCTUARY
+              </Typography>
 
-              <ListItem button component={Link} to="/animals">
-                <ListItemIcon>
-                  <PetsIcon className="iconColour" />
-                </ListItemIcon>
-                <ListItemText primary="Animals" />
-              </ListItem>
-              <ListItem button component={Link} to="/locations">
-                <ListItemIcon>
-                  <MapIcon className="iconColour" />
-                </ListItemIcon>
-                <ListItemText primary="Locations" />
-              </ListItem>
-              <ListItem button component={Link} to="/users">
-                <ListItemIcon>
-                  <PeopleIcon className="iconColour" />
-                </ListItemIcon>
-                <ListItemText primary="Users" />
-              </ListItem>
-              <ListItem button component={Link} to="/settings">
-                <ListItemIcon>
-                  <SettingsIcon className="iconColour" />
-                </ListItemIcon>
-                <ListItemText primary="Settings" />
-              </ListItem>
-            </List>
-            <Divider />
-            <List>
-              <ListItem button onClick={logoutAndClear}>
-                <ListItemIcon>
-                  <LogoutIcon className="iconColour" />
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-              </ListItem>
-            </List>
+              <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleOpenNavMenu}
+                  color="inherit"
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorElNav}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                  open={Boolean(anchorElNav)}
+                  onClose={handleCloseNavMenu}
+                  sx={{
+                    display: { xs: 'block', md: 'none' },
+                  }}
+                >
+                  {pages.map((page) => (
+                    <MenuItem key={page.buttonURL} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">{page.buttonName}</Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+              {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
+              <Typography
+                variant="h5"
+                noWrap
+                component="a"
+                href=""
+                sx={{
+                  mr: 2,
+                  display: { xs: 'flex', md: 'none' },
+                  flexGrow: 1,
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }}
+              >
+                LOGO
+              </Typography>
+              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                {pages.map((page) => (
+                  <Button
+                    key={page.buttonURL}
+                    component={Link} to={page.buttonURL}
+                    sx={{ my: 2, color: 'white', display: 'block' }}
+                  >
+                    {page.buttonName}
+                  </Button>
+                ))}
+              </Box>
 
-          </Drawer>
-          :
-          <div></div>
-        }
+              <Box sx={{ flexGrow: 0 }}>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt={user.displayName}>{user.displayName}</Avatar>
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px'}}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+
+                  {settings.map((setting) => (
+                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  ))}
+
+                  {/* <MenuItem onClick={handleCloseUserMenu}> */}
+                  <MenuItem >
+                    <Typography textAlign="center">Theme</Typography>
+                    <DarkMode />
+                  </MenuItem>
+                </Menu>
+              </Box>
+            </Toolbar>
+          </Container>
+        </AppBar>
 
         <Box component="main" sx={{ flexGrow: 1, p: 16 }}>
           <Routes>

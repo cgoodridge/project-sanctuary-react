@@ -1,31 +1,31 @@
 /* 1 */
 :root {
     --font-color: #333;
-    --background-color: rgb(255, 255, 255);
+    --body-color: rgb(255, 255, 255);
     --link-color: cornflowerblue;
     --card-color: #ffffff;
-    --drawer-colour: #f7f7f7;
+    --paper-colour: rgb(235, 164, 31) !important;
     --input-colour: #333;
 }
 
 /* 2 */
 [data-theme="dark"] {
     --font-color: #eee;
-    --background-color: #333;
+    --body-color: #333;
     --link-color: lightblue;
-    --card-color: #292929;
-    --drawer-colour: #333;
+    --card-color: #333;
+    --paper-colour: #333 !important;
     --input-colour: #fff;
 }
 
 /* 3 */
-body,
-.drawerColour {
-    background-color: var(--background-color);
-    color: var(--font-color);
+body {
+    background-color: var(--body-color) !important;
+    color: var(--font-color) !important;
 }
 
-.cardColour {
+.cardColour,
+.MuiMenu-paper {
     background-color: var(--card-color) !important;
 }
 
@@ -37,19 +37,27 @@ body,
     color: var(--font-color) !important;
 }
 
+table,
+th, .MuiTablePagination-root, .MuiToolbar-gutters  {
+    background-color: var(--body-color) !important;
+    color: var(--font-color);
+}
+
 p,
 h1,
 h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+tr,
+th,
+td {
     color: var(--font-color) !important;
 }
 
-.drawerColour {
-    background: var(--drawer-color) !important;
-    color: green !important;
+.MuiPaper-root {
+    /* background-color: var(--paper-color) !important; */
 }
 
 input[type="text"] {

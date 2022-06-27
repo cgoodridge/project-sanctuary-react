@@ -33,7 +33,7 @@ const AnimalCountComponent = () => {
     }, []);
 
     return (
-        <Card sx={{ width: 125, height: 125, margin: '16px' }}>
+        <Card sx={{ width: 125, height: 125, margin: '16px' }} className="cardColour">
             <CardContent>
                 <Typography sx={{ fontSize: 14, textAlign: 'center', fontWeight: 'bold' }} color="text.secondary" gutterBottom component="p">
                     Active Animals
