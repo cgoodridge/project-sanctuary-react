@@ -37,12 +37,23 @@ body,
     color: var(--font-color) !important;
 }
 
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--font-color) !important;
+}
+
 .drawerColour {
     background: var(--drawer-color) !important;
     color: green !important;
 }
 
 input[type="text"] {
+    outline-color: var(--input-colour) !important;
     color: var(--input-colour);
 }
 

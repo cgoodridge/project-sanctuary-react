@@ -3,7 +3,7 @@ import Login from './pages/login/Login';
 import UserCreation from './pages/userCreation/UserCreation';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider, makeStyles } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Dashboard from './pages/dashboard/Dashboard';
 import { useDispatch, useSelector } from 'react-redux';
@@ -49,6 +49,7 @@ import { getDocs } from 'firebase/firestore';
 import { persistor } from '.';
 import DarkMode from './components/darkMode/DarkMode';
 import './components/darkMode/DarkMode.css';
+
 
 
 const drawerWidth = 240;
@@ -117,6 +118,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   ({ theme, open }) => ({
     width: drawerWidth,
     flexShrink: 0,
+    paper: {
+      background: 'blue'
+    },
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
     ...(open && {
@@ -143,7 +147,6 @@ const App = () => {
     setOpen(true);
   };
 
-
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -160,7 +163,6 @@ const App = () => {
 
   const _isMounted = useRef(true);
   const [locations, setLocations] = useState<Animal[]>([]);
-
 
   useEffect(() => {
 
@@ -219,7 +221,8 @@ const App = () => {
 
       <Router>
         {user ?
-          <Drawer variant="permanent" open={open} className="drawerColour">
+          <Drawer variant="permanent" open={open} sx={{ background: 'yellow' }}>
+
             <DrawerHeader>
               <IconButton onClick={handleDrawerClose}>
                 {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
@@ -268,6 +271,7 @@ const App = () => {
                 <ListItemText primary="Logout" />
               </ListItem>
             </List>
+
           </Drawer>
           :
           <div></div>

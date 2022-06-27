@@ -28,6 +28,8 @@ const AnimalDetail = () => {
 
   const [animalInfo, setAnimalInfo] = useState<Animal>({});
   const [animalImages, setAnimalImages] = useState<any[]>([]);
+
+  const [editVal, setEditVal] = useState(false);
   const { name } = useParams();
 
   const _isMounted = useRef(true);
