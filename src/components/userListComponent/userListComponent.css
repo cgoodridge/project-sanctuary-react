@@ -1,4 +1,4 @@
-.userList{
+.userList {
     height: 60vh;
     z-index: 99;
     background-color: black !important;
@@ -7,6 +7,18 @@
     color: white !important;
 }
 
-.passwordError{
+.userTile {
+    width: 100% !important;
+}
+
+.css-11tx1un {
+    padding: 32px !important;
+}
+
+.passwordError {
     color: red;
+}
+
+.emailField {
+    /* word-break: break-word !important; */
 }

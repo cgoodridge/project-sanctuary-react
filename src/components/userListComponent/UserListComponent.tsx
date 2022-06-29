@@ -155,7 +155,7 @@ const UserListComponent = () => {
 
             {users.map((user: any, key: any) => {
 
-                return <Accordion key={key} className="tileColour">
+                return <Accordion key={key} className="tileColour userTile">
 
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
@@ -169,17 +169,17 @@ const UserListComponent = () => {
                         <Box sx={{ flexGrow: 1 }}>
                             <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
 
-                                <Grid item xs={2} sm={4} md={4}>
-                                    <Typography>Email:</Typography>
+                                <Grid item xs={1} sm={4} md={4}>
+                                    <Typography >Email:</Typography>
                                 </Grid>
                                 <Grid item xs={2} sm={4} md={4}>
-                                    <Typography>{user.email}</Typography>
+                                    <Typography className="emailField">{user.email}</Typography>
                                 </Grid>
 
                             </Grid>
                             <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
 
-                                <Grid item xs={2} sm={4} md={4}>
+                                <Grid item xs={1} sm={4} md={4}>
                                     <Typography>Role:</Typography>
                                 </Grid>
                                 <Grid item xs={2} sm={4} md={4}>
@@ -189,7 +189,7 @@ const UserListComponent = () => {
                             </Grid>
                             <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
 
-                                <Grid item xs={2} sm={4} md={4}>
+                                <Grid item xs={1} sm={4} md={4}>
                                     <Typography>Date Added:</Typography>
                                 </Grid>
                                 <Grid item xs={2} sm={4} md={4}>
