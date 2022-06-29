@@ -26,33 +26,40 @@ import { useSelector } from 'react-redux';
 import { selectUser } from '../../slices/userSlice';
 import firebase from '../../firebase/firebaseConfig';
 import { doc } from 'firebase/firestore';
-
+import { useLocation } from 'react-router-dom';
 
 
 const AnimalDetail = () => {
 
   let animalData: Animal = {};
 
+
+
   const navigate = useNavigate();
   const animalRef = database.collection("animals");
+  const location = useLocation();
+  const newId: any = location.state;
+
+  console.log(newId);
 
   const [animalInfo, setAnimalInfo] = useState<Animal>({});
+  const [animalId, setAnimalID] = useState<any>();
   const [animalImages, setAnimalImages] = useState<any[]>([]);
   const [fieldEditStatus, setFieldEditStatus] = useState(false);
   const user = useSelector(selectUser);
 
-
   const [commonName, setCommonName] = useState('');
-
 
   const { name } = useParams();
 
+
   const editContent = () => {
     setFieldEditStatus(true);
-    console.log(fieldEditStatus);
+    setAnimalID(animalInfo.docId?.toString());
   }
 
   const saveContent = () => {
+    console.log(animalId);
     setFieldEditStatus(false);
     saveData();
     console.log(commonName);
@@ -64,7 +71,7 @@ const AnimalDetail = () => {
     // const animalDoc = doc(database, "animals", animalInf.)
     database
       .collection('animals')
-      .doc(animalInfo?.docId)
+      .doc(newId)
       .update({
         editedBy: user.uid,
         commonName: commonName,
@@ -103,7 +110,7 @@ const AnimalDetail = () => {
       _isMounted.current = false;
     }
 
-  }, []);
+  }, [animalInfo]);
 
 
 

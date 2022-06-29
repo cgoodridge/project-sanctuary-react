@@ -195,7 +195,7 @@ const AnimalListComponent = ({ animalList }: any) => {
                                         </CardContent>
 
                                         <CardActions>
-                                            <Link key={animal.commonName} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
+                                            <Link key={animal.commonName} state={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
                                             <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
                                         </CardActions>
 
@@ -226,7 +226,7 @@ const AnimalListComponent = ({ animalList }: any) => {
                                         </CardContent>
 
                                         <CardActions>
-                                            <Link key={animal.commonName} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
+                                            <Link key={animal.commonName} state={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
                                             <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
                                         </CardActions>
 
@@ -255,7 +255,7 @@ const AnimalListComponent = ({ animalList }: any) => {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Link key={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
+                                        <Link key={animal.id} state={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
                                         <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
                                     </CardActions>
                                 </Card>

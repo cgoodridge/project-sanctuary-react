@@ -5,7 +5,7 @@ export default interface Animal {
   description?: string,
   diet?: string,
   family?: string,
-  docId?: string,
+  docId?: string | undefined,
   genus?: string,
   imgURLS?: Array<String>,
   kingdom?: string,
