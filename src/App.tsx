@@ -13,7 +13,6 @@ import ProtectedRoute from './router/ProtectedRoute';
 import RedirectRoute from './router/RedirectRoute';
 import AnimalDetail from './pages/animalDetail/AnimalDetail';
 import NotFoundPage from './pages/notFoundPage/NotFound';
-import CssBaseline from '@mui/material/CssBaseline';
 import UserListComponent from './components/userListComponent/UserListComponent';
 import AnimalListComponent from './components/animalListComponent/AnimalListComponent';
 import MapComponent from './components/mapComponent/MapComponent';
@@ -23,26 +22,11 @@ import Animal from './interfaces/animal';
 import AppBarComponent from './components/appBarComponent/AppBarComponent';
 import Toolbar from '@mui/material/Toolbar';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Typography from '@mui/material/Typography';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import LogoutIcon from '@mui/icons-material/Logout';
-import List from '@mui/material/List';
-import PeopleIcon from '@mui/icons-material/People';
-import PetsIcon from '@mui/icons-material/Pets';
-import MapIcon from '@mui/icons-material/Map';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import SettingsIcon from '@mui/icons-material/Settings';
-import Divider from '@mui/material/Divider';
 import { Link } from 'react-router-dom';
-import MuiDrawer from '@mui/material/Drawer';
 import LocationListComponent from './components/locationListComponent/LocationListComponent';
 import { animalCollectionRef } from './firebase/auth';
 import { getDocs } from 'firebase/firestore';
@@ -76,6 +60,7 @@ const App = () => {
   const [open, setOpen] = useState(false);
 
   const user = useSelector(selectUser);
+
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -133,6 +118,7 @@ const App = () => {
       _isMounted.current = false;
     }
   }, [dispatch]);
+  
 
   return (
     <ThemeProvider theme={theme}>
@@ -191,7 +177,7 @@ const App = () => {
                   }}
                 >
                   {pages.map((page) => (
-                    <MenuItem key={page.buttonURL} onClick={handleCloseNavMenu}>
+                    <MenuItem key={page.buttonURL} onClick={handleCloseNavMenu} component={Link} to={page.buttonURL}>
                       <Typography textAlign="center">{page.buttonName}</Typography>
                     </MenuItem>
                   ))}
@@ -231,18 +217,18 @@ const App = () => {
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt={user.displayName}>{user.displayName}</Avatar>
+                    <Avatar alt={user.displayName}>PP</Avatar>
                   </IconButton>
                 </Tooltip>
                 <Menu
-                  sx={{ mt: '45px'}}
+                  sx={{ mt: '45px' }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
                   }}
-                  
+
                   keepMounted
                   transformOrigin={{
                     vertical: 'top',

@@ -174,9 +174,9 @@ const AnimalListComponent = ({ animalList }: any) => {
                         :
                         reverseOption ?
                             _.sortBy(animals, sortOption).reverse().map((animal: any, key: any) => (
-                                <Grid item xs={12} sm={6} md={4} lg={3} key={key}>
+                                <Grid item xs={12} sm={12} md={4} lg={3} key={key}>
 
-                                    <Card sx={{ minWidth: 200, maxWidth: 360 }} className="cardColour">
+                                    <Card sx={{ minWidth: 250, maxWidth: 380 }} className="cardColour">
 
                                         <CardMedia
                                             component="img"
@@ -207,7 +207,7 @@ const AnimalListComponent = ({ animalList }: any) => {
                             _.sortBy(animals, sortOption).map((animal: any, key: any) => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} key={key}>
 
-                                    <Card sx={{ minWidth: 200, maxWidth: 360 }} className="cardColour">
+                                    <Card sx={{ minWidth: 250, maxWidth: 380 }} className="cardColour">
 
                                         <CardMedia
                                             component="img"
@@ -239,7 +239,7 @@ const AnimalListComponent = ({ animalList }: any) => {
 
                         animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '120px auto' }}> <CircularProgress /> </Box> : animals.filter(animal => animal.commonName.toLowerCase().includes(searchQuery.toLowerCase())).map((animal, key) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={key}>
-                                <Card sx={{ minWidth: 200, maxWidth: 360 }} className="cardColour">
+                                <Card sx={{ minWidth: 250, maxWidth: 380 }} className="cardColour">
                                     <CardMedia
                                         component="img"
                                         height="250"
