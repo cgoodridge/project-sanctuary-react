@@ -40,39 +40,14 @@ const UserListComponent = () => {
 
     useEffect(() => {
 
-        // const getUserList = async () => {
-        // const data = await getDocs(userCollectionRef);
-        // if (_isMounted.current) {
-
         return database.collection('users').onSnapshot((snapshot) => {
             const userData: any = [];
-            snapshot.forEach(doc => userData.push({...doc.data(), id: doc.id, firstName: doc.data().firstName, lastName: doc.data().lastName, email: doc.data().email, role: doc.data().role, dateAdded: doc.data().dateAdded.toDate().toDateString(),}));
+            snapshot.forEach(doc => userData.push({ ...doc.data(), id: doc.id, firstName: doc.data().firstName, lastName: doc.data().lastName, email: doc.data().email, role: doc.data().role, dateAdded: doc.data().dateAdded.toDate().toDateString(), }));
             setUsers(userData);
-            console.log(userData);
         });
-
-        // setUsers(data.docs.map(doc => ({
-        //     id: doc.id,
-        //     firstName: doc.data().firstName,
-        //     lastName: doc.data().lastName,
-        //     email: doc.data().email,
-        //     role: doc.data().role,
-        //     dateAdded: doc.data().dateAdded.toDate().toDateString(),
-        // })))
-
-        // }
-        // }
-
-        // getUserList();
-
-        // return () => { // ComponentWillUnmount 
-        // _isMounted.current = false;
-        // }
-        
 
     }, []);
 
-    // console.log(users[0]);
 
     const [openDialog, setOpenDialog] = useState(false);
     const [firstName, setFirstName] = useState('');

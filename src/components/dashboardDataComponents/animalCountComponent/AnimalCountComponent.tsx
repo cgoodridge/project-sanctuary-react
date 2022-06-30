@@ -12,24 +12,10 @@ const AnimalCountComponent = () => {
 
     const [count, setCount] = useState<number>(0);
 
-
-    const _isMounted = useRef(true);
-
     useEffect(() => {
-
-        const getAnimalCount = async () => {
-            const data = await getDocs(animalCollectionRef);
-            if (_isMounted.current) {
-                setCount(data.size);
-            }
-        }
-
-        getAnimalCount();
-
-        return () => { // ComponentWillUnmount 
-            _isMounted.current = false;
-        }
-
+        return database.collection('animals').onSnapshot((snapshot) => {
+            setCount(snapshot.size);
+        });
     }, []);
 
     return (
