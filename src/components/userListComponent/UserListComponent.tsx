@@ -40,29 +40,39 @@ const UserListComponent = () => {
 
     useEffect(() => {
 
-        const getUserList = async () => {
-            const data = await getDocs(userCollectionRef);
-            if (_isMounted.current) {
-                setUsers(data.docs.map(doc => ({
-                    id: doc.id,
-                    firstName: doc.data().firstName,
-                    lastName: doc.data().lastName,
-                    email: doc.data().email,
-                    role: doc.data().role,
-                    dateAdded: doc.data().dateAdded.toDate().toDateString(),
-                })))
-            }
-        }
+        // const getUserList = async () => {
+        // const data = await getDocs(userCollectionRef);
+        // if (_isMounted.current) {
 
-        getUserList();
+        return database.collection('users').onSnapshot((snapshot) => {
+            const userData: any = [];
+            snapshot.forEach(doc => userData.push({...doc.data(), id: doc.id, firstName: doc.data().firstName, lastName: doc.data().lastName, email: doc.data().email, role: doc.data().role, dateAdded: doc.data().dateAdded.toDate().toDateString(),}));
+            setUsers(userData);
+            console.log(userData);
+        });
 
-        return () => { // ComponentWillUnmount 
-            _isMounted.current = false;
-        }
+        // setUsers(data.docs.map(doc => ({
+        //     id: doc.id,
+        //     firstName: doc.data().firstName,
+        //     lastName: doc.data().lastName,
+        //     email: doc.data().email,
+        //     role: doc.data().role,
+        //     dateAdded: doc.data().dateAdded.toDate().toDateString(),
+        // })))
+
+        // }
+        // }
+
+        // getUserList();
+
+        // return () => { // ComponentWillUnmount 
+        // _isMounted.current = false;
+        // }
+        
 
     }, []);
 
-    // console.log(users[0].firstName);
+    // console.log(users[0]);
 
     const [openDialog, setOpenDialog] = useState(false);
     const [firstName, setFirstName] = useState('');
@@ -152,7 +162,9 @@ const UserListComponent = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-
+            <Typography variant="h4" gutterBottom component="div">
+                Users
+            </Typography>
             {users.map((user: any, key: any) => {
 
                 return <Accordion key={key} className="tileColour userTile">
