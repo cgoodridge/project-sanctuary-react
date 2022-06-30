@@ -53,7 +53,7 @@ const LocationListComponent = () => {
             </Typography>
 
             {locations.map((location, index) => (
-                <Accordion key={index}>
+                <Accordion key={index} className="tileColour">
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
@@ -62,7 +62,7 @@ const LocationListComponent = () => {
                         <Typography>{location.name}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+                        <List sx={{ width: '100%' }} className="tileColour" >
                             {location.animals.map((animal: any, index: any) => (
                                 <>
                                     <ListItem alignItems="flex-start" key={index} secondaryAction={
