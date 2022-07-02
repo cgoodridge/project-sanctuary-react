@@ -235,14 +235,14 @@ const App = () => {
                   </IconButton>
                 </Tooltip>
                 <Menu
-                  sx={{ mt: '45px'}}
+                  sx={{ mt: '45px' }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
                   }}
-                  
+
                   keepMounted
                   transformOrigin={{
                     vertical: 'top',
@@ -269,7 +269,7 @@ const App = () => {
           </Container>
         </AppBar>
 
-        <Box component="main" sx={{ flexGrow: 1, p: 16 }}>
+        <Box component="main" sx={{ flexGrow: 1 }}>
           <Routes>
             <Route path="/" element={
               <ProtectedRoute>
