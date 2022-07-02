@@ -27,7 +27,8 @@ body {
 }
 
 .cardColour,
-.MuiMenu-paper, .tileColour {
+.MuiMenu-paper,
+.tileColour {
     background-color: var(--card-color) !important;
 }
 
@@ -47,6 +48,7 @@ th,
     color: var(--font-color);
 }
 
+li,
 p,
 h1,
 h2,
