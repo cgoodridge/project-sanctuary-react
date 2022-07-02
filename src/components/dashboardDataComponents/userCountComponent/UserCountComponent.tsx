@@ -13,19 +13,10 @@ const UserCountComponent = () => {
 
     const [count, setCount] = useState<number>(0);
 
-    const _isMounted = useRef(true);
-
     useEffect(() => {
-        const getUserCount = async () => {
-            const data = await getDocs(userCollectionRef);
-            if (_isMounted.current) {
-                setCount(data.size);
-            }
-        }
-        getUserCount();
-        return () => { // ComponentWillUnmount 
-            _isMounted.current = false;
-        }
+        return database.collection('users').onSnapshot((snapshot) => {
+            setCount(snapshot.size);
+        });
     }, []);
 
     return (

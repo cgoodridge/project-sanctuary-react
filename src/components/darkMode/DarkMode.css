@@ -6,6 +6,7 @@
     --card-color: #ffffff;
     --paper-colour: rgb(235, 164, 31) !important;
     --input-colour: #333;
+    --icon-colour: #333;
 }
 
 /* 2 */
@@ -16,6 +17,7 @@
     --card-color: #333;
     --paper-colour: #333 !important;
     --input-colour: #fff;
+    --icon-colour: #fff;
 }
 
 /* 3 */
@@ -25,7 +27,7 @@ body {
 }
 
 .cardColour,
-.MuiMenu-paper {
+.MuiMenu-paper, .tileColour {
     background-color: var(--card-color) !important;
 }
 
@@ -38,7 +40,9 @@ body {
 }
 
 table,
-th, .MuiTablePagination-root, .MuiToolbar-gutters  {
+th,
+.MuiTablePagination-root,
+.MuiToolbar-gutters {
     background-color: var(--body-color) !important;
     color: var(--font-color);
 }
@@ -60,10 +64,6 @@ td {
     /* background-color: var(--paper-color) !important; */
 }
 
-input[type="text"] {
-    outline-color: var(--input-colour) !important;
-    color: var(--input-colour);
-}
 
 a {
     color: var(--link-color);
