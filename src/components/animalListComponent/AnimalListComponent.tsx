@@ -25,6 +25,8 @@ import { Menu } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import _ from 'underscore';
 import '../darkMode/DarkMode.css';
+import Container from '@mui/material/Container';
+
 
 const AnimalListComponent = ({ animalList }: any) => {
 
@@ -46,6 +48,11 @@ const AnimalListComponent = ({ animalList }: any) => {
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     const handleSort = (e: any, param: string, isReversed: boolean) => {
         setSortOption(param);
 
@@ -115,152 +122,157 @@ const AnimalListComponent = ({ animalList }: any) => {
 
     return (
         <>
-            <Box sx={{ padding: '4px', width: '70vw' }}>
+            <Container>
 
-                <TextField
-                    id="standard-basic"
-                    label="Search"
-                    color="primary"
-                    className="iconColour"
-                    variant="standard"
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="end">
-                                <SearchIcon />
-                            </InputAdornment>
-                        ),
-                    }}
-                />
+                <Box sx={{ padding: '8px', width: '100%', marginTop: 8 }}>
 
-                <IconButton
-                    aria-controls={open ? 'filter-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    onClick={handleClick}
-                    className="iconColour">
-                    <FilterListIcon />
-                </IconButton>
+                    <TextField
+                        id="standard-basic"
+                        label="Search"
+                        color="primary"
+                        className="iconColour"
+                        variant="standard"
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="end">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
 
-                <Menu
-                    id="basic-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    // onClose={handleClose}
-                    MenuListProps={{
-                        'aria-labelledby': 'basic-button',
-                    }}
-                >
+                    <IconButton
+                        aria-controls={open ? 'filter-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={handleClick}
+                        className="iconColour">
+                        <FilterListIcon />
+                    </IconButton>
 
-                    <MenuItem onClick={e => handleSort(e, 'scientificName', false)}>A-Z(Scientific Name)</MenuItem>
-                    <MenuItem onClick={e => handleSort(e, 'scientificName', true)}>Z-A(Scientific Name)</MenuItem>
-                    <MenuItem onClick={e => handleSort(e, 'commonName', false)}>A-Z(Common Name)</MenuItem>
-                    <MenuItem onClick={e => handleSort(e, 'commonName', true)}>Z-A(Common Name)</MenuItem>
+                    <Menu
+                        id="basic-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                        }}
+                    >
 
-                </Menu>
+                        <MenuItem onClick={e => handleSort(e, 'scientificName', false)}>A-Z(Scientific Name)</MenuItem>
+                        <MenuItem onClick={e => handleSort(e, 'scientificName', true)}>Z-A(Scientific Name)</MenuItem>
+                        <MenuItem onClick={e => handleSort(e, 'commonName', false)}>A-Z(Common Name)</MenuItem>
+                        <MenuItem onClick={e => handleSort(e, 'commonName', true)}>Z-A(Common Name)</MenuItem>
 
-            </Box>
+                    </Menu>
 
-            <Box sx={{ width: '100%', margin: '0 auto' }}>
-                <Grid container spacing={2} sx={{ marginTop: "64px", marginBottom: "32px", }}>
-                    {searchQuery === '' ? animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '120px auto' }}> <CircularProgress /> </Box>
+                </Box>
 
-                        :
-                        reverseOption ?
-                            _.sortBy(animals, sortOption).reverse().map((animal: any, key: any) => (
-                                <Grid item xs={12} sm={12} md={4} lg={3} key={key}>
+                <Box sx={{ width: '100%', margin: '0 auto' }}>
+                    <Grid container spacing={2} sx={{ marginTop: "64px", marginBottom: "32px", }}>
+                        {searchQuery === '' ? animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '120px auto' }}> <CircularProgress /> </Box>
 
-                                    <Card sx={{ minWidth: 250, maxWidth: 380 }} className="cardColour">
-
-                                        <CardMedia
-                                            component="img"
-                                            height="250"
-                                            src={animal.imgURLS[0]}
-                                            alt={animal.commonName}
-                                        />
-
-                                        <CardContent>
-                                            <Typography gutterBottom variant="h5" noWrap>
-                                                {animal.commonName} - {animal.scientificName}
-                                            </Typography>
-                                            <Typography variant="body2" noWrap color="text.secondary">
-                                                {animal.description}
-                                            </Typography>
-                                        </CardContent>
-
-                                        <CardActions>
-                                            <Link key={animal.commonName} state={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
-                                            <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
-                                        </CardActions>
-
-                                    </Card>
-
-                                </Grid>
-                            ))
                             :
-                            _.sortBy(animals, sortOption).map((animal: any, key: any) => (
+                            reverseOption ?
+                                _.sortBy(animals, sortOption).reverse().map((animal: any, key: any) => (
+                                    <Grid item xs={12} sm={6} md={4} lg={3} key={key}>
+
+                                        <Card sx={{ minWidth: 200, maxWidth: 360 }} className="cardColour">
+
+                                            <CardMedia
+                                                component="img"
+                                                height="250"
+                                                src={animal.imgURLS[0]}
+                                                alt={animal.commonName}
+                                            />
+
+                                            <CardContent>
+                                                <Typography gutterBottom variant="h5" noWrap>
+                                                    {animal.commonName} - {animal.scientificName}
+                                                </Typography>
+                                                <Typography variant="body2" noWrap color="text.secondary">
+                                                    {animal.description}
+                                                </Typography>
+                                            </CardContent>
+
+                                            <CardActions>
+                                                <Link key={animal.commonName} state={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
+                                                <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
+                                            </CardActions>
+
+                                        </Card>
+
+                                    </Grid>
+                                ))
+                                :
+                                _.sortBy(animals, sortOption).map((animal: any, key: any) => (
+                                    <Grid item xs={12} sm={6} md={4} lg={3} key={key}>
+
+                                        <Card sx={{ minWidth: 200, maxWidth: 360 }} className="cardColour">
+
+                                            <CardMedia
+                                                component="img"
+                                                height="250"
+                                                src={animal.imgURLS[0]}
+                                                alt={animal.commonName}
+                                            />
+
+                                            <CardContent>
+                                                <Typography gutterBottom variant="h5" noWrap>
+                                                    {animal.commonName} - {animal.scientificName}
+                                                </Typography>
+                                                <Typography variant="body2" noWrap color="text.secondary">
+                                                    {animal.description}
+                                                </Typography>
+                                            </CardContent>
+
+                                            <CardActions>
+                                                <Link key={animal.commonName} state={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
+                                                <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
+                                            </CardActions>
+
+                                        </Card>
+
+                                    </Grid>
+                                ))
+
+                            :
+
+                            animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '120px auto' }}> <CircularProgress /> </Box> : animals.filter(animal => animal.commonName.toLowerCase().includes(searchQuery.toLowerCase())).map((animal, key) => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} key={key}>
-
-                                    <Card sx={{ minWidth: 250, maxWidth: 380 }} className="cardColour">
-
+                                    <Card sx={{ minWidth: 200, maxWidth: 360 }} className="cardColour">
                                         <CardMedia
                                             component="img"
                                             height="250"
-                                            src={animal.imgURLS[0]}
+                                            image={animal.imgURLS[0]}
                                             alt={animal.commonName}
                                         />
-
                                         <CardContent>
-                                            <Typography gutterBottom variant="h5" noWrap>
+                                            <Typography gutterBottom variant="h5" component="div">
                                                 {animal.commonName} - {animal.scientificName}
                                             </Typography>
                                             <Typography variant="body2" noWrap color="text.secondary">
                                                 {animal.description}
                                             </Typography>
                                         </CardContent>
-
                                         <CardActions>
-                                            <Link key={animal.commonName} state={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
+                                            <Link key={animal.id} state={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
                                             <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
                                         </CardActions>
-
                                     </Card>
-
                                 </Grid>
                             ))
+                        }
+                    </Grid>
+                </Box>
 
-                        :
+                <AddAnimal />
 
-                        animals.length <= 0 ? <Box sx={{ display: 'flex', margin: '120px auto' }}> <CircularProgress /> </Box> : animals.filter(animal => animal.commonName.toLowerCase().includes(searchQuery.toLowerCase())).map((animal, key) => (
-                            <Grid item xs={12} sm={6} md={4} lg={3} key={key}>
-                                <Card sx={{ minWidth: 250, maxWidth: 380 }} className="cardColour">
-                                    <CardMedia
-                                        component="img"
-                                        height="250"
-                                        image={animal.imgURLS[0]}
-                                        alt={animal.commonName}
-                                    />
-                                    <CardContent>
-                                        <Typography gutterBottom variant="h5" component="div">
-                                            {animal.commonName} - {animal.scientificName}
-                                        </Typography>
-                                        <Typography variant="body2" noWrap color="text.secondary">
-                                            {animal.description}
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Link key={animal.id} state={animal.id} className="learnMore" to={checkWhiteSpace(animal.commonName) ? `/animals/${animal.commonName.replace(/ /g, "_")}` : `/animals/${animal.commonName}`}><Button size="small" >View</Button></Link>
-                                        <Button size="small" onClick={() => removeAnimal(animal.id, animal.commonName)}>Delete</Button>
-                                    </CardActions>
-                                </Card>
-                            </Grid>
-                        ))
-                    }
-                </Grid>
-            </Box>
+            </Container>
 
-            <AddAnimal />
         </>
     )
 }

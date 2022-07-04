@@ -255,7 +255,7 @@ const App = () => {
           </Container>
         </AppBar>
 
-        <Box component="main" sx={{ flexGrow: 1, p: 16 }}>
+        <Box component="main" sx={{ flexGrow: 1 }}>
           <Routes>
             <Route path="/" element={
               <ProtectedRoute>
