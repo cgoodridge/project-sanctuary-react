@@ -39,6 +39,8 @@ import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import { createCustomEqual } from "fast-equals";
 import { isLatLngLiteral } from "@googlemaps/typescript-guards";
 import '../darkMode/DarkMode.css';
+import ImagesForm from './ImagesForm';
+import LocationForm from './LocationForm';
 
 
 
@@ -73,6 +75,7 @@ const AddAnimal = () => {
     };
 
     const confirmLocations = () => {
+
         clicks.map((location) => {
             let newLocation = JSON.parse(JSON.stringify(location));
 
@@ -81,6 +84,7 @@ const AddAnimal = () => {
             } else {
                 setJsonClicks(jsonClicks => [...jsonClicks, newLocation]);
             }
+
         })
         // dispatch(saveLocations(jsonClicks));
     }
@@ -95,7 +99,6 @@ const AddAnimal = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-
     const [saveAnimalData, setSaveAnimalData] = useState(false);
     const [saveImageData, setSaveImageData] = useState(false);
     const [saveLocationData, setSaveLocationData] = useState(false);
@@ -103,6 +106,7 @@ const AddAnimal = () => {
     const [loading, setLoading] = useState(false);
 
     /// Form values
+
     const [kingdom, setKingdom] = useState('');
     const [phylum, setPhylum] = useState('');
     const [kingdomClass, setKingdomClass] = useState('');
@@ -121,6 +125,7 @@ const AddAnimal = () => {
     const [redListStatus, setRedListStatus] = useState('');
     const [description, setDescription] = useState('');
     const [locationName, setLocationName] = useState('');
+
     /// End form values
 
     const handleClickOpen = () => {
@@ -257,15 +262,15 @@ const AddAnimal = () => {
                         handleConfirmMessageOpen();
                         navigate('/animals');
                     })
-
             })
-
     }
 
     /// End of code for uploading gallery images
     // Stepper Code
 
     const [activeStep, setActiveStep] = useState(0);
+    const [stepCounter, setStepCounter] = useState(0);
+
     const [completed, setCompleted] = useState<{
         [k: number]: boolean;
     }>({});
@@ -287,26 +292,27 @@ const AddAnimal = () => {
     };
 
     const handleNext = (e: any) => {
+        setStepCounter(stepCounter + 1);
 
         if (e && activeStep === 0) {
             // if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '' || commonName === '') {
-            if (commonName === '') {
-                alert("One or more fields, must be filled");
-                return;
-            } else {
-                setSaveAnimalData(true);
-                dispatch(saveData({
-                    commonName: commonName,
-                    kingdom: kingdom,
-                    phylum: phylum,
-                    kingdomClass: kingdomClass,
-                    order: order,
-                    family: family,
-                    genus: genus,
-                    species: species,
-                    description: description,
-                }))
-            }
+            // if (commonName === '') {
+            //     alert("One or more fields, must be filled");
+            //     return;
+            // } else {
+            //     setSaveAnimalData(true);
+            //     dispatch(saveData({
+            //         commonName: commonName,
+            //         kingdom: kingdom,
+            //         phylum: phylum,
+            //         kingdomClass: kingdomClass,
+            //         order: order,
+            //         family: family,
+            //         genus: genus,
+            //         species: species,
+            //         description: description,
+            //     }))
+            // }
         }
 
         if (e && activeStep === 1) {
@@ -379,9 +385,11 @@ const AddAnimal = () => {
                 </DialogContent>
 
                 <DialogActions>
+
                     <Button onClick={handleConfirmMessageClose} autoFocus>
                         OK
                     </Button>
+
                 </DialogActions>
 
             </Dialog>
@@ -406,89 +414,11 @@ const AddAnimal = () => {
 
                     {/* We'll move all the form components here for now but we're gonna have to figure out how to refactor the components to make the code a bit cleaner */}
 
-                    {activeStep === 0 ? <AnimalDataForm /> : activeStep === 1 ?
-
-                        <Box sx={{ width: "100%", overflowX: "scroll" }} >
-                            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                                {selectedFiles.length <= 0 ? <Box></Box>
-
-                                    :
-
-                                    selectedFiles.map((file, key) => (
-                                        <Grid item xs={4} key={key}>
-                                            <Box
-                                                sx={{
-                                                    display: 'flex',
-                                                    flexWrap: 'wrap',
-                                                    '& > :not(style)': {
-                                                        m: 1,
-                                                        width: 128,
-                                                        height: 128,
-                                                    },
-                                                    padding: '16px'
-                                                }}
-                                            >
-                                                <Badge badgeContent={<IconButton onClick={() => removeImage(key)}> <CloseIcon sx={{ color: 'black', fontSize: 24 }} >Test</CloseIcon> </IconButton>} >
-                                                    <Paper className="imgTile" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', }} elevation={2}>
-                                                        <img src={URL.createObjectURL(file)} ></img>
-                                                    </Paper>
-                                                </Badge>
-                                            </Box>
-                                        </Grid>
-                                    ))
-
-                                }
-
-                                <Grid item xs={4}>
-                                    <label htmlFor="icon-button-file">
-                                        <Box
-                                            sx={{
-                                                display: 'flex',
-                                                flexWrap: 'wrap',
-                                                '& > :not(style)': {
-                                                    m: 1,
-                                                    width: 128,
-                                                    height: 128,
-                                                },
-                                                padding: '16px'
-                                            }}
-                                        >
-                                            <Input multiple accept="image/*" id="icon-button-file" type="file" onChange={handleFileUpload} />
-                                            <Paper sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', }} elevation={2}>
-                                                <AddIcon sx={{ fontSize: 70 }} />
-                                            </Paper>
-                                        </Box>
-                                    </label>
-                                </Grid>
-                            </Grid>
-                        </Box>
-
-                        : activeStep === 2 ?
-                            <div className="map">
-                                <h2 className="map-h2">Choose Locations</h2>
-
-                                <div className="google-map">
-                                    <Wrapper apiKey={mapkey} render={render}>
-                                        <Map
-                                            center={center}
-                                            onClick={onClick}
-                                            zoom={3}
-                                            style={{ flexGrow: "1", height: "100%" }}
-                                        >
-                                            {clicks.map((latLng, i) => (
-                                                <Marker key={i} position={latLng} />
-                                            ))}
-                                        </Map>
-                                    </Wrapper>
-                                </div>
-
-                                <Button sx={{ marginTop: "8px" }} onClick={confirmLocations}>
-                                    Confirm Locations
-                                </Button>
-                                <Button sx={{ marginTop: "8px" }} onClick={clearLocations}>
-                                    Clear Locations
-                                </Button>
-                            </div> : activeStep === 3 ? <ConfirmationForm /> : <AnimalDataForm />}
+                    {activeStep === 0 ?
+                        <AnimalDataForm /> : activeStep === 1 ?
+                            <ImagesForm /> : activeStep === 2 ?
+                                <LocationForm /> : activeStep === 3 ?
+                                    <ConfirmationForm /> : <AnimalDataForm />}
 
                 </DialogContent>
                 <DialogActions>
@@ -497,6 +427,7 @@ const AddAnimal = () => {
                         :
                         <Button form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>
+
             </Dialog>
 
             <Container>
@@ -510,125 +441,6 @@ const AddAnimal = () => {
 
         </>
     )
-}
-
-interface MapProps extends google.maps.MapOptions {
-    style: { [key: string]: string };
-    onClick?: (e: google.maps.MapMouseEvent) => void;
-    onIdle?: (map: google.maps.Map) => void;
-}
-
-const Map: React.FC<MapProps> = ({
-    onClick,
-    onIdle,
-    children,
-    style,
-    ...options
-}) => {
-    const ref = useRef<HTMLDivElement>(null);
-    const [map, setMap] = useState<google.maps.Map>();
-
-    useEffect(() => {
-        if (ref.current && !map) {
-            setMap(new window.google.maps.Map(ref.current, {}));
-        }
-    }, [ref, map]);
-
-    // because React does not do deep comparisons, a custom hook is used
-    // see discussion in https://github.com/googlemaps/js-samples/issues/946
-    useDeepCompareEffectForMaps(() => {
-        if (map) {
-            map.setOptions(options);
-        }
-    }, [map, options]);
-
-    useEffect(() => {
-        if (map) {
-            ["click", "idle"].forEach((eventName) =>
-                google.maps.event.clearListeners(map, eventName)
-            );
-
-            if (onClick) {
-                map.addListener("click", onClick);
-            }
-
-            if (onIdle) {
-                map.addListener("idle", () => onIdle(map));
-            }
-        }
-    }, [map, onClick, onIdle]);
-
-    return (
-        <>
-            <div ref={ref} style={style} />
-            {Children.map(children, (child) => {
-                if (isValidElement(child)) {
-                    // set the map prop on the child component
-                    return cloneElement(child, { map });
-                }
-            })}
-        </>
-    );
-};
-
-const Marker: React.FC<google.maps.MarkerOptions> = (options) => {
-    const [marker, setMarker] = useState<google.maps.Marker>();
-
-    useEffect(() => {
-        if (!marker) {
-            setMarker(new google.maps.Marker());
-        }
-
-        // remove marker from map on unmount
-        return () => {
-            if (marker) {
-                marker.setMap(null);
-            }
-        };
-    }, [marker]);
-
-    useEffect(() => {
-        if (marker) {
-            marker.setOptions(options);
-        }
-    }, [marker, options]);
-
-    return null;
-};
-
-const deepCompareEqualsForMaps = createCustomEqual(
-    (deepEqual) => (a: any, b: any) => {
-        if (
-            isLatLngLiteral(a) ||
-            a instanceof google.maps.LatLng ||
-            isLatLngLiteral(b) ||
-            b instanceof google.maps.LatLng
-        ) {
-            return new google.maps.LatLng(a).equals(new google.maps.LatLng(b));
-        }
-
-        // TODO extend to other types
-
-        // use fast-equals for other objects
-        return deepEqual(a, b);
-    }
-);
-
-function useDeepCompareMemoize(value: any) {
-    const ref = useRef();
-
-    if (!deepCompareEqualsForMaps(value, ref.current)) {
-        ref.current = value;
-    }
-
-    return ref.current;
-}
-
-function useDeepCompareEffectForMaps(
-    callback: React.EffectCallback,
-    dependencies: any[]
-) {
-    useEffect(callback, dependencies.map(useDeepCompareMemoize));
 }
 
 export default AddAnimal;

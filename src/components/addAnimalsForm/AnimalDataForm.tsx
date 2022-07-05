@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import { useDispatch } from 'react-redux';
-import { saveData } from '../../slices/formDataSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { saveData, selectForm } from '../../slices/formDataSlice';
+import Button from '@mui/material/Button';
 
-const AnimalDataForm = ({ saveAnimalData }: any) => {
+const AnimalDataForm = () => {
 
     const dispatch = useDispatch();
+    const animal = useSelector(selectForm);
 
     /// Form values
     const [kingdom, setKingdom] = useState('');
@@ -27,20 +29,69 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
     const [redListStatus, setRedListStatus] = useState('');
     const [description, setDescription] = useState('');
     const [locationName, setLocationName] = useState('');
+
+    const [formFillState, setFormFillState] = useState(true);
     /// End form values
 
+    const saveAnimalData = () => {
 
-    if (saveAnimalData) {
+
+        if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '' || commonName === '') {
+
+            alert("One or more fields, must be filled");
+            return;
+
+        } else {
+
+            dispatch(saveData({
+                commonName: commonName,
+                kingdom: kingdom,
+                phylum: phylum,
+                diet: diet,
+                lifespan: lifespan,
+                lifestyle: lifestyle,
+                nameOfYoung: nameOfYoung,
+                redListStatus: redListStatus,
+                groupBehaviour: groupBehaviour,
+                source: source,
+                imageSource: imageSource,
+                kingdomClass: kingdomClass,
+                order: order,
+                family: family,
+                genus: genus,
+                species: species,
+                description: description,
+            }))
+            setFormFillState(true);
+
+        }
+
+    }
+
+    const clearAnimalData = () => {
+
+        setFormFillState(false);
+
         dispatch(saveData({
-            kingdom: kingdom,
-            phylum: phylum,
-            kingdomClass: kingdomClass,
-            order: order,
-            family: family,
-            genus: genus,
-            species: species,
-            description: description
+            commonName: '',
+            kingdom: '',
+            phylum: '',
+            diet: '',
+            lifespan: '',
+            lifestyle: '',
+            nameOfYoung: '',
+            redListStatus: '',
+            groupBehaviour: '',
+            source: '',
+            imageSource: '',
+            kingdomClass: '',
+            order: '',
+            family: '',
+            genus: '',
+            species: '',
+            description: '',
         }))
+
     }
 
     return (
@@ -51,10 +102,11 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="kingdom"
                     label="Kingdom"
-                    value={kingdom}
+                    value={animal.kingdom !== '' ? animal.kingdom : kingdom}
                     onChange={(e: any) => setKingdom(e.target.value)}
                     type="text"
                     variant="standard"
@@ -62,6 +114,7 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="phylum"
                     value={phylum}
@@ -71,12 +124,14 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                     variant="standard"
                 />
             </Box>
+
             <Box sx={{
                 '& > :not(style)': { m: 1, width: '28ch' },
             }}>
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="kingdomClass"
                     label="Class"
@@ -89,6 +144,7 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="order"
                     label="Order"
@@ -106,6 +162,7 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="family"
                     label="Family"
@@ -118,6 +175,7 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="genus"
                     label="Genus"
@@ -132,9 +190,11 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
             <Box sx={{
                 '& > :not(style)': { m: 1, width: '28ch' },
             }}>
+
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="species"
                     label="Species"
@@ -147,6 +207,7 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="commonName"
                     label="Common Name"
@@ -164,6 +225,7 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="diet"
                     label="Diet"
@@ -176,6 +238,7 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="lifestyle"
                     label="Lifestyle"
@@ -190,9 +253,11 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
             <Box sx={{
                 '& > :not(style)': { m: 1, width: '28ch' },
             }}>
+
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="lifespan"
                     label="Lifespan"
@@ -202,9 +267,11 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                     fullWidth
                     variant="standard"
                 />
+
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="nameOfYoung"
                     label="Name of Young"
@@ -214,13 +281,16 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                     fullWidth
                     variant="standard"
                 />
+
             </Box>
+
             <Box sx={{
                 '& > :not(style)': { m: 1, width: '28ch' },
             }}>
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="redListStatus"
                     label="Red List Status"
@@ -233,6 +303,7 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                 <TextField
                     required
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="groupBehaviour"
                     label="Group Behaviour"
@@ -249,6 +320,7 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
             }}>
                 <TextField
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="description"
                     label="Description"
@@ -265,6 +337,7 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
             }}>
                 <TextField
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="source"
                     label="Information Source"
@@ -281,6 +354,7 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
             }}>
                 <TextField
                     autoFocus
+                    disabled={formFillState}
                     margin="dense"
                     id="imgSrc"
                     label="Image Source"
@@ -292,7 +366,7 @@ const AnimalDataForm = ({ saveAnimalData }: any) => {
                     variant="standard"
                 />
             </Box>
-
+            {formFillState ? <Button variant="outlined" onClick={() => clearAnimalData()}>Clear</Button> : <Button variant="outlined" onClick={() => saveAnimalData()}>Save</Button>}
         </form>
     )
 }
