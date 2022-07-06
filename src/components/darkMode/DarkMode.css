@@ -28,12 +28,20 @@ body {
 
 .cardColour,
 .MuiMenu-paper,
-.tileColour {
+.tileColour,
+/* For the Dialog window background */
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper, 
+/* For the 'Add Image' card */
+.css-orsfsz>:not(style)  {
     background-color: var(--card-color) !important;
 }
 
-.cardColour p {
+.cardColour p, span {
     color: var(--font-color) !important;
+}
+
+label{
+    color: rgb(185, 185, 185) !important;
 }
 
 .cardColour h5 {

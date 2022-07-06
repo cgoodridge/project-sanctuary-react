@@ -30,13 +30,15 @@ const AnimalDataForm = () => {
     const [description, setDescription] = useState('');
     const [locationName, setLocationName] = useState('');
 
-    const [formFillState, setFormFillState] = useState(true);
+    const [formFillState, setFormFillState] = useState(false);
+
     /// End form values
 
     const saveAnimalData = () => {
 
 
-        if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '' || commonName === '') {
+        if (kingdom === '') {
+            // if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '' || commonName === '') {
 
             alert("One or more fields, must be filled");
             return;
@@ -73,23 +75,23 @@ const AnimalDataForm = () => {
         setFormFillState(false);
 
         dispatch(saveData({
-            commonName: '',
-            kingdom: '',
-            phylum: '',
-            diet: '',
-            lifespan: '',
-            lifestyle: '',
-            nameOfYoung: '',
-            redListStatus: '',
-            groupBehaviour: '',
-            source: '',
-            imageSource: '',
-            kingdomClass: '',
-            order: '',
-            family: '',
-            genus: '',
-            species: '',
-            description: '',
+            commonName: "",
+            kingdom: "",
+            phylum: "",
+            diet: "",
+            lifespan: "",
+            lifestyle: "",
+            nameOfYoung: "",
+            redListStatus: "",
+            groupBehaviour: "",
+            source: "",
+            imageSource: "",
+            kingdomClass: "",
+            order: "",
+            family: "",
+            genus: "",
+            species: "",
+            description: "",
         }))
 
     }
@@ -106,7 +108,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="kingdom"
                     label="Kingdom"
-                    value={animal.kingdom !== '' ? animal.kingdom : kingdom}
+                    value={animal.kingdom !== "" ? animal.kingdom : kingdom}
                     onChange={(e: any) => setKingdom(e.target.value)}
                     type="text"
                     variant="standard"
@@ -117,7 +119,7 @@ const AnimalDataForm = () => {
                     disabled={formFillState}
                     margin="dense"
                     id="phylum"
-                    value={phylum}
+                    value={animal.phylum !== "" ? animal.phylum : phylum}
                     onChange={(e: any) => setPhylum(e.target.value)}
                     label="Phylum"
                     type="text"
@@ -135,7 +137,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="kingdomClass"
                     label="Class"
-                    value={kingdomClass}
+                    value={animal.kingdomClass !== "" ? animal.kingdomClass : kingdomClass}
                     onChange={(e: any) => setKingdomClass(e.target.value)}
                     type="text"
                     fullWidth
@@ -148,7 +150,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="order"
                     label="Order"
-                    value={order}
+                    value={animal.order !== "" ? animal.order : order}
                     onChange={(e: any) => setOrder(e.target.value)}
                     type="text"
                     fullWidth
@@ -166,7 +168,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="family"
                     label="Family"
-                    value={family}
+                    value={animal.family !== "" ? animal.family : family}
                     onChange={(e: any) => setFamily(e.target.value)}
                     type="text"
                     fullWidth
@@ -179,7 +181,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="genus"
                     label="Genus"
-                    value={genus}
+                    value={animal.genus !== "" ? animal.genus : genus}
                     onChange={(e: any) => setGenus(e.target.value)}
                     type="text"
                     fullWidth
@@ -198,7 +200,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="species"
                     label="Species"
-                    value={species}
+                    value={animal.species !== "" ? animal.species : species}
                     onChange={(e: any) => setSpecies(e.target.value)}
                     type="text"
                     fullWidth
@@ -211,7 +213,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="commonName"
                     label="Common Name"
-                    value={commonName}
+                    value={animal.commonName !== "" ? animal.commonName : commonName}
                     onChange={(e: any) => setCommonName(e.target.value)}
                     type="text"
                     fullWidth
@@ -229,7 +231,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="diet"
                     label="Diet"
-                    value={diet}
+                    value={animal.diet !== "" ? animal.diet : diet}
                     onChange={(e: any) => setDiet(e.target.value)}
                     type="text"
                     fullWidth
@@ -242,7 +244,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="lifestyle"
                     label="Lifestyle"
-                    value={lifestyle}
+                    value={animal.lifestyle !== "" ? animal.lifestyle : lifestyle}
                     onChange={(e: any) => setLifestyle(e.target.value)}
                     type="text"
                     fullWidth
@@ -261,7 +263,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="lifespan"
                     label="Lifespan"
-                    value={lifespan}
+                    value={animal.lifespan !== "" ? animal.lifespan : lifespan}
                     onChange={(e: any) => setLifespan(e.target.value)}
                     type="text"
                     fullWidth
@@ -275,7 +277,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="nameOfYoung"
                     label="Name of Young"
-                    value={nameOfYoung}
+                    value={animal.nameOfYoung !== "" ? animal.nameOfYoung : nameOfYoung}
                     onChange={(e: any) => setNameOfYoung(e.target.value)}
                     type="text"
                     fullWidth
@@ -294,7 +296,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="redListStatus"
                     label="Red List Status"
-                    value={redListStatus}
+                    value={animal.redListStatus !== "" ? animal.redListStatus : redListStatus}
                     onChange={(e: any) => setRedListStatus(e.target.value)}
                     type="text"
                     fullWidth
@@ -307,7 +309,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="groupBehaviour"
                     label="Group Behaviour"
-                    value={groupBehaviour}
+                    value={animal.groupBehaviour !== "" ? animal.groupBehaviour : groupBehaviour}
                     onChange={(e: any) => setGroupBehaviour(e.target.value)}
                     type="text"
                     fullWidth
@@ -324,7 +326,7 @@ const AnimalDataForm = () => {
                     margin="dense"
                     id="description"
                     label="Description"
-                    value={description}
+                    value={animal.description !== "" ? animal.description : description}
                     onChange={(e: any) => setDescription(e.target.value)}
                     type="text"
                     fullWidth
@@ -342,7 +344,7 @@ const AnimalDataForm = () => {
                     id="source"
                     label="Information Source"
                     required
-                    value={source}
+                    value={animal.source !== "" ? animal.source : source}
                     onChange={(e: any) => setSource(e.target.value)}
                     type="text"
                     fullWidth
@@ -359,7 +361,7 @@ const AnimalDataForm = () => {
                     id="imgSrc"
                     label="Image Source"
                     required
-                    value={imageSource}
+                    value={animal.imageSource !== "" ? animal.imageSource : imageSource}
                     onChange={(e: any) => setImageSource(e.target.value)}
                     type="text"
                     fullWidth

@@ -173,41 +173,7 @@ const AddAnimal = () => {
     const newURLS: any[] = [];
 
 
-    const uploadImages = async () => {
-        await Promise.all(
-            selectedFiles.map(file => {
-                promises.push(storage
-                    .ref(`images/${commonName}/${file?.name}`)
-                    .put(file)
-                    .catch(error => alert(error.message)));
-            })
-        )
-    }
-
-    const getImageURLS = async () => {
-        await Promise.all(promises)
-            .then(result => {
-                storage
-                    .ref(`images/${commonName}/`)
-                    .listAll()
-                    .then((urls) => {
-                        urls.items.forEach((image) => {
-                            image.getDownloadURL()
-                                .then(async (url) => {
-                                    let newURL = url;
-                                    // console.log("Image URL is " + url);
-                                    setImageURLS((imageURLS) => [...imageURLS, newURL]);
-                                    // dispatch(saveImageURLS(newURL));
-                                })
-                        })
-
-                    })
-                    .then(async () => {
-                        setLoading(false);
-                    })
-            })
-            .catch(error => alert("Promise rejected"))
-    }
+    
 
     const uploadAnimal = async () => {
 
@@ -316,16 +282,17 @@ const AddAnimal = () => {
         }
 
         if (e && activeStep === 1) {
-            if (selectedFiles.length === 0) {
-                alert("Please choose at least 1 image");
-                return;
-            }
-            uploadImages();
+            // if (selectedFiles.length === 0) {
+            //     alert("Please choose at least 1 image");
+            //     return;
+            // }
+
+            // uploadImages();
         }
 
         if (e && activeStep === 2) {
             // alert("Just passed image ");
-            getImageURLS();
+            // getImageURLS();
             setLocationData(locationData => locations);
             // return;
         }

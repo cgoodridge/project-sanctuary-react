@@ -1,8 +1,8 @@
-.notFoundImage{
+.notFoundImage {
     padding: 16px;
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     text-align: center;
 }

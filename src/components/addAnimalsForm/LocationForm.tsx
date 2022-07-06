@@ -99,7 +99,7 @@ const Map: React.FC<MapProps> = ({
     }
   }, [ref, map]);
 
-  // because React does not do deep comparisons, a custom hook is used
+  // Because React does not do deep comparisons, a custom hook is used
   // see discussion in https://github.com/googlemaps/js-samples/issues/946
   useDeepCompareEffectForMaps(() => {
     if (map) {
