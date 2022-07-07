@@ -47,7 +47,7 @@ const LocationListComponent = () => {
     }, []);
 
     return (
-        <Box>
+        <Box sx={{ m: 4}}>
             <Typography variant='h6'>
                 Locations
             </Typography>

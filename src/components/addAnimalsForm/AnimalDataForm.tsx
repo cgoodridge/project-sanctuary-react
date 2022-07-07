@@ -36,9 +36,8 @@ const AnimalDataForm = () => {
 
     const saveAnimalData = () => {
 
-
-        if (kingdom === '') {
-            // if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '' || commonName === '') {
+        // if (kingdom === '') {
+        if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '' || commonName === '') {
 
             alert("One or more fields, must be filled");
             return;
@@ -63,7 +62,8 @@ const AnimalDataForm = () => {
                 genus: genus,
                 species: species,
                 description: description,
-            }))
+            }));
+
             setFormFillState(true);
 
         }

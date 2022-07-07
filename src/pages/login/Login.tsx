@@ -27,7 +27,6 @@ const Login = (props: any) => {
     const location = useLocation();
     const _isMounted = useRef(true);
 
-
     const dispatch = useDispatch();
     const [password, setPassword] = useState<string>('');
     const [fieldVal, setFieldVal] = useState('password');
@@ -37,16 +36,15 @@ const Login = (props: any) => {
     const [isValid, setIsValid] = useState(true);
     const [showPassword, setPasswordVisibility] = useState(false);
 
-
-
     const getLoginError = (message: string) => {
         setLoginErrorText(message);
         setIsValid(false);
     }
 
-    const loginUser = (e: any) => {
+    const loginUser = async (e: any) => {
         e.preventDefault();
 
+        let userResult;
         setLoading(true);
 
         if (email === '' || password === '') {
@@ -54,19 +52,23 @@ const Login = (props: any) => {
             return;
         } else {
             setIsValid(true);
-            let userResult = firebaseLogin(email, password);
-            userResult.then((data) => {
-                dispatch(login({
-                    email: data?.email,
-                    uid: data?.uid,
-                    displayName: data?.displayName
-                }))
-            })
-                .then(() => {
-                    setLoading(false);
-                    navigate('/');
-                })
-                .catch(error => getLoginError(error.message)); 
+            try {
+                userResult = await firebaseLogin(email, password);
+            } catch (error: any) {
+                getLoginError(error.message);
+            }
+
+            if (userResult) {
+                // dispatch(login({
+                //     email: userResult.email,
+                //     uid: userResult.uid,
+                //     displayName: userResult.displayName,
+                // }));
+                navigate('/animals');
+                
+            } else {
+                setLoading(false);
+            }
         }
         // login(email, password);
     }
@@ -88,9 +90,8 @@ const Login = (props: any) => {
         event.preventDefault();
     };
 
-
     return (
-        <Container sx={{ marginTop: "128px", width: '40vw', display: "flex", justifyContent: "center", alignItems:'center', flexDirection:'column' }}>
+        <Container sx={{ paddingTop: '128px', width: '40vw', display: "flex", justifyContent: "center", alignItems: 'center', flexDirection: 'column' }}>
             <Box>
                 <img src="./images/logo.png" alt="Project Sanctuary Logo" />
                 <form >

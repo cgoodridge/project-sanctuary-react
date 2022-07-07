@@ -390,7 +390,7 @@ const AddAnimal = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
-                    {activeStep === 3 ? <LoadingButton loading={loading} loadingPosition="center" type='submit' form="animalInfoForm" onClick={uploadAnimal} sx={{ mr: 1 }}>Upload</LoadingButton>
+                    {activeStep === 3 ? <LoadingButton loading={loading} loadingPosition="center" type='submit' form="animalInfoForm" disabled={animal !== null} onClick={uploadAnimal} sx={{ mr: 1 }}>Upload</LoadingButton>
                         :
                         <Button form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>

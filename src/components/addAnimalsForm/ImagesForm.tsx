@@ -14,7 +14,6 @@ import Button from '@mui/material/Button';
 const ImagesForm = () => {
 
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-    const [imageURLS, setImageURLS] = useState<any[]>([]);
     const promises: any[] = [];
     const newURLS: any[] = [];
     const [commonName, setCommonName] = useState('');
@@ -35,29 +34,7 @@ const ImagesForm = () => {
         )
     }
 
-    const getImageURLS = async () => {
-        await Promise.all(promises)
-            .then(result => {
-                storage
-                    .ref(`images/${commonName}/`)
-                    .listAll()
-                    .then((urls) => {
-                        urls.items.forEach((image) => {
-                            image.getDownloadURL()
-                                .then(async (url) => {
-                                    let newURL = url;
-                                    // console.log("Image URL is " + url);
-                                    setImageURLS((imageURLS) => [...imageURLS, newURL]);
-                                    // dispatch(saveImageURLS(newURL));
-                                })
-                        })
-                    })
-                    .then(async () => {
-                        setLoading(false);
-                    })
-            })
-            .catch(error => alert("Promise rejected"))
-    }
+   
 
     /// Code for uploading gallery images
     const Input = styled('input')({

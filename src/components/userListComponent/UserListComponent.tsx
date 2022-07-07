@@ -137,58 +137,64 @@ const UserListComponent = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <Typography variant="h4" gutterBottom component="div">
-                Users
-            </Typography>
-            {users.map((user: any, key: any) => {
 
-                return <Accordion key={key} className="tileColour userTile">
+            <Container sx={{mt: 4}}>
 
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                        className="iconColour"
-                    >
-                        <Typography>{user.firstName} {user.lastName}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <Box sx={{ flexGrow: 1 }}>
-                            <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                <Typography variant="h4" gutterBottom component="div">
+                    Users
+                </Typography>
 
-                                <Grid item xs={1} sm={4} md={4}>
-                                    <Typography >Email:</Typography>
+                {users.map((user: any, key: any) => {
+
+                    return <Accordion key={key} className="tileColour userTile">
+
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content"
+                            id="panel1a-header"
+                            className="iconColour"
+                        >
+                            <Typography>{user.firstName} {user.lastName}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Box sx={{ flexGrow: 1 }}>
+                                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+
+                                    <Grid item xs={1} sm={4} md={4}>
+                                        <Typography >Email:</Typography>
+                                    </Grid>
+                                    <Grid item xs={2} sm={4} md={4}>
+                                        <Typography className="emailField">{user.email}</Typography>
+                                    </Grid>
+
                                 </Grid>
-                                <Grid item xs={2} sm={4} md={4}>
-                                    <Typography className="emailField">{user.email}</Typography>
+                                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+
+                                    <Grid item xs={1} sm={4} md={4}>
+                                        <Typography>Role:</Typography>
+                                    </Grid>
+                                    <Grid item xs={2} sm={4} md={4}>
+                                        <Typography>{user.role}</Typography>
+                                    </Grid>
+
                                 </Grid>
+                                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
 
-                            </Grid>
-                            <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                                    <Grid item xs={1} sm={4} md={4}>
+                                        <Typography>Date Added:</Typography>
+                                    </Grid>
+                                    <Grid item xs={2} sm={4} md={4}>
+                                        <Typography>{user.dateAdded}</Typography>
+                                    </Grid>
 
-                                <Grid item xs={1} sm={4} md={4}>
-                                    <Typography>Role:</Typography>
                                 </Grid>
-                                <Grid item xs={2} sm={4} md={4}>
-                                    <Typography>{user.role}</Typography>
-                                </Grid>
+                            </Box>
+                        </AccordionDetails>
+                    </Accordion>
 
-                            </Grid>
-                            <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                })}
+            </Container>
 
-                                <Grid item xs={1} sm={4} md={4}>
-                                    <Typography>Date Added:</Typography>
-                                </Grid>
-                                <Grid item xs={2} sm={4} md={4}>
-                                    <Typography>{user.dateAdded}</Typography>
-                                </Grid>
-
-                            </Grid>
-                        </Box>
-                    </AccordionDetails>
-                </Accordion>
-
-            })}
 
             <Dialog open={openDialog} onClose={handleClose} >
                 <DialogTitle>Save New User</DialogTitle>

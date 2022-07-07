@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { useSelector } from 'react-redux';
 import { selectForm } from '../../slices/formDataSlice';
@@ -18,8 +18,43 @@ const ConfirmationForm = () => {
 
   const animal = useSelector(selectForm);
   const locations = useSelector(selectLocations);
+  console.log(locations);
+  const [imageURLS, setImageURLS] = useState<any[]>([]);
+
+  const promises: any[] = [];
+
   // console.log(locations);
   const images = useSelector(selectImages);
+
+  const getImageURLS = async () => {
+    await Promise.all(promises)
+      .then(result => {
+        storage
+          .ref(`images/${commonName}/`)
+          .listAll()
+          .then((urls) => {
+            urls.items.forEach((image) => {
+              image.getDownloadURL()
+                .then(async (url) => {
+
+                  let newURL = url;
+                  // console.log("Image URL is " + url);
+                  setImageURLS((imageURLS) => [...imageURLS, newURL]);
+                  // dispatch(saveImageURLS(newURL));
+
+                })
+            })
+          })
+          .then(async () => {
+            setLoading(false);
+          })
+      })
+      .catch(error => alert("Promise rejected"))
+  }
+
+  useEffect(() => {
+    getImageURLS();
+  }, [])
 
   /// Form values
   const [kingdom, setKingdom] = useState('');
@@ -35,10 +70,10 @@ const ConfirmationForm = () => {
 
   return (
     <Box>
-
+      {/* Accordion for animal Info */}
       <Accordion className="tileColour">
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
+          expandIcon={<ExpandMoreIcon className="iconColour" />}
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
@@ -52,7 +87,6 @@ const ConfirmationForm = () => {
               required
               autoFocus
               disabled
-
               margin="dense"
               id="kingdom"
               label="Kingdom"
@@ -183,6 +217,51 @@ const ConfirmationForm = () => {
               variant="standard"
             />
           </Box>
+        </AccordionDetails>
+      </Accordion>
+      {/* Accordion for Saved Images */}
+      <Accordion className="tileColour">
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon className="iconColour" />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>Saved Images</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {imageURLS.length > 0 ?
+            imageURLS.map((image, key) => {
+              <img src={image} height="100px" alt="Thumbnail image of animal"></img>
+            })
+
+            :
+
+            <p>No Images Uploaded</p>
+          }
+
+        </AccordionDetails>
+      </Accordion>
+
+      {/* Accordion for Saved Locations */}
+      <Accordion className="tileColour">
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon className="iconColour" />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>Saved Locations</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {locations.length > 0 ?
+            locations.map((location: any, key: number) => {
+              <p key={key}>location</p>
+            })
+
+            :
+
+            <p>No Locations Added</p>
+          }
+        
         </AccordionDetails>
       </Accordion>
     </Box>
