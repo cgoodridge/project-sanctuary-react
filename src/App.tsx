@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Login from './pages/login/Login';
 import UserCreation from './pages/userCreation/UserCreation';
 import './App.css';
@@ -38,6 +38,7 @@ import AppBar from '@mui/material/AppBar';
 import { UserProvider } from './firebase/UserProvider';
 import Profile from './pages/profile/Profile';
 import { useSession } from './firebase/UserProvider';
+import PetsIcon from '@mui/icons-material/Pets';
 
 
 
@@ -61,6 +62,7 @@ const App = () => {
   const [open, setOpen] = useState(false);
 
   const user = useSession();
+  // console.log(user);
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -84,7 +86,7 @@ const App = () => {
     persistor.purge();
     firebaseLogout()
       .then(() => {
-        
+
         dispatch(logout());
       });
 
@@ -99,9 +101,10 @@ const App = () => {
 
 
   return (
-    <UserProvider>
-      <ThemeProvider theme={theme}>
-        <Router>
+    // <UserProvider>
+    <ThemeProvider theme={theme}>
+      <Router>
+        {user.user ?
           <AppBar position="static" enableColorOnDark>
             <Container maxWidth="xl">
               <Toolbar disableGutters>
@@ -194,7 +197,7 @@ const App = () => {
                 <Box sx={{ flexGrow: 0 }}>
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                      <Avatar alt="">PP</Avatar>
+                      <Avatar alt="">P</Avatar>
                     </IconButton>
                   </Tooltip>
                   <Menu
@@ -216,7 +219,7 @@ const App = () => {
                   >
 
                     {settings.map((setting) => (
-                      <MenuItem key={setting.buttonName}>
+                      <MenuItem key={setting.buttonName} component={Link} to={setting.buttonEvent}>
                         <Typography textAlign="center">{setting.buttonName}</Typography>
                       </MenuItem>
                     ))}
@@ -234,63 +237,67 @@ const App = () => {
               </Toolbar>
             </Container>
           </AppBar>
+          :
+          <></>
+        }
 
-          <Box component="main" sx={{ flexGrow: 1 }}>
-            <Routes>
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/login" element={
-                <RedirectRoute>
-                  <Login />
-                </RedirectRoute>
-              }
-              />
-              <Route path="/register" element={
-                <RedirectRoute>
-                  <UserCreation />
-                </RedirectRoute>
-              }
-              />
-              <Route path="/animals" element={
-                <ProtectedRoute>
-                  <AnimalListComponent />
-                </ProtectedRoute>
-              } />
-              <Route path="/animals/:name" element={
-                <ProtectedRoute>
-                  <AnimalDetail />
-                </ProtectedRoute>
-              } />
-              <Route path="/locations" element={
-                <ProtectedRoute>
-                  <MapComponent />
-                  <LocationListComponent />
-                </ProtectedRoute>
-              } />
-              <Route path="/users" element={
-                <ProtectedRoute>
-                  <UserListComponent />
-                </ProtectedRoute>
-              } />
-              <Route path="/settings" element={
-                <ProtectedRoute>
-                  <Settings />
-                </ProtectedRoute>
-              } />
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              } />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </Box>
-        </Router>
-      </ThemeProvider>
-    </UserProvider>
+
+        <Box component="main" sx={{ flexGrow: 1 }}>
+          <Routes>
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/login" element={
+              <RedirectRoute>
+                <Login />
+              </RedirectRoute>
+            }
+            />
+            <Route path="/register" element={
+              <RedirectRoute>
+                <UserCreation />
+              </RedirectRoute>
+            }
+            />
+            <Route path="/animals" element={
+              <ProtectedRoute>
+                <AnimalListComponent />
+              </ProtectedRoute>
+            } />
+            <Route path="/animals/:name" element={
+              <ProtectedRoute>
+                <AnimalDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/locations" element={
+              <ProtectedRoute>
+                <MapComponent />
+                <LocationListComponent />
+              </ProtectedRoute>
+            } />
+            <Route path="/users" element={
+              <ProtectedRoute>
+                <UserListComponent />
+              </ProtectedRoute>
+            } />
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Box>
+      </Router>
+    </ThemeProvider>
+    // </UserProvider>
 
   );
 }

@@ -5,8 +5,8 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
-import { animalCollectionRef } from '../../../firebase/auth';
-import { getDocs, onSnapshot } from 'firebase/firestore';
+import { Grid } from '@mui/material';
+import PetsIcon from '@mui/icons-material/Pets';
 
 const AnimalCountComponent = () => {
 
@@ -19,14 +19,23 @@ const AnimalCountComponent = () => {
     }, []);
 
     return (
-        <Card sx={{ width: 125, height: 125, margin: '16px' }} className="cardColour">
+        <Card sx={{ width: '100%', height: 125, margin: '0 auto' }} className="cardColour">
             <CardContent>
-                <Typography sx={{ fontSize: 14, textAlign: 'center', fontWeight: 'bold' }} color="text.secondary" gutterBottom component="p">
-                    Active Animals
-                </Typography>
-                <Typography sx={{ fontSize: 42, fontWeight: 'bold', textAlign: 'center' }} color="text.secondary" gutterBottom component="p">
-                    {count <= 0 ? <CircularProgress /> : count}
-                </Typography>
+                <Grid container alignItems="center" justifyContent="space-between">
+                    <Grid item xs={8}>
+                        <Typography sx={{ fontSize: 14, textAlign: 'center', fontWeight: 'bold' }} color="text.secondary" gutterBottom component="p">
+                            Active Animals
+                        </Typography>
+                        <Typography sx={{ fontSize: 42, fontWeight: 'bold', textAlign: 'center' }} color="text.secondary" gutterBottom component="p">
+                            {count <= 0 ? <CircularProgress /> : count}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <PetsIcon sx={{ fontSize: '48px', margin: '0 auto' }} className='iconColour' />
+                    </Grid>
+                </Grid>
+
+
             </CardContent>
         </Card >
     )

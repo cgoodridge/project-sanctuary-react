@@ -7,8 +7,8 @@ import { useSession } from "../firebase/UserProvider";
 
 const ProtectedRoute = ({ children }: any) => {
     const user = useSession();
-    console.log(user);
-    return user ? children : <Navigate to="/login" />
+    // console.log(user.user);
+    return user.user ? children : <Navigate to="/login" />
     // return <Navigate to="/login" />
 }
 

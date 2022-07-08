@@ -8,18 +8,18 @@ import Grid from '@mui/material/Grid';
 const DashboardContainerComponent = () => {
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Grid container sx={{}}>
-        <Grid item xs={12} md={6}>
+    <Box sx={{ width: '100%', paddingTop: '16px' }}>
+      <Grid container justifyContent="space-evenly">
+        <Grid item xs={3} md={3} >
           <AnimalCountComponent />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={3} md={3}>
           <UserCountComponent />
         </Grid>
       </Grid>
     </Box>
   )
-  
+
 }
 
 export default DashboardContainerComponent;
