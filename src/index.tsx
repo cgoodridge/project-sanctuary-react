@@ -8,17 +8,20 @@ import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import reportWebVitals from './reportWebVitals';
 import './firebase/firebaseConfig';
+import { UserProvider } from './firebase/UserProvider';
 
 
 export const persistor = persistStore(store);
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
-        <App />
-      </PersistGate>
-    </Provider>
+    <UserProvider>
+      <Provider store={store}>
+        <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+          <App />
+        </PersistGate>
+      </Provider>
+    </UserProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
