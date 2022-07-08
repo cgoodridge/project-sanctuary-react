@@ -13,7 +13,6 @@ export const signup = async ({ firstName, lastName, email, password }) => {
 }
 
 export const firebaseLogout = () => {
-    console.log('Logout is being called');
     return firebase
         .auth()
         .signOut();

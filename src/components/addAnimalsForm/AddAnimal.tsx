@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, Children, isValidElement, cloneElement } from 'react';
+import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -14,33 +14,24 @@ import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import AnimalDataForm from './AnimalDataForm';
 import ConfirmationForm from './ConfirmationForm';
-import TextField from '@mui/material/TextField';
 import { useDispatch } from 'react-redux';
 import { database, storage } from '../../firebase/auth';
-import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import './addAnimal.css';
-import IconButton from '@mui/material/IconButton';
-import Grid from '@mui/material/Grid';
-import MapFormComponent from '../mapFormComponent/MapFormComponent';
 import { useSelector } from 'react-redux';
-import { selectForm, saveData } from '../../slices/formDataSlice';
+import { selectForm, saveData, clearData } from '../../slices/formDataSlice';
 import { selectLocations } from '../../slices/locationDataSlice';
 import { selectUser } from '../../slices/userSlice';
 import firebase from '../../firebase/firebaseConfig';
-import Badge from '@mui/material/Badge';
-import CloseIcon from '@mui/icons-material/Close';
-import { arrayUnion } from 'firebase/firestore';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { clear } from '../../slices/locationDataSlice';
 import { clearImageURLS, saveImageURLS, selectImages } from '../../slices/imageDataSlice';
 import { useNavigate } from 'react-router-dom';
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
-import { createCustomEqual } from "fast-equals";
-import { isLatLngLiteral } from "@googlemaps/typescript-guards";
 import '../darkMode/DarkMode.css';
 import ImagesForm from './ImagesForm';
 import LocationForm from './LocationForm';
+import { useSession } from '../../firebase/UserProvider';
 
 
 
@@ -59,42 +50,10 @@ const steps = [
 const AddAnimal = () => {
 
     // Map Code Start
-    const mapkey: string = process.env.REACT_APP_API_KEY || '';
 
-    const [clicks, setClicks] = useState<google.maps.LatLng[]>([]);
     const [jsonClicks, setJsonClicks] = useState<google.maps.LatLng[]>([]);
 
-    const [center, setCenter] = useState<google.maps.LatLngLiteral>({
-        lat: 0,
-        lng: 0,
-    });
-
-    const onClick = (e: google.maps.MapMouseEvent) => {
-        // avoid directly mutating state
-        setClicks(clicks => [...clicks, e.latLng!]);
-    };
-
-    const confirmLocations = () => {
-
-        clicks.map((location) => {
-            let newLocation = JSON.parse(JSON.stringify(location));
-
-            if (jsonClicks.some(locationVal => locationVal.lat === newLocation.lat) && jsonClicks.some(locationVal => locationVal.lng === newLocation.lng)) {
-                return;
-            } else {
-                setJsonClicks(jsonClicks => [...jsonClicks, newLocation]);
-            }
-
-        })
-        // dispatch(saveLocations(jsonClicks));
-    }
-    const clearLocations = () => {
-        setClicks([]);
-        setJsonClicks([]);
-    }
-
-    // Map Code End
-
+    
     const [openDialog, setOpenDialog] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -168,12 +127,12 @@ const AddAnimal = () => {
     const locations = useSelector(selectLocations);
     const images = useSelector(selectImages);
 
-    const user = useSelector(selectUser);
+    const user = useSession();
     const promises: any[] = [];
     const newURLS: any[] = [];
 
 
-    
+
 
     const uploadAnimal = async () => {
 
@@ -181,28 +140,29 @@ const AddAnimal = () => {
             .collection('animals')
             .doc()
             .set({
-                addedBy: user.uid,
-                kingdomClass: kingdomClass,
-                commonName: commonName,
+                addedBy: user.user.uid,
+                kingdomClass: animal.kingdomClass,
+                commonName: animal.commonName,
                 dateAdded: firebase.firestore.Timestamp.fromDate(new Date()),
-                description: description,
-                diet: diet,
-                family: family,
-                genus: genus,
+                description: animal.description,
+                diet: animal.diet,
+                family: animal.family,
+                genus: animal.genus,
                 imgURLS: imageURLS,
-                kingdom: kingdom,
-                locations: jsonClicks,
-                lifespan: lifespan,
-                lifestyle: lifestyle,
-                nameOfYoung: nameOfYoung,
-                order: order,
-                phylum: phylum,
-                redListStatus: redListStatus,
-                groupBehaviour: groupBehaviour,
-                source: source,
-                imageSource: imageSource
+                kingdom: animal.kingdom,
+                locations: animal.jsonClicks,
+                lifespan: animal.lifespan,
+                lifestyle: animal.lifestyle,
+                nameOfYoung: animal.nameOfYoung,
+                order: animal.order,
+                phylum: animal.phylum,
+                redListStatus: animal.redListStatus,
+                groupBehaviour: animal.groupBehaviour,
+                source: animal.source,
+                imageSource: animal.imageSource
             }).then(() => {
 
+                
                 database
                     .collection('locations')
                     .doc()
@@ -226,6 +186,7 @@ const AddAnimal = () => {
                         setJsonClicks([]);
                         // dispatch(clear());
                         handleConfirmMessageOpen();
+                        handleClose();
                         navigate('/animals');
                     })
             })
@@ -390,7 +351,7 @@ const AddAnimal = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
-                    {activeStep === 3 ? <LoadingButton loading={loading} loadingPosition="center" type='submit' form="animalInfoForm" disabled={animal !== null} onClick={uploadAnimal} sx={{ mr: 1 }}>Upload</LoadingButton>
+                    {activeStep === 3 ? <LoadingButton loading={loading} loadingPosition="center" type='submit' form="animalInfoForm" disabled={animal == null} onClick={uploadAnimal} sx={{ mr: 1 }}>Upload</LoadingButton>
                         :
                         <Button form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>

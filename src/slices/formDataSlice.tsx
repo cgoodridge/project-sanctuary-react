@@ -21,11 +21,14 @@ export const formDataSlice = createSlice({
         saveData: (state: any, action: any) => {
             state.formData = action.payload;
         },
+        clearData: (state: any) => {
+            state.formData = {};
+        }
     }
 
 });
 
-export const { saveData } = formDataSlice.actions;
+export const { saveData, clearData } = formDataSlice.actions;
 
 export const selectForm = (state: RootStateOrAny) => state.form.formData;
 
