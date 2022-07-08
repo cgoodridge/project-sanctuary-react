@@ -168,7 +168,7 @@ const App = () => {
                   variant="h5"
                   noWrap
                   component="a"
-                  href=""
+                  href="/"
                   sx={{
                     mr: 2,
                     display: { xs: 'flex', md: 'none' },
@@ -197,7 +197,7 @@ const App = () => {
                 <Box sx={{ flexGrow: 0 }}>
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                      <Avatar alt="">P</Avatar>
+                      <Avatar alt="">{user.user.email.charAt(0)}</Avatar>
                     </IconButton>
                   </Tooltip>
                   <Menu
@@ -240,7 +240,6 @@ const App = () => {
           :
           <></>
         }
-
 
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Routes>
