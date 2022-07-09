@@ -11,6 +11,7 @@ import firebase from '../../firebase/firebaseConfig';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonIcon from '@mui/icons-material/Person';
 import CloseIcon from '@mui/icons-material/Close';
+import SaveIcon from '@mui/icons-material/Save';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -35,9 +36,6 @@ const UserListComponent = () => {
     const [users, setUsers] = useState<User[]>([]);
 
 
-    const handleChange = (event: any) => {
-        setRole(event.target.value);
-    };
 
 
     useEffect(() => {
@@ -52,7 +50,7 @@ const UserListComponent = () => {
 
 
     const [openDialog, setOpenDialog] = useState(false);
-    const [editMode, setEditMode] = useState(false);
+
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -61,6 +59,7 @@ const UserListComponent = () => {
     const [passwordError, setPasswordError] = useState('');
     const [passwordErrorState, setPasswordErrorState] = useState(false);
     const [role, setRole] = useState('');
+
     const [openConfirmMessage, setOpenConfirmMessage] = useState(false);
     const navigate = useNavigate();
 
@@ -97,10 +96,6 @@ const UserListComponent = () => {
                 .catch(error => alert(error.message))
         }
 
-    }
-
-    const handleEdit = () => {
-        // Replace cells with text fields
     }
 
     const handleConfirmMessageOpen = () => {
@@ -149,75 +144,7 @@ const UserListComponent = () => {
 
                 {users.map((user: any) => {
 
-                    return <Accordion key={user.id} className="tileColour userTile">
-
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon className="iconColour" />}
-                            aria-controls="panel1a-content"
-                            id="panel1a-header"
-                            className="iconColour"
-                        >
-                            <Typography> {user.role === 'admin' ? <PersonIcon sx={{color:'green'}}/> : <PersonIcon/>}  {user.firstName} {user.lastName} {currentUser.user.uid === user.id ? '(Logged In)' : ''}</Typography>
-                        </AccordionSummary>
-
-                        <AccordionDetails>
-                            <Box sx={{ flexGrow: 1 }}>
-                                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-
-                                    <Grid item xs={1} sm={4} md={4}>
-                                        <Typography >Email:</Typography>
-                                    </Grid>
-                                    <Grid item xs={2} sm={4} md={4}>
-                                        <Typography className="emailField">{user.email}</Typography>
-                                    </Grid>
-
-                                </Grid>
-                                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-
-                                    <Grid item xs={1} sm={4} md={4}>
-                                        <Typography>Role:</Typography>
-                                    </Grid>
-                                    <Grid item xs={2} sm={4} md={4}>
-                                        {editMode && user.role !== 'admin' ?
-                                            <>
-                                                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                                    <InputLabel id="demo-simple-select-standard-label">Role</InputLabel>
-                                                    <Select
-                                                        labelId="demo-simple-select-standard-label"
-                                                        id="demo-simple-select-standard"
-                                                        value={role}
-                                                        onChange={handleChange}
-                                                        label="Age"
-                                                    >
-                                                        <MenuItem value="">
-                                                            <em>None</em>
-                                                        </MenuItem>
-                                                        <MenuItem value='admin'>Admin</MenuItem>
-                                                        <MenuItem value='user'>User</MenuItem>
-                                                    </Select>
-                                                </FormControl>
-                                                <IconButton onClick={() => setEditMode(false)}> <CloseIcon className="iconColour" /> </IconButton>
-                                            </>
-                                            :
-
-                                            <Typography>{user.role} <IconButton onClick={() => setEditMode(true)}> <EditIcon className="iconColour" /> </IconButton></Typography>
-                                        }
-                                    </Grid>
-
-                                </Grid>
-                                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-
-                                    <Grid item xs={1} sm={4} md={4}>
-                                        <Typography>Date Added:</Typography>
-                                    </Grid>
-                                    <Grid item xs={2} sm={4} md={4}>
-                                        <Typography>{user.dateAdded}</Typography>
-                                    </Grid>
-
-                                </Grid>
-                            </Box>
-                        </AccordionDetails>
-                    </Accordion>
+                    return <UserTile key={user.id} user={user} currentUser={currentUser}/>
 
                 })}
             </Container>
@@ -327,3 +254,98 @@ const UserListComponent = () => {
 }
 
 export default UserListComponent;
+
+const UserTile = (user: any) => {
+
+    const [editMode, setEditMode] = useState(false);
+    const [role, setRole] = useState('user');
+
+    const updateRole = () => {
+        database
+            .collection('users')
+            .doc(user.user.id)
+            .update({role: role})
+            .then(() =>{
+                console.log("Role update successful");
+            })
+    }
+
+    
+
+    const handleChange = (event: any) => {
+        event.preventDefault();
+        setRole(event.target.value);
+    };
+
+
+    return (<Accordion className="tileColour userTile">
+
+        <AccordionSummary
+            expandIcon={<ExpandMoreIcon className="iconColour" />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+            className="iconColour"
+        >
+            <Typography> {user.user.role === 'admin' ? <PersonIcon sx={{ color: 'green' }} /> : <PersonIcon />}  {user.user.firstName} {user.user.lastName} {user.currentUser.user.uid === user.id ? '(Logged In)' : ''}</Typography>
+        </AccordionSummary>
+
+        <AccordionDetails>
+            <Box sx={{ flexGrow: 1 }}>
+                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+
+                    <Grid item xs={1} sm={4} md={4}>
+                        <Typography>Email:</Typography>
+                    </Grid>
+                    <Grid item xs={2} sm={4} md={4}>
+                        <Typography className="emailField">{user.user.email}</Typography>
+                    </Grid>
+
+                </Grid>
+                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+
+                    <Grid item xs={1} sm={4} md={4}>
+                        <Typography>Role:</Typography>
+                    </Grid>
+                    <Grid item xs={2} sm={4} md={4}>
+                        {editMode && user.user.role !== 'admin' ?
+                            <>
+                                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                    <InputLabel id="demo-simple-select-standard-label">Role</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-standard-label"
+                                        id="demo-simple-select-standard"
+                                        value={role}
+                                        onChange={handleChange}
+                                        label="Age"
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+                                        <MenuItem value='admin'>Admin</MenuItem>
+                                        <MenuItem value='user'>User</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <IconButton onClick={() => updateRole()}> <SaveIcon className="iconColour" /> </IconButton>
+                                <IconButton onClick={() => setEditMode(false)}> <CloseIcon className="iconColour" /> </IconButton>
+                            </>
+                            :
+
+                            <Typography>{user.user.role} <IconButton onClick={(e) => setEditMode(true)}> <EditIcon className="iconColour" /> </IconButton></Typography>}
+                    </Grid>
+
+                </Grid>
+                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+
+                    <Grid item xs={1} sm={4} md={4}>
+                        <Typography>Date Added:</Typography>
+                    </Grid>
+                    <Grid item xs={2} sm={4} md={4}>
+                        <Typography>{user.user.dateAdded}</Typography>
+                    </Grid>
+
+                </Grid>
+            </Box>
+        </AccordionDetails>
+    </Accordion>
+    );
+}
