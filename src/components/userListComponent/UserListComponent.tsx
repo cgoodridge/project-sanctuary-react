@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { useEffect, useState, useRef } from 'react';
-import { userCollectionRef, authRef, database } from '../../firebase/auth';
-import { Badge, Card, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fab, Input, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { authRef, database } from '../../firebase/auth';
+import { Container, Dialog, DialogActions, DialogContent, DialogTitle, Fab, FormControl, IconButton, Input, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import "./userListComponent.css";
 import { Grid, CardActions, CardMedia, CardContent, Typography, Button } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -10,15 +9,14 @@ import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import firebase from '../../firebase/firebaseConfig';
 import EditIcon from '@mui/icons-material/Edit';
-import { selectUser } from '../../slices/userSlice';
-import { useSelector } from 'react-redux';
 import PersonIcon from '@mui/icons-material/Person';
+import CloseIcon from '@mui/icons-material/Close';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import '../darkMode/DarkMode.css';
-import { AnalyticsTwoTone } from '@mui/icons-material';
+import { useSession } from '../../firebase/UserProvider';
 
 interface User {
     id: string;
@@ -32,11 +30,15 @@ interface User {
 
 const UserListComponent = () => {
 
-    const currentUser = useSelector(selectUser);
+    const currentUser = useSession();
 
     const [users, setUsers] = useState<User[]>([]);
 
-    const _isMounted = useRef(true);
+
+    const handleChange = (event: any) => {
+        setRole(event.target.value);
+    };
+
 
     useEffect(() => {
 
@@ -50,6 +52,7 @@ const UserListComponent = () => {
 
 
     const [openDialog, setOpenDialog] = useState(false);
+    const [editMode, setEditMode] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -138,24 +141,25 @@ const UserListComponent = () => {
                 </DialogActions>
             </Dialog>
 
-            <Container sx={{mt: 4}}>
+            <Container sx={{ mt: 4 }}>
 
                 <Typography variant="h4" gutterBottom component="div">
                     Users
                 </Typography>
 
-                {users.map((user: any, key: any) => {
+                {users.map((user: any) => {
 
-                    return <Accordion key={key} className="tileColour userTile">
+                    return <Accordion key={user.id} className="tileColour userTile">
 
                         <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
+                            expandIcon={<ExpandMoreIcon className="iconColour" />}
                             aria-controls="panel1a-content"
                             id="panel1a-header"
                             className="iconColour"
                         >
-                            <Typography>{user.firstName} {user.lastName}</Typography>
+                            <Typography> {user.role === 'admin' ? <PersonIcon sx={{color:'green'}}/> : <PersonIcon/>}  {user.firstName} {user.lastName} {currentUser.user.uid === user.id ? '(Logged In)' : ''}</Typography>
                         </AccordionSummary>
+
                         <AccordionDetails>
                             <Box sx={{ flexGrow: 1 }}>
                                 <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
@@ -174,7 +178,30 @@ const UserListComponent = () => {
                                         <Typography>Role:</Typography>
                                     </Grid>
                                     <Grid item xs={2} sm={4} md={4}>
-                                        <Typography>{user.role}</Typography>
+                                        {editMode && user.role !== 'admin' ?
+                                            <>
+                                                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                                    <InputLabel id="demo-simple-select-standard-label">Role</InputLabel>
+                                                    <Select
+                                                        labelId="demo-simple-select-standard-label"
+                                                        id="demo-simple-select-standard"
+                                                        value={role}
+                                                        onChange={handleChange}
+                                                        label="Age"
+                                                    >
+                                                        <MenuItem value="">
+                                                            <em>None</em>
+                                                        </MenuItem>
+                                                        <MenuItem value='admin'>Admin</MenuItem>
+                                                        <MenuItem value='user'>User</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                                <IconButton onClick={() => setEditMode(false)}> <CloseIcon className="iconColour" /> </IconButton>
+                                            </>
+                                            :
+
+                                            <Typography>{user.role} <IconButton onClick={() => setEditMode(true)}> <EditIcon className="iconColour" /> </IconButton></Typography>
+                                        }
                                     </Grid>
 
                                 </Grid>
