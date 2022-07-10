@@ -112,7 +112,40 @@ const AnimalDetail = () => {
   }, [animalInfo]);
 
 
+  const formatRedListStatus = (status: string | undefined) => {
+    let statusResult;
 
+    switch (status) {
+      case "Data Deficient":
+        statusResult = 'DD';
+        break;
+      case "Least Concern":
+        statusResult = 'LC';
+        break;
+      case "Near Threatened":
+        statusResult = 'NT';
+        break;
+      case "Vulnerable":
+        statusResult = 'VU';
+        break;
+      case "Endangered":
+        statusResult = 'EN';
+        break;
+      case "Critically Endangered":
+        statusResult = 'CR';
+        break;
+      case "Extinct In The Wild":
+        statusResult = 'EW';
+        break;
+      case "Extinct":
+        statusResult = 'EX';
+        break;
+      default:
+        statusResult = '';
+    }
+
+    return statusResult;
+  }
 
   return (
     <>
@@ -176,7 +209,7 @@ const AnimalDetail = () => {
                       onChange={(e: any) => setCommonName(e.target.value)} />
                   </Box>
                   :
-                  <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
+                  <Typography variant="h5" gutterBottom sx={{ textAlign: 'center' }}>
                     {animalInfo.commonName}
                   </Typography>
                 }
@@ -228,14 +261,14 @@ const AnimalDetail = () => {
             <Grid container justifyContent="center" alignItems="center">
               <Grid container justifyContent="center" alignItems="center">
                 <Grid item>
-                  <Grid container>
+                  <Grid container justifyContent="center">
                     <Grid item>
-                      <Typography variant="h5" gutterBottom sx={{ textAlign: 'center' }}>
-                        <a href="https://www.iucnredlist.org/">IUCN</a> Red List Status - {animalInfo ? animalInfo.redlistStatus : 'N/A'}
+                      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center' }}>
+                        <a href="https://www.iucnredlist.org/">IUCN</a> Red List Status: <i>{animalInfo ? animalInfo.redListStatus : 'N/A'}</i>
                       </Typography>
                     </Grid>
-                    <Grid item sx={{ ml: 2, mb: 2 }}>
-                      <Avatar sx={{ bgcolor: red[500] }}>LC</Avatar>
+                    <Grid item sx={{ ml: 1, mb: 2 }}>
+                      <Avatar sx={{ bgcolor: red[500], width: 32, height: 32, fontSize: '18px' }}>{formatRedListStatus(animalInfo.redListStatus)}</Avatar>
                     </Grid>
                   </Grid>
                 </Grid>

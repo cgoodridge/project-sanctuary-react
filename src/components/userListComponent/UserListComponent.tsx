@@ -144,7 +144,7 @@ const UserListComponent = () => {
 
                 {users.map((user: any) => {
 
-                    return <UserTile key={user.id} user={user} currentUser={currentUser}/>
+                    return <UserTile key={user.id} user={user} currentUser={currentUser} />
 
                 })}
             </Container>
@@ -264,13 +264,13 @@ const UserTile = (user: any) => {
         database
             .collection('users')
             .doc(user.user.id)
-            .update({role: role})
-            .then(() =>{
+            .update({ role: role })
+            .then(() => {
                 console.log("Role update successful");
             })
     }
 
-    
+
 
     const handleChange = (event: any) => {
         event.preventDefault();
@@ -286,7 +286,7 @@ const UserTile = (user: any) => {
             id="panel1a-header"
             className="iconColour"
         >
-            <Typography> {user.user.role === 'admin' ? <PersonIcon sx={{ color: 'green' }} /> : <PersonIcon />}  {user.user.firstName} {user.user.lastName} {user.currentUser.user.uid === user.id ? '(Logged In)' : ''}</Typography>
+            <Typography> {user.user.role === 'superadmin' ? <PersonIcon sx={{ color: 'orange' }} /> : user.user.role === 'admin' ? <PersonIcon sx={{ color: 'green' }} /> : <PersonIcon />}  {user.user.firstName} {user.user.lastName} {user.currentUser.user.uid === user.id ? '(Logged In)' : ''}</Typography>
         </AccordionSummary>
 
         <AccordionDetails>
@@ -307,7 +307,7 @@ const UserTile = (user: any) => {
                         <Typography>Role:</Typography>
                     </Grid>
                     <Grid item xs={2} sm={4} md={4}>
-                        {editMode && user.user.role !== 'admin' ?
+                        {editMode && user.user.role !== 'admin' || editMode && user.user.role !== 'superadmin' ?
                             <>
                                 <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                                     <InputLabel id="demo-simple-select-standard-label">Role</InputLabel>
@@ -330,7 +330,7 @@ const UserTile = (user: any) => {
                             </>
                             :
 
-                            <Typography>{user.user.role} <IconButton onClick={(e) => setEditMode(true)}> <EditIcon className="iconColour" /> </IconButton></Typography>}
+                            <Typography>{user.user.role} {user.user.role === 'superadmin' ? <></> : <IconButton onClick={(e) => setEditMode(true)}> <EditIcon className="iconColour" /> </IconButton>}</Typography>}
                     </Grid>
 
                 </Grid>

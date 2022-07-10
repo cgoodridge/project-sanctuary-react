@@ -26,6 +26,10 @@ import MenuItem from '@mui/material/MenuItem';
 import _ from 'underscore';
 import '../darkMode/DarkMode.css';
 import Container from '@mui/material/Container';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Dialog from '@mui/material/Dialog';
 
 
 const AnimalListComponent = ({ animalList }: any) => {
@@ -36,6 +40,8 @@ const AnimalListComponent = ({ animalList }: any) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortOption, setSortOption] = useState('commonName');
     const [reverseOption, setReverseOption] = useState(false);
+    const [openConfirmMessage, setOpenConfirmMessage] = useState(false);
+
 
     const checkWhiteSpace = (name: string) => {
         if (name) {
@@ -67,30 +73,36 @@ const AnimalListComponent = ({ animalList }: any) => {
 
 
     const removeAnimal = async (id: string, commonName: string) => {
-        database
-            .collection("animals")
-            .doc(id)
-            .delete()
-            .then(() => {
-                storage
-                    .ref(`images/${commonName}`)
-                    .listAll()
-                    .then((image) => {
-                        image.items.forEach((file) => {
-                            file.delete();
+
+        if (window.confirm("Are you sure you want to delete this animal?")) {
+            database
+                .collection("animals")
+                .doc(id)
+                .delete()
+                .then(() => {
+                    storage
+                        .ref(`images/${commonName}`)
+                        .listAll()
+                        .then((image) => {
+                            image.items.forEach((file) => {
+                                file.delete();
+                            })
                         })
-                    })
-                    .then(() => {
-                        console.log("Animal deleted");
-                    })
-            });
+                        .then(() => {
+                            console.log("Animal deleted");
+                        })
+                });
+        }
+
     };
+
+
 
     useEffect(() => {
 
         return database.collection('animals').onSnapshot((snapshot) => {
             const animalData: any = [];
-            
+
             snapshot.forEach(doc => animalData.push({
                 ...doc.data(),
                 id: doc.id,
@@ -122,6 +134,7 @@ const AnimalListComponent = ({ animalList }: any) => {
 
     return (
         <>
+
             <Container>
 
                 <Box sx={{ padding: '8px', width: '100%', marginTop: 8 }}>

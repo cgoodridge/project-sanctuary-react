@@ -17,7 +17,7 @@ export default interface Animal {
   nameOfYoung?: string,
   order?: string,
   phylum?: string,
-  redlistStatus?: string,
+  redListStatus?: string,
   scientificName?: string,
   source?: string,
   imageSource?: string

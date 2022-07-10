@@ -272,7 +272,9 @@ const App = () => {
             } />
             <Route path="/locations" element={
               <ProtectedRoute>
-                <MapComponent />
+                <Container>
+                  <MapComponent />
+                </Container>
                 <LocationListComponent />
               </ProtectedRoute>
             } />
