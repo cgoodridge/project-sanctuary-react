@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState, Children, isValidElement, cloneElement } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -14,22 +14,30 @@ import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import AnimalDataForm from './AnimalDataForm';
 import ConfirmationForm from './ConfirmationForm';
+import TextField from '@mui/material/TextField';
 import { useDispatch } from 'react-redux';
 import { database, storage } from '../../firebase/auth';
+import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import './addAnimal.css';
+import IconButton from '@mui/material/IconButton';
+import Grid from '@mui/material/Grid';
+import MapFormComponent from '../mapFormComponent/MapFormComponent';
 import { useSelector } from 'react-redux';
-import { selectForm, saveData, clearData } from '../../slices/formDataSlice';
-import { selectLocations, clearLocations } from '../../slices/locationDataSlice';
-import { clearImageURLS, saveImageURLS, selectImages } from '../../slices/imageDataSlice';
+import { selectForm, saveData } from '../../slices/formDataSlice';
+import { selectLocations } from '../../slices/locationDataSlice';
 import { selectUser } from '../../slices/userSlice';
 import firebase from '../../firebase/firebaseConfig';
+import Badge from '@mui/material/Badge';
+import CloseIcon from '@mui/icons-material/Close';
+import { arrayUnion } from 'firebase/firestore';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { clearLocations } from '../../slices/locationDataSlice';
+import { clearImageURLS, saveImageURLS, selectImages } from '../../slices/imageDataSlice';
 import { useNavigate } from 'react-router-dom';
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
-import '../darkMode/DarkMode.css';
-import ImagesForm from './ImagesForm';
-import LocationForm from './LocationForm';
+import { createCustomEqual } from "fast-equals";
+import { isLatLngLiteral } from "@googlemaps/typescript-guards";
 import { useSession } from '../../firebase/UserProvider';
 
 
@@ -49,13 +57,44 @@ const steps = [
 const AddAnimal = () => {
 
     // Map Code Start
+    const mapkey: string = process.env.REACT_APP_API_KEY || '';
 
+    const [clicks, setClicks] = useState<google.maps.LatLng[]>([]);
     const [jsonClicks, setJsonClicks] = useState<google.maps.LatLng[]>([]);
 
-    
+    const [center, setCenter] = useState<google.maps.LatLngLiteral>({
+        lat: 0,
+        lng: 0,
+    });
+
+    const onClick = (e: google.maps.MapMouseEvent) => {
+        // avoid directly mutating state
+        setClicks(clicks => [...clicks, e.latLng!]);
+    };
+
+    const confirmLocations = () => {
+        clicks.map((location) => {
+            let newLocation = JSON.parse(JSON.stringify(location));
+
+            if (jsonClicks.some(locationVal => locationVal.lat === newLocation.lat) && jsonClicks.some(locationVal => locationVal.lng === newLocation.lng)) {
+                return;
+            } else {
+                setJsonClicks(jsonClicks => [...jsonClicks, newLocation]);
+            }
+        })
+        // dispatch(saveLocations(jsonClicks));
+    }
+    const clearLocations = () => {
+        setClicks([]);
+        setJsonClicks([]);
+    }
+
+    // Map Code End
+
     const [openDialog, setOpenDialog] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
 
     const [saveAnimalData, setSaveAnimalData] = useState(false);
     const [saveImageData, setSaveImageData] = useState(false);
@@ -64,7 +103,6 @@ const AddAnimal = () => {
     const [loading, setLoading] = useState(false);
 
     /// Form values
-
     const [kingdom, setKingdom] = useState('');
     const [phylum, setPhylum] = useState('');
     const [kingdomClass, setKingdomClass] = useState('');
@@ -83,7 +121,6 @@ const AddAnimal = () => {
     const [redListStatus, setRedListStatus] = useState('');
     const [description, setDescription] = useState('');
     const [locationName, setLocationName] = useState('');
-
     /// End form values
 
     const handleClickOpen = () => {
@@ -106,6 +143,7 @@ const AddAnimal = () => {
     const [isFilePicked, setIsFilePicked] = useState(false);
     const [openConfirmMessage, setOpenConfirmMessage] = useState(false);
 
+    /// Start Image upload Code
 
     const handleFileUpload = (e: any) => {
         /* List of files is "array-like" not an actual array
@@ -122,8 +160,45 @@ const AddAnimal = () => {
         setSelectedFiles(newFileList);
     }
 
+    const uploadImages = async () => {
+        await Promise.all(
+            selectedFiles.map(file => {
+                promises.push(storage
+                    .ref(`images/${commonName}/${file?.name}`)
+                    .put(file)
+                    .catch(error => alert(error.message)));
+            })
+        )
+    }
+
+    const getImageURLS = async () => {
+        await Promise.all(promises)
+            .then(result => {
+                storage
+                    .ref(`images/${commonName}/`)
+                    .listAll()
+                    .then((urls) => {
+                        urls.items.forEach((image) => {
+                            image.getDownloadURL()
+                                .then(async (url) => {
+                                    let newURL = url;
+                                    // console.log("Image URL is " + url);
+                                    setImageURLS((imageURLS) => [...imageURLS, newURL]);
+                                    // dispatch(saveImageURLS(newURL));
+                                })
+                        })
+
+                    })
+                    .then(async () => {
+                        setLoading(false);
+                    })
+            })
+            .catch(error => alert("Promise rejected"))
+    }
+
+    /// End Image Upload Code
+
     const animal = useSelector(selectForm);
-    console.log(animal.jsonClicks);
     const locations = useSelector(selectLocations);
     const images = useSelector(selectImages);
 
@@ -132,8 +207,7 @@ const AddAnimal = () => {
     const newURLS: any[] = [];
 
 
-
-
+    
     const uploadAnimal = async () => {
 
         database
@@ -141,65 +215,61 @@ const AddAnimal = () => {
             .doc()
             .set({
                 addedBy: user.user.uid,
-                kingdomClass: animal.kingdomClass,
-                commonName: animal.commonName,
+                kingdomClass: kingdomClass,
+                commonName: commonName,
                 dateAdded: firebase.firestore.Timestamp.fromDate(new Date()),
-                description: animal.description,
-                diet: animal.diet,
-                family: animal.family,
-                genus: animal.genus,
+                description: description,
+                diet: diet,
+                family: family,
+                genus: genus,
                 imgURLS: imageURLS,
-                kingdom: animal.kingdom,
-                locations: locations,
-                lifespan: animal.lifespan,
-                lifestyle: animal.lifestyle,
-                nameOfYoung: animal.nameOfYoung,
-                order: animal.order,
-                phylum: animal.phylum,
-                redListStatus: animal.redListStatus,
-                groupBehaviour: animal.groupBehaviour,
-                source: animal.source,
-                imageSource: animal.imageSource
+                kingdom: kingdom,
+                locations: jsonClicks,
+                lifespan: lifespan,
+                lifestyle: lifestyle,
+                nameOfYoung: nameOfYoung,
+                order: order,
+                phylum: phylum,
+                redListStatus: redListStatus,
+                groupBehaviour: groupBehaviour,
+                source: source,
+                imageSource: imageSource
             }).then(() => {
 
-                dispatch(clearData());
-                dispatch(clearImageURLS());
-                dispatch(clearLocations());
-                // database
-                //     .collection('locations')
-                //     .doc()
-                //     .set({
-                //         animals: "",
-                //         locationColour: "Blue",
-                //         name: locationName,
-                //         imgURL: imageURLS[0]
-                //     }).then(() => {
-                //         setLoading(false);
-                //         setOpenDialog(false);
-                //         setKingdom('');
-                //         setPhylum('');
-                //         setKingdomClass('');
-                //         setOrder('');
-                //         setFamily('');
-                //         setGenus('');
-                //         setSpecies('');
-                //         setDescription('');
-                //         dispatch(clearImageURLS());
-                //         setJsonClicks([]);
-                //         // dispatch(clear());
+                database
+                    .collection('locations')
+                    .doc()
+                    .set({
+                        animals: "",
+                        locationColour: "Blue",
+                        name: locationName,
+                        imgURL: imageURLS[0]
+                    }).then(() => {
+                        setLoading(false);
+                        setOpenDialog(false);
+                        setKingdom('');
+                        setPhylum('');
+                        setKingdomClass('');
+                        setOrder('');
+                        setFamily('');
+                        setGenus('');
+                        setSpecies('');
+                        setDescription('');
+                        dispatch(clearImageURLS());
+                        setJsonClicks([]);
+                        // dispatch(clear());
                         handleConfirmMessageOpen();
-                        handleClose();
-                //         navigate('/animals');
-                //     })
+                        navigate('/animals');
+                    })
+
             })
+
     }
 
     /// End of code for uploading gallery images
     // Stepper Code
 
     const [activeStep, setActiveStep] = useState(0);
-    const [stepCounter, setStepCounter] = useState(0);
-
     const [completed, setCompleted] = useState<{
         [k: number]: boolean;
     }>({});
@@ -221,41 +291,39 @@ const AddAnimal = () => {
     };
 
     const handleNext = (e: any) => {
-        setStepCounter(stepCounter + 1);
 
         if (e && activeStep === 0) {
             // if (kingdom === '' || phylum === '' || kingdomClass === '' || order === '' || family === '' || genus === '' || species === '' || description === '' || commonName === '') {
-            // if (commonName === '') {
-            //     alert("One or more fields, must be filled");
-            //     return;
-            // } else {
-            //     setSaveAnimalData(true);
-            //     dispatch(saveData({
-            //         commonName: commonName,
-            //         kingdom: kingdom,
-            //         phylum: phylum,
-            //         kingdomClass: kingdomClass,
-            //         order: order,
-            //         family: family,
-            //         genus: genus,
-            //         species: species,
-            //         description: description,
-            //     }))
-            // }
+            if (commonName === '') {
+                alert("One or more fields, must be filled");
+                return;
+            } else {
+                setSaveAnimalData(true);
+                dispatch(saveData({
+                    commonName: commonName,
+                    kingdom: kingdom,
+                    phylum: phylum,
+                    kingdomClass: kingdomClass,
+                    order: order,
+                    family: family,
+                    genus: genus,
+                    species: species,
+                    description: description,
+                }))
+            }
         }
 
         if (e && activeStep === 1) {
-            // if (selectedFiles.length === 0) {
-            //     alert("Please choose at least 1 image");
-            //     return;
-            // }
-
-            // uploadImages();
+            if (selectedFiles.length === 0) {
+                alert("Please choose at least 1 image");
+                return;
+            }
+            uploadImages();
         }
 
         if (e && activeStep === 2) {
             // alert("Just passed image ");
-            // getImageURLS();
+            getImageURLS();
             setLocationData(locationData => locations);
             // return;
         }
@@ -315,11 +383,9 @@ const AddAnimal = () => {
                 </DialogContent>
 
                 <DialogActions>
-
                     <Button onClick={handleConfirmMessageClose} autoFocus>
                         OK
                     </Button>
-
                 </DialogActions>
 
             </Dialog>
@@ -344,20 +410,346 @@ const AddAnimal = () => {
 
                     {/* We'll move all the form components here for now but we're gonna have to figure out how to refactor the components to make the code a bit cleaner */}
 
-                    {activeStep === 0 ?
-                        <AnimalDataForm /> : activeStep === 1 ?
-                            <ImagesForm /> : activeStep === 2 ?
-                                <LocationForm /> : activeStep === 3 ?
-                                    <ConfirmationForm /> : <AnimalDataForm />}
+                    {activeStep === 0 ? <form id="animalInfoForm">
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="kingdom"
+                                label="Kingdom"
+                                value={kingdom}
+                                onChange={(e: any) => setKingdom(e.target.value)}
+                                type="text"
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="phylum"
+                                value={phylum}
+                                onChange={(e: any) => setPhylum(e.target.value)}
+                                label="Phylum"
+                                type="text"
+                                variant="standard"
+                            />
+                        </Box>
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="kingdomClass"
+                                label="Class"
+                                value={kingdomClass}
+                                onChange={(e: any) => setKingdomClass(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="order"
+                                label="Order"
+                                value={order}
+                                onChange={(e: any) => setOrder(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="family"
+                                label="Family"
+                                value={family}
+                                onChange={(e: any) => setFamily(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="genus"
+                                label="Genus"
+                                value={genus}
+                                onChange={(e: any) => setGenus(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="species"
+                                label="Species"
+                                value={species}
+                                onChange={(e: any) => setSpecies(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="commonName"
+                                label="Common Name"
+                                value={commonName}
+                                onChange={(e: any) => setCommonName(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="diet"
+                                label="Diet"
+                                value={diet}
+                                onChange={(e: any) => setDiet(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="lifestyle"
+                                label="Lifestyle"
+                                value={lifestyle}
+                                onChange={(e: any) => setLifestyle(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="lifespan"
+                                label="Lifespan"
+                                value={lifespan}
+                                onChange={(e: any) => setLifespan(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="nameOfYoung"
+                                label="Name of Young"
+                                value={nameOfYoung}
+                                onChange={(e: any) => setNameOfYoung(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '28ch' },
+                        }}>
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="redListStatus"
+                                label="Red List Status"
+                                value={redListStatus}
+                                onChange={(e: any) => setRedListStatus(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                autoFocus
+                                margin="dense"
+                                id="groupBehaviour"
+                                label="Group Behaviour"
+                                value={groupBehaviour}
+                                onChange={(e: any) => setGroupBehaviour(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '60ch' },
+                        }}>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="description"
+                                label="Description"
+                                value={description}
+                                onChange={(e: any) => setDescription(e.target.value)}
+                                type="text"
+                                fullWidth
+                                multiline
+                                variant="standard"
+                            />
+                        </Box>
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '60ch' },
+                        }}>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="source"
+                                label="Information Source"
+                                required
+                                value={source}
+                                onChange={(e: any) => setSource(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+                        <Box sx={{
+                            '& > :not(style)': { m: 1, width: '60ch' },
+                        }}>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="imgSrc"
+                                label="Image Source"
+                                required
+                                value={imageSource}
+                                onChange={(e: any) => setImageSource(e.target.value)}
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                            />
+                        </Box>
+
+                    </form> : activeStep === 1 ?
+
+                        <Box sx={{ width: "100%", overflowX: "scroll" }}>
+                            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                                {selectedFiles.length <= 0 ? <Box></Box>
+
+                                    :
+
+                                    selectedFiles.map((file, key) => (
+                                        <Grid item xs={4} key={key}>
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    flexWrap: 'wrap',
+                                                    '& > :not(style)': {
+                                                        m: 1,
+                                                        width: 128,
+                                                        height: 128,
+                                                    },
+                                                    padding: '16px'
+                                                }}
+                                            >
+                                                <Badge badgeContent={<IconButton onClick={() => removeImage(key)}> <CloseIcon sx={{ color: 'black', fontSize: 24 }} >Test</CloseIcon> </IconButton>} >
+                                                    <Paper className="imgTile" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', }} elevation={2}>
+                                                        <img src={URL.createObjectURL(file)} ></img>
+                                                    </Paper>
+                                                </Badge>
+                                            </Box>
+                                        </Grid>
+                                    ))
+
+                                }
+
+                                <Grid item xs={4}>
+                                    <label htmlFor="icon-button-file">
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                flexWrap: 'wrap',
+                                                '& > :not(style)': {
+                                                    m: 1,
+                                                    width: 128,
+                                                    height: 128,
+                                                },
+                                                padding: '16px'
+                                            }}
+                                        >
+                                            <Input multiple accept="image/*" id="icon-button-file" type="file" onChange={handleFileUpload} />
+                                            <Paper sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', }} elevation={2}>
+                                                <AddIcon className="iconColour" sx={{ fontSize: 70 }} />
+                                            </Paper>
+                                        </Box>
+                                    </label>
+                                </Grid>
+                            </Grid>
+                        </Box>
+
+                        : activeStep === 2 ?
+                            <div className="map">
+                                <h2 className="map-h2">Choose Locations</h2>
+
+                                <div className="google-map">
+                                    <Wrapper apiKey={mapkey} render={render}>
+                                        <Map
+                                            center={center}
+                                            onClick={onClick}
+                                            zoom={3}
+                                            style={{ flexGrow: "1", height: "100%" }}
+                                        >
+                                            {clicks.map((latLng, i) => (
+                                                <Marker key={i} position={latLng} />
+                                            ))}
+                                        </Map>
+                                    </Wrapper>
+                                </div>
+
+                                <Button sx={{ marginTop: "8px" }} onClick={confirmLocations}>
+                                    Confirm Locations
+                                </Button>
+                                <Button sx={{ marginTop: "8px" }} onClick={clearLocations}>
+                                    Clear Locations
+                                </Button>
+                            </div> : activeStep === 3 ? <ConfirmationForm /> : <AnimalDataForm />}
 
                 </DialogContent>
                 <DialogActions>
                     <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
-                    {activeStep === 3 ? <LoadingButton loading={loading} loadingPosition="center" type='submit' form="animalInfoForm" disabled={animal == null} onClick={uploadAnimal} sx={{ mr: 1 }}>Upload</LoadingButton>
+                    {activeStep === 3 ? <LoadingButton loading={loading} loadingPosition="center" type='submit' form="animalInfoForm" onClick={uploadAnimal} sx={{ mr: 1 }}>Upload</LoadingButton>
                         :
                         <Button form="animalInfoForm" onClick={handleNext} sx={{ mr: 1 }}>Next</Button>}
                 </DialogActions>
-
             </Dialog>
 
             <Container>
@@ -371,6 +763,125 @@ const AddAnimal = () => {
 
         </>
     )
+}
+
+interface MapProps extends google.maps.MapOptions {
+    style: { [key: string]: string };
+    onClick?: (e: google.maps.MapMouseEvent) => void;
+    onIdle?: (map: google.maps.Map) => void;
+}
+
+const Map: React.FC<MapProps> = ({
+    onClick,
+    onIdle,
+    children,
+    style,
+    ...options
+}) => {
+    const ref = useRef<HTMLDivElement>(null);
+    const [map, setMap] = useState<google.maps.Map>();
+
+    useEffect(() => {
+        if (ref.current && !map) {
+            setMap(new window.google.maps.Map(ref.current, {}));
+        }
+    }, [ref, map]);
+
+    // because React does not do deep comparisons, a custom hook is used
+    // see discussion in https://github.com/googlemaps/js-samples/issues/946
+    useDeepCompareEffectForMaps(() => {
+        if (map) {
+            map.setOptions(options);
+        }
+    }, [map, options]);
+
+    useEffect(() => {
+        if (map) {
+            ["click", "idle"].forEach((eventName) =>
+                google.maps.event.clearListeners(map, eventName)
+            );
+
+            if (onClick) {
+                map.addListener("click", onClick);
+            }
+
+            if (onIdle) {
+                map.addListener("idle", () => onIdle(map));
+            }
+        }
+    }, [map, onClick, onIdle]);
+
+    return (
+        <>
+            <div ref={ref} style={style} />
+            {Children.map(children, (child) => {
+                if (isValidElement(child)) {
+                    // set the map prop on the child component
+                    return cloneElement(child, { map });
+                }
+            })}
+        </>
+    );
+};
+
+const Marker: React.FC<google.maps.MarkerOptions> = (options) => {
+    const [marker, setMarker] = useState<google.maps.Marker>();
+
+    useEffect(() => {
+        if (!marker) {
+            setMarker(new google.maps.Marker());
+        }
+
+        // remove marker from map on unmount
+        return () => {
+            if (marker) {
+                marker.setMap(null);
+            }
+        };
+    }, [marker]);
+
+    useEffect(() => {
+        if (marker) {
+            marker.setOptions(options);
+        }
+    }, [marker, options]);
+
+    return null;
+};
+
+const deepCompareEqualsForMaps = createCustomEqual(
+    (deepEqual) => (a: any, b: any) => {
+        if (
+            isLatLngLiteral(a) ||
+            a instanceof google.maps.LatLng ||
+            isLatLngLiteral(b) ||
+            b instanceof google.maps.LatLng
+        ) {
+            return new google.maps.LatLng(a).equals(new google.maps.LatLng(b));
+        }
+
+        // TODO extend to other types
+
+        // use fast-equals for other objects
+        return deepEqual(a, b);
+    }
+);
+
+function useDeepCompareMemoize(value: any) {
+    const ref = useRef();
+
+    if (!deepCompareEqualsForMaps(value, ref.current)) {
+        ref.current = value;
+    }
+
+    return ref.current;
+}
+
+function useDeepCompareEffectForMaps(
+    callback: React.EffectCallback,
+    dependencies: any[]
+) {
+    useEffect(callback, dependencies.map(useDeepCompareMemoize));
 }
 
 export default AddAnimal;
