@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import { useDispatch, useSelector } from 'react-redux';
-import { saveData, selectForm } from '../../slices/formDataSlice';
+import { saveData, clearData, selectForm } from '../../slices/formDataSlice';
 import Button from '@mui/material/Button';
 
 const AnimalDataForm = () => {
@@ -74,25 +74,8 @@ const AnimalDataForm = () => {
 
         setFormFillState(false);
 
-        dispatch(saveData({
-            commonName: "",
-            kingdom: "",
-            phylum: "",
-            diet: "",
-            lifespan: "",
-            lifestyle: "",
-            nameOfYoung: "",
-            redListStatus: "",
-            groupBehaviour: "",
-            source: "",
-            imageSource: "",
-            kingdomClass: "",
-            order: "",
-            family: "",
-            genus: "",
-            species: "",
-            description: "",
-        }))
+        dispatch(clearData());
+        // set
 
     }
 
@@ -368,7 +351,7 @@ const AnimalDataForm = () => {
                     variant="standard"
                 />
             </Box>
-            {formFillState ? <Button variant="outlined" onClick={() => clearAnimalData()}>Clear</Button> : <Button variant="outlined" onClick={() => saveAnimalData()}>Save</Button>}
+            <Button variant="outlined" onClick={() => clearAnimalData()}>Clear</Button> <Button variant="outlined" onClick={() => saveAnimalData()}>Save</Button>
         </form>
     )
 }

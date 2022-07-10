@@ -231,7 +231,8 @@ const ConfirmationForm = () => {
         <AccordionDetails>
           {imageURLS.length > 0 ?
             imageURLS.map((image, key) => {
-              <img src={image} height="100px" alt="Thumbnail image of animal"></img>
+              console.log(imageURLS);
+              <p key={key}>Test {image}</p>
             })
 
             :
@@ -254,6 +255,8 @@ const ConfirmationForm = () => {
         <AccordionDetails>
           {locations.length > 0 ?
             locations.map((location: any, key: number) => {
+              console.log(location);
+
               <p key={key}>location</p>
             })
 
@@ -261,7 +264,7 @@ const ConfirmationForm = () => {
 
             <p>No Locations Added</p>
           }
-        
+
         </AccordionDetails>
       </Accordion>
     </Box>

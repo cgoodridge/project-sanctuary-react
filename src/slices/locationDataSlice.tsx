@@ -12,13 +12,13 @@ export const locationDataSlice = createSlice({
             state.locations = [...state.locations, ...action.payload];
         },
 
-        clear: (state: any) => {
+        clearLocations: (state: any) => {
             state.locations = [];
         }
     }
 });
 
-export const { saveLocations, clear } = locationDataSlice.actions;
+export const { saveLocations, clearLocations } = locationDataSlice.actions;
 
 export const selectLocations = (state: RootStateOrAny) => state.location.locations;
 

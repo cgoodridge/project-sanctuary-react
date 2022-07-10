@@ -4,9 +4,7 @@ import { createCustomEqual } from "fast-equals";
 import { isLatLngLiteral } from "@googlemaps/typescript-guards";
 import Button from '@mui/material/Button';
 import { useDispatch } from 'react-redux';
-import { selectLocations } from '../../slices/locationDataSlice';
-import { saveLocations } from '../../slices/locationDataSlice';
-import { clear } from '../../slices/locationDataSlice';
+import { saveLocations, clearLocations } from '../../slices/locationDataSlice';
 
 const render = (status: Status) => {
     return <h1>{status}</h1>;
@@ -37,10 +35,10 @@ const MapFormComponent = () => {
         })
         dispatch(saveLocations(jsonClicks));
     }
-    const clearLocations = () => {
+    const clearLocationForm = () => {
         setClicks([]);
         setJsonClicks([]);
-        dispatch(clear());
+        dispatch(clearLocations());
     }
 
     return (
@@ -65,7 +63,7 @@ const MapFormComponent = () => {
             <Button sx={{ marginTop: "8px" }} onClick={confirmLocations}>
                 Confirm Locations
             </Button>
-            <Button sx={{ marginTop: "8px" }} onClick={clearLocations}>
+            <Button sx={{ marginTop: "8px" }} onClick={clearLocationForm}>
                 Clear Locations
             </Button>
         </div>

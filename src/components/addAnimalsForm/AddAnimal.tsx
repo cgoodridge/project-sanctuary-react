@@ -20,12 +20,11 @@ import { styled } from '@mui/material/styles';
 import './addAnimal.css';
 import { useSelector } from 'react-redux';
 import { selectForm, saveData, clearData } from '../../slices/formDataSlice';
-import { selectLocations } from '../../slices/locationDataSlice';
+import { selectLocations, clearLocations } from '../../slices/locationDataSlice';
+import { clearImageURLS, saveImageURLS, selectImages } from '../../slices/imageDataSlice';
 import { selectUser } from '../../slices/userSlice';
 import firebase from '../../firebase/firebaseConfig';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { clear } from '../../slices/locationDataSlice';
-import { clearImageURLS, saveImageURLS, selectImages } from '../../slices/imageDataSlice';
 import { useNavigate } from 'react-router-dom';
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import '../darkMode/DarkMode.css';
@@ -124,6 +123,7 @@ const AddAnimal = () => {
     }
 
     const animal = useSelector(selectForm);
+    console.log(animal.jsonClicks);
     const locations = useSelector(selectLocations);
     const images = useSelector(selectImages);
 
@@ -150,7 +150,7 @@ const AddAnimal = () => {
                 genus: animal.genus,
                 imgURLS: imageURLS,
                 kingdom: animal.kingdom,
-                locations: animal.jsonClicks,
+                locations: locations,
                 lifespan: animal.lifespan,
                 lifestyle: animal.lifestyle,
                 nameOfYoung: animal.nameOfYoung,
@@ -162,33 +162,35 @@ const AddAnimal = () => {
                 imageSource: animal.imageSource
             }).then(() => {
 
-                
-                database
-                    .collection('locations')
-                    .doc()
-                    .set({
-                        animals: "",
-                        locationColour: "Blue",
-                        name: locationName,
-                        imgURL: imageURLS[0]
-                    }).then(() => {
-                        setLoading(false);
-                        setOpenDialog(false);
-                        setKingdom('');
-                        setPhylum('');
-                        setKingdomClass('');
-                        setOrder('');
-                        setFamily('');
-                        setGenus('');
-                        setSpecies('');
-                        setDescription('');
-                        dispatch(clearImageURLS());
-                        setJsonClicks([]);
-                        // dispatch(clear());
+                dispatch(clearData());
+                dispatch(clearImageURLS());
+                dispatch(clearLocations());
+                // database
+                //     .collection('locations')
+                //     .doc()
+                //     .set({
+                //         animals: "",
+                //         locationColour: "Blue",
+                //         name: locationName,
+                //         imgURL: imageURLS[0]
+                //     }).then(() => {
+                //         setLoading(false);
+                //         setOpenDialog(false);
+                //         setKingdom('');
+                //         setPhylum('');
+                //         setKingdomClass('');
+                //         setOrder('');
+                //         setFamily('');
+                //         setGenus('');
+                //         setSpecies('');
+                //         setDescription('');
+                //         dispatch(clearImageURLS());
+                //         setJsonClicks([]);
+                //         // dispatch(clear());
                         handleConfirmMessageOpen();
                         handleClose();
-                        navigate('/animals');
-                    })
+                //         navigate('/animals');
+                //     })
             })
     }
 

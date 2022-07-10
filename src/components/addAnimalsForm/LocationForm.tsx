@@ -3,6 +3,8 @@ import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import { createCustomEqual } from "fast-equals";
 import { isLatLngLiteral } from "@googlemaps/typescript-guards";
 import Button from '@mui/material/Button';
+import { saveLocations } from '../../slices/locationDataSlice';
+import { useDispatch } from 'react-redux';
 
 
 const render = (status: Status) => {
@@ -11,6 +13,8 @@ const render = (status: Status) => {
 
 
 const LocationForm = () => {
+  const dispatch = useDispatch();
+
 
   // Map Code Start
 
@@ -30,6 +34,7 @@ const LocationForm = () => {
   };
 
   const confirmLocations = () => {
+    
     clicks.map((location) => {
       let newLocation = JSON.parse(JSON.stringify(location));
 
@@ -39,7 +44,8 @@ const LocationForm = () => {
         setJsonClicks(jsonClicks => [...jsonClicks, newLocation]);
       }
     })
-    // dispatch(saveLocations(jsonClicks));
+    dispatch(saveLocations(jsonClicks));
+    console.log(jsonClicks);
   }
   const clearLocations = () => {
     setClicks([]);
